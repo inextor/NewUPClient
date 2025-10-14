@@ -3,24 +3,24 @@ import { ecommerce } from './Empties/Ecommerce';
 import { pos_order } from './Empties/Pos_Order';
 import { role } from './Empties/Role';
 import { role_item } from './Empties/Role_Item';
+import { role_user } from './Empties/Role_User';
 import { session } from './Empties/Session';
 import { transaction } from './Empties/Transaction';
 import { user } from './Empties/User';
 import { user_credentials } from './Empties/User_Credentials';
 import { user_item } from './Empties/User_Item';
-import { user_role } from './Empties/User_Role';
 
 import { Account } from './RestModels/Account';
 import { Ecommerce } from './RestModels/Ecommerce';
 import { Pos_Order } from './RestModels/Pos_Order';
 import { Role } from './RestModels/Role';
 import { Role_Item } from './RestModels/Role_Item';
+import { Role_User } from './RestModels/Role_User';
 import { Session } from './RestModels/Session';
 import { Transaction } from './RestModels/Transaction';
 import { User } from './RestModels/User';
 import { User_Credentials } from './RestModels/User_Credentials';
 import { User_Item } from './RestModels/User_Item';
-import { User_Role } from './RestModels/User_Role';
 
 export class GetEmpty {
     static account(): Account {
@@ -43,6 +43,10 @@ export class GetEmpty {
         return role_item();
     }
 
+    static role_user(): Role_User {
+        return role_user();
+    }
+
     static session(): Session {
         return session();
     }
@@ -61,9 +65,5 @@ export class GetEmpty {
 
     static user_item(): User_Item {
         return user_item();
-    }
-
-    static user_role(): User_Role {
-        return user_role();
     }
 }
