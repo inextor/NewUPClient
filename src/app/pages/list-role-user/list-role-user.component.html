@@ -1,0 +1,39 @@
+<div class="container mt-5">
+  <h2 class="app-page-title"> Listado de Roles de Usuario
+    <a routerlink="/add-role-user" class="btn btn-primary" style="float: right;" href="#/add-role-user">Agregar Rol de Usuario</a>
+  </h2>
+  @if (role_user_list.length === 0) {
+    <div class="alert alert-info">
+      No roles de usuario found.
+    </div>
+  }
+  @if (role_user_list.length > 0) {
+    <div class="card bg-white p-3">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>User ID</th>
+            <th>Role ID</th>
+            <th>Is Admin</th>
+            <th class="text-end">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (role_user of role_user_list; track role_user.id) {
+            <tr>
+              <th scope="row">{{ role_user.id }}</th>
+              <td>{{ role_user.user_id }}</td>
+              <td>{{ role_user.role_id }}</td>
+              <td>{{ role_user.is_admin }}</td>
+              <td class="text-end">
+                <a class="btn btn-primary btn-sm" href="#/edit-role-user/{{ role_user.id }}">Editar</a>
+                <button class="btn btn-danger btn-sm ms-2">Eliminar</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>
