@@ -1,1 +1,36 @@
-<p>list-item works!</p>
+<div class="container">
+  <h2 class="my-3"> Listado de Artículos</h2>
+  @if (ecommerce_item_list.length === 0) {
+    <div class="alert alert-info">
+      No items found.
+    </div>
+  }
+  @if (ecommerce_item_list.length > 0) {
+    <div class="card bg-white p-3">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Nombre</th>
+            <th>Precio</th>
+            <th class="text-end">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of ecommerce_item_list; track item.id) {
+            <tr>
+              <th scope="row">{{ item.id }}</th>
+              <td>{{ item.name }}</td>
+              <td>{{ item.price }}</td>
+              <td class="text-end">
+                <a class="btn btn-primary btn-sm" href="#/edit-item/{{ item.id }}">Editar</a>
+                <a class="btn btn-info btn-sm ms-2" href="#/item-roles/{{ item.id }}">Roles</a>
+                <button class="btn btn-danger btn-sm ms-2">Eliminar</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

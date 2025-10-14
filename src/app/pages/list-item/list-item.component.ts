@@ -5,6 +5,7 @@ import { Rest } from '../../classes/Rest';
 import { SearchObject } from '../../classes/SearchObject';
 import { ParamMap } from '@angular/router';
 import { RestResponse } from '../../classes/RestResponse';
+import { CommonModule } from '@angular/common';
 
 interface CEcommerceItemInfo {
 	ecommerce_item: Ecommerce_Item;
@@ -12,7 +13,7 @@ interface CEcommerceItemInfo {
 
 @Component({
 	selector: 'app-list-item',
-	imports: [],
+	imports: [CommonModule],
 	templateUrl: './list-item.component.html',
 	styleUrl: './list-item.component.css'
 })
