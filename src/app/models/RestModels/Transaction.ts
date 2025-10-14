@@ -4,8 +4,8 @@ export interface Transaction {
   qty: number;
   movement_qty: number;
   movement_type: 'NEGATIVE' | 'POSITIVE';
-  created: number;
-  updated: number;
+  created: string | Date;
+  updated: string | Date | null;
   order_id: number;
 }
 

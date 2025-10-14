@@ -3,9 +3,10 @@ export interface User {
   type: 'USER' | 'ADMIN';
   ecommerce_id: number;
   name: string;
+  username: string;
   password: string | null;
-  created: number;
-  updated: number;
+  created: string | Date;
+  updated: string | Date;
   code: string | null;
 }
 
