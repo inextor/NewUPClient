@@ -1,5 +1,6 @@
 export interface Ecommerce_Item {
   id: number;
+  code: string | null;
   item_id: number;
   ecommerce_id: number;
   name: string;

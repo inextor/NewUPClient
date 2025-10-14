@@ -1,6 +1,6 @@
 export interface Transaction {
   id: number;
-  account: number;
+  account_id: number;
   qty: number;
   movement_qty: number;
   movement_type: 'NEGATIVE' | 'POSITIVE';
