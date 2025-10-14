@@ -5,7 +5,8 @@ export function pos_order(): Pos_Order {
 		id: 0, 
 		payload_json: 0, 
 		order_id: null, 
-		created: 0, 
+		created: new Date(), 
+		updated: new Date(), 
 		user_id: 0, 
 	};
 }

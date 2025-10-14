@@ -1,27 +1,51 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ErrorMessage } from '../classes/ErrorMessage';
 import { BehaviorSubject } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { RestEndPoint } from '../classes/RestEndPoint';
+import { GetEmpty } from '../models/GetEmpty';
+import { Ecommerce } from '../models/RestModels/Ecommerce';
 
 @Injectable({
 	providedIn: 'root'
 })
-export class RestService {
+export class RestService implements RestEndPoint{
 
 
 	error_behavior_subject = new BehaviorSubject<ErrorMessage>(new ErrorMessage('',''));
 	public error_observable = this.error_behavior_subject.asObservable();
 
-	private base_url = environment.base_url;
+	public base_url = 'http://localhost/NewUpServer'//environment.base_url;
 	public user: any = null;
 	public session: any = null;
 	public permission: any = null;
 	public store: any = null;
+	private _bearer: string = '';
+	public ecommerce:Ecommerce = GetEmpty.ecommerce();
 
-	constructor(private route: ActivatedRoute)
+	public set bearer(bearer:string)
 	{
-		this.is_logged_in = localStorage.getItem('session') !== null;
+		this._bearer = bearer;
+	}
 
+	public get bearer():string
+	{
+		if( this._bearer == '' )
+		{
+			let session = localStorage.getItem('session');
+			if( session )
+			{
+				let session_obj = JSON.parse(session);
+				if( 'bearer' in session_obj )
+					this._bearer = session_obj.bearer;
+			}
+		}
+		return this._bearer;
+	}
+
+
+	constructor(private route: ActivatedRoute, private router: Router)
+	{
 		route.params.subscribe((_params:any) =>
 		{
 			document.body.style.backgroundColor = '#ffffff';
@@ -40,6 +64,15 @@ export class RestService {
 
 	is_logged_in:boolean = false;
 
+	logout() {
+		localStorage.removeItem('session');
+		localStorage.removeItem('user');
+		this.user = null;
+		this.session = null;
+		this.is_logged_in = false;
+		this.router.navigate(['/login']);
+	}
+
 	loadAuthDataFromLocalStorage(): void
 	{
 		if (typeof localStorage !== 'undefined')
@@ -53,6 +86,8 @@ export class RestService {
 			if (sessionStr) this.session = JSON.parse(sessionStr);
 			if (permissionStr) this.permission = JSON.parse(permissionStr);
 			if (storeStr) this.store = JSON.parse(storeStr);
+
+			this.is_logged_in = this.session !== null;
 		}
 	}
 

@@ -6,9 +6,10 @@ export function user(): User {
 		type: 'USER', 
 		ecommerce_id: 0, 
 		name: '', 
+		username: '', 
 		password: null, 
-		created: 0, 
-		updated: 0, 
+		created: new Date(), 
+		updated: new Date(), 
 		code: null, 
 	};
 }

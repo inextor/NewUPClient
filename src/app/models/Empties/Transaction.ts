@@ -7,8 +7,8 @@ export function transaction(): Transaction {
 		qty: 0, 
 		movement_qty: 0, 
 		movement_type: 'NEGATIVE', 
-		created: 0, 
-		updated: 0, 
+		created: new Date(), 
+		updated: null, 
 		order_id: 0, 
 	};
 }
