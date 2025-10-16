@@ -1,6 +1,7 @@
 import { Component, Injector } from '@angular/core';
 import { RestService } from '../../services/rest.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { RestEndPoint } from '../../classes/RestEndPoint';
 
 @Component({
   selector: 'app-base',

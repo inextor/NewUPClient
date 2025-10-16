@@ -17,14 +17,13 @@
           </tr>
         </thead>
         <tbody>
-          @for (item of ecommerce_item_list; track item.id) {
+          @for (ceii of cecommerce_item_info; track ceii.ecommerce_item.id) {
             <tr>
-              <th scope="row">{{ item.id }}</th>
-              <td>{{ item.name }}</td>
-              <td>{{ item.price }}</td>
+              <th scope="row">{{ ceii.item_info |json }}</th>
+              <td></td>
               <td class="text-end">
-                <a class="btn btn-primary btn-sm" href="#/edit-item/{{ item.id }}">Editar</a>
-                <a class="btn btn-info btn-sm ms-2" href="#/item-roles/{{ item.id }}">Roles</a>
+                <a class="btn btn-primary btn-sm" href="#">Editar</a>
+                <a class="btn btn-info btn-sm ms-2" href="#">Roles</a>
                 <button class="btn btn-danger btn-sm ms-2">Eliminar</button>
               </td>
             </tr>

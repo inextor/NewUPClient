@@ -22,6 +22,7 @@ export class RestService implements RestEndPoint{
 	public store: any = null;
 	private _bearer: string = '';
 	public ecommerce:Ecommerce = GetEmpty.ecommerce();
+	public pos_rest:RestEndPoint = { base_url: 'https://uniformesprofesionales.integranet.xyz/api', bearer: '' };
 
 	public set bearer(bearer:string)
 	{
