@@ -183,6 +183,37 @@ export class Rest<T,U>
 		return fetch(url, options ).then(this.getJsonLambda())
 	}
 
+	public update(z:Partial<U>):Promise<U>
+	{
+		const url = `${this.rest.base_url}/${this.path}`;
+
+		let headers = {
+			'Authorization': `Bearer ${this.bearer}`,
+			'Content-Type': 'application/json'
+		};
+
+		let method = 'PUT';
+		let body = JSON.stringify(z);
+		let options = { method, headers , body };
+
+		return fetch(url, options ).then(this.getJsonLambda())
+	}
+
+	delete(id:any):Promise<any>
+	{
+		const url = `${this.rest.base_url}/${this.path}/${id}`;
+		let headers = {
+			'Authorization': `Bearer ${this.bearer}`,
+			'Content-Type': 'application/json'
+		};
+
+		let method = 'DELETE';
+		let body = JSON.stringify({id:''+id});
+		let options = { method, headers , body };
+
+		return fetch(url, options ).then(this.getJsonLambda())
+	}
+
 	postOne(data:any):Promise<any>
 	{
 		const url = `${this.rest.base_url}/${this.path}`;
