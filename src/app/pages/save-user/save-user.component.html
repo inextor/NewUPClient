@@ -1,1 +1,21 @@
-<p>save-user works!</p>
+<div class="container">
+    <h1>{{ user.id ? 'Agregar usuario' : 'Edit Usuario' }}</h1>
+    <form (ngSubmit)="saveUser()">
+        <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" class="form-control" id="name" [(ngModel)]="user.name" name="name" required>
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Nombre de usuario</label>
+            <input type="email" class="form-control" id="email" [(ngModel)]="user.username" name="email" required>
+        </div>
+        <div class="mb-3" *ngIf="user.id">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" [(ngModel)]="user.password" name="password" required>
+        </div>
+        <button type="submit" class="btn btn-primary" [disabled]="is_loading">
+            <span *ngIf="is_loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            {{ is_loading ? 'Guardando...' : 'Guardar' }}
+        </button>
+    </form>
+</div>

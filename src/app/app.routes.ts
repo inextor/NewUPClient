@@ -6,6 +6,7 @@ import { ListItemComponent } from './pages/list-item/list-item.component';
 import { MainComponent } from './pages/main/main.component';
 import { CartComponent } from './pages/cart/cart.component';
 import { SaveQuoteComponent } from './pages/save-quote/save-quote.component';
+import { SaveUserComponent } from './pages/save-user/save-user.component';
 
 import { authGuard } from './guards/auth.guard';
 
@@ -20,6 +21,7 @@ export const routes: Routes = [
             { path: 'list-item', component: ListItemComponent },
             { path: 'cart', component: CartComponent },
             { path: 'save-quote', component: SaveQuoteComponent },
+            { path: 'save-user', component: SaveUserComponent },
         ]
     },
     {
