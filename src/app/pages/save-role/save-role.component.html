@@ -1,0 +1,13 @@
+<div class="container mt-5">
+  <h2 class="app-page-title">{{ role.id ? 'Editar Rol' : 'Agregar Rol' }}</h2>
+
+  <div class="card bg-white p-3">
+    <form (ngSubmit)="save()">
+      <div class="mb-3">
+        <label for="name" class="form-label">Nombre</label>
+        <input type="text" class="form-control" id="name" [(ngModel)]="role.name" name="name" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Guardar</button>
+    </form>
+  </div>
+</div>
