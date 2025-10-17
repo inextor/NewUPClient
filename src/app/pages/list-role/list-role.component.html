@@ -1,6 +1,6 @@
 <div class="container mt-5">
   <h2 class="app-page-title"> Listado de Roles
-    <a routerlink="/add-role" class="btn btn-primary" style="float: right;" href="#/add-role">Agregar Rol</a>
+    <a routerlink="/add-role" class="btn btn-primary" style="float: right;" href="/#/add-role">Agregar Rol</a>
   </h2>
   @if (role_list.length === 0) {
     <div class="alert alert-info">
@@ -25,7 +25,7 @@
               <td>{{ role.ecommerce_id }}</td>
               <td>{{ role.name }}</td>
               <td class="text-end">
-                <a class="btn btn-primary btn-sm" href="#/edit-role/{{ role.id }}">Editar</a>
+                <a class="btn btn-primary btn-sm" href="/#/edit-role/{{ role.id }}">Editar</a>
                 <button class="btn btn-danger btn-sm ms-2">Eliminar</button>
               </td>
             </tr>
