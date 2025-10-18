@@ -36,6 +36,9 @@ export class ListRoleItemComponent extends BaseComponent implements OnInit {
 
 	showAddModal = false;
 	newRoleName = '';
+	newQuota = 0;
+	newPeriodType: 'daily' | 'weekly' | 'monthly' | 'yearly' | 'unlimited' | 'Quota renewal period' = 'unlimited';
+	newPeriodQuantity = 0;
 
 	ngOnInit(): void {
 		this.route.queryParamMap.subscribe((params:ParamMap) =>
@@ -97,11 +100,17 @@ export class ListRoleItemComponent extends BaseComponent implements OnInit {
 	openAddModal(): void {
 		this.showAddModal = true;
 		this.newRoleName = '';
+		this.newQuota = 0;
+		this.newPeriodType = 'unlimited';
+		this.newPeriodQuantity = 0;
 	}
 
 	closeAddModal(): void {
 		this.showAddModal = false;
 		this.newRoleName = '';
+		this.newQuota = 0;
+		this.newPeriodType = 'unlimited';
+		this.newPeriodQuantity = 0;
 	}
 
 	async addRoleToItem(): Promise<void> {
@@ -139,6 +148,9 @@ export class ListRoleItemComponent extends BaseComponent implements OnInit {
 			const newRoleItem = GetEmpty.role_item();
 			newRoleItem.item_id = this.item_id;
 			newRoleItem.role_id = role.id;
+			newRoleItem.quota = this.newQuota;
+			newRoleItem.period_type = this.newPeriodType;
+			newRoleItem.period_quantity = this.newPeriodQuantity;
 
 			const createdRoleItem = await this.rest_role_item.create(newRoleItem);
 			this.role_item_list.push(createdRoleItem);

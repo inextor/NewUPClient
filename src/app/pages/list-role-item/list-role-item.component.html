@@ -18,14 +18,22 @@
             <th>Item ID</th>
             <th>Role ID</th>
             <th>Nombre del Rol</th>
+            <th>Cuota</th>
+            <th>Tipo de Periodo</th>
+            <th>Cantidad de Periodo</th>
             <th class="text-end">Acciones</th>
           </tr>
         </thead>
         <tbody>
           @for (crii of added_role_list; track crii.role_item.id) {
             <tr>
-              <th scope="row">{{ crii.role.id }}</th>
-              <td>{{ crii.role.name}}</td>
+              <th scope="row">{{ crii.role_item.id }}</th>
+              <td>{{ crii.role_item.item_id }}</td>
+              <td>{{ crii.role_item.role_id }}</td>
+              <td>{{ crii.role.name }}</td>
+              <td>{{ crii.role_item.quota }}</td>
+              <td>{{ crii.role_item.period_type }}</td>
+              <td>{{ crii.role_item.period_quantity }}</td>
               <td class="text-end">
                 <button class="btn btn-danger btn-sm" (click)="deleteRoleItem(crii)">Eliminar</button>
               </td>
@@ -54,9 +62,43 @@
             class="form-control"
             id="roleName"
             [(ngModel)]="newRoleName"
-            placeholder="Ingrese el nombre del rol"
-            (keyup.enter)="addRoleToItem()">
+            placeholder="Ingrese el nombre del rol">
           <div class="form-text">Si el rol no existe, se creará automáticamente.</div>
+        </div>
+
+        <div class="mb-3">
+          <label for="quota" class="form-label">Cuota</label>
+          <input
+            type="number"
+            class="form-control"
+            id="quota"
+            [(ngModel)]="newQuota"
+            placeholder="Ingrese la cuota">
+        </div>
+
+        <div class="mb-3">
+          <label for="periodType" class="form-label">Tipo de Periodo</label>
+          <select
+            class="form-control"
+            id="periodType"
+            [(ngModel)]="newPeriodType">
+            <option value="daily">Diario</option>
+            <option value="weekly">Semanal</option>
+            <option value="monthly">Mensual</option>
+            <option value="yearly">Anual</option>
+            <option value="unlimited">Ilimitado</option>
+            <option value="Quota renewal period">Periodo de renovación de cuota</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label for="periodQuantity" class="form-label">Cantidad de Periodo</label>
+          <input
+            type="number"
+            class="form-control"
+            id="periodQuantity"
+            [(ngModel)]="newPeriodQuantity"
+            placeholder="Ingrese la cantidad de periodo">
         </div>
       </div>
       <div class="modal-footer">
