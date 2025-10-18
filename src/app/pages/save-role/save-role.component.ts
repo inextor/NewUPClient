@@ -34,9 +34,9 @@ export class SaveRoleComponent extends BaseComponent implements OnInit {
 		});
 	}
 
-	save() {
-		this.rest_role.create(this.role).then(() => {
-			this.router.navigate(['/list-role']);
-		});
-	}
-}
+	  save() {
+	    let promise = this.role.id ? this.rest_role.update(this.role) : this.rest_role.create(this.role);
+	    promise.then(() => {
+	      this.router.navigate(['/list-role']);
+	    });
+	  }}
