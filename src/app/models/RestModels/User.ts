@@ -3,7 +3,7 @@ export interface User {
   type: 'USER' | 'ADMIN';
   ecommerce_id: number;
   name: string;
-  username: string;
+  username: string | null;
   password: string | null;
   created: string | Date;
   updated: string | Date;
