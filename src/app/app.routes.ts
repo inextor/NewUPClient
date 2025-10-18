@@ -33,6 +33,7 @@ export const routes: Routes = [
             { path: 'list-role-user', component: ListRoleUserComponent },
             { path: 'cart', component: CartComponent },
             { path: 'edit-quote', component: SaveQuoteComponent },
+            { path: 'add-user', component: SaveUserComponent },
             { path: 'edit-user', component: SaveUserComponent },
             { path: 'import-users', component: ImportUsersComponent },
         ]

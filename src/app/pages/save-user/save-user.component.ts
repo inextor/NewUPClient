@@ -50,12 +50,12 @@ export class SaveUserComponent extends BaseComponent implements OnInit {
 	saveUser() {
 		this.is_loading = true;
 		if (this.user.id) {
-			this.rest_user.create(this.user).then(response => {
+			this.rest_user.update(this.user).then(response => {
 				this.is_loading = false;
 				this.router.navigate(['/list-user']);
 			});
 		} else {
-			this.rest_user.update(this.user).then(response => {
+			this.rest_user.create(this.user).then(response => {
 				this.is_loading = false;
 				this.router.navigate(['/list-user']);
 			});
