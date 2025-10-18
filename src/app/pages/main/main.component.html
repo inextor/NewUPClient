@@ -1,17 +1,17 @@
 <!-- Header -->
-<nav class="navbar navbar-dark bg-dark fixed-top">
+<nav class="navbar navbar-dark fixed-top" [style.background-color]="rest.ecommerce.color" [style.color]="rest.ecommerce.font_color">
   <div class="container-fluid">
-    <button class="navbar-toggler" type="button" (click)="toggleSidenav()">
+    <button class="navbar-toggler" type="button" (click)="toggleMenu()">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <a class="navbar-brand" href="#">My App</a>
+    <a class="navbar-brand" href="#">{{ rest.ecommerce.name }}</a>
   </div>
 </nav>
 
 <div class="container-fluid">
   <div class="row">
     <!-- Sidebar -->
-    <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-light sidebar" [class.collapse]="!isSidenavOpen">
+    <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-light sidebar" [ngClass]="{'open': rest.is_menu_open}">
       <div class="position-sticky pt-3">
         <ul class="nav flex-column">
           <li class="nav-item"><a class="nav-link" routerLink="/">Inicio</a></li>

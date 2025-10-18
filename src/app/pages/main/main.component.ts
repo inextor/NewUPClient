@@ -1,17 +1,19 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet, RouterLink } from '@angular/router';
+import { RestService } from '../../services/rest.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-main',
   standalone: true,
-  imports: [RouterOutlet, RouterLink],
+  imports: [RouterOutlet, RouterLink, CommonModule],
   templateUrl: './main.component.html',
   styleUrl: './main.component.css'
 })
 export class MainComponent {
-  isSidenavOpen = true;
+  rest = inject(RestService);
 
-  toggleSidenav() {
-    this.isSidenavOpen = !this.isSidenavOpen;
+  toggleMenu() {
+    this.rest.toggleMenu();
   }
 }

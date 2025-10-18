@@ -1,14 +1,7 @@
-/* The old custom styles have been removed as Bootstrap is now used. */
-/* You can add any component-specific overrides or adjustments here. */
 .sidebar {
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 100; /* Behind the navbar */
-  box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+  display: none;
 }
 
-main {
-  padding-top: 48px; /* Adjust for fixed navbar */
+.sidebar.open {
+  display: block;
 }

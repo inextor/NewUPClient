@@ -43,7 +43,7 @@ export class LoginComponent {
 			// In a web app, localStorage or sessionStorage is common.
 			localStorage.setItem('session', JSON.stringify(data.session));
 			localStorage.setItem('user', JSON.stringify(data.user));
-			localStorage.setItem('ecommerce', JSON.stringify(data.user));
+			localStorage.setItem('ecommerce', JSON.stringify(data.ecommerce));
 
 			this.rest_service.loadAuthDataFromLocalStorage();
 			this.router.navigate(['/']);
