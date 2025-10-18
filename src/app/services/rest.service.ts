@@ -61,8 +61,8 @@ export class RestService implements RestEndPoint{
 		this.loadEcommerceData();
 	}
 
-	toggleMenu() {
-		this.is_menu_open = !this.is_menu_open;
+	toggleMenu():boolean {
+		return this.is_menu_open = !this.is_menu_open;
 	}
 
 	loadEcommerceData(): void

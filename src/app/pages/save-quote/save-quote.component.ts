@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { BaseComponent } from '../base/base.component';
 
 @Component({
   selector: 'app-save-quote',
@@ -6,6 +7,6 @@ import { Component } from '@angular/core';
   templateUrl: './save-quote.component.html',
   styleUrl: './save-quote.component.css'
 })
-export class SaveQuoteComponent {
+export class SaveQuoteComponent extends BaseComponent {
 
 }

@@ -1,5 +1,6 @@
 <div class="header-container" [ngStyle]="{ 'background-color': rest.ecommerce.color, 'color': rest.ecommerce.font_color }">
-  <button class="menu-button" (click)="menuService.toggle()" [ngStyle]="{'color': rest.ecommerce.font_color}">☰</button>
-	{{rest.is_menu_open?'OPEN':'CLOSe'}}
+  <button class="menu-button" (click)="rest.toggleMenu()" [ngStyle]="{'color': rest.ecommerce.font_color}">☰</button>
+	{{rest.is_menu_open?'OPEN':'CLOSe'}} asdfasd
   <h1>{{ rest.ecommerce.name }}</h1>
+	{{rest.is_menu_open?'OPEN':'CLOSe'}} asdfasd
 </div>
