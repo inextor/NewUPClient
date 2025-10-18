@@ -4,13 +4,14 @@ import { Role } from '../../models/RestModels/Role';
 import { BaseComponent } from '../base/base.component';
 import { Rest } from '../../classes/Rest';
 import { SearchObject } from '../../classes/SearchObject';
-import { ParamMap } from '@angular/router';
+import { ParamMap, RouterModule } from '@angular/router';
 import { RestResponse } from '../../classes/RestResponse';
+
 
 @Component({
 	selector: 'app-list-role',
 	standalone: true,
-	imports: [CommonModule],
+	imports: [CommonModule, RouterModule],
 	templateUrl: './list-role.component.html',
 	styleUrl: './list-role.component.css'
 })
@@ -21,7 +22,8 @@ export class ListRoleComponent extends BaseComponent implements OnInit {
 
 	ngOnInit(): void {
 
-		this.getParamsAndQueriesObservable().subscribe((params) =>
+		this.getParamsAndQueriesObservable()
+		.subscribe((params) =>
 		{
 			this.rest_role.search(params.query).then((response:RestResponse<Role>) =>
 			{
