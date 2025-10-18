@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { User } from '../../models/RestModels/User';
 import { BaseComponent } from '../base/base.component';
 import { Rest } from '../../classes/Rest';
@@ -9,7 +10,7 @@ import { RestResponse } from '../../classes/RestResponse';
 
 @Component({
   selector: 'app-list-user',
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './list-user.component.html',
   styleUrl: './list-user.component.css'
 })
