@@ -7,5 +7,8 @@ export function role_item(): Role_Item {
 		role_id: 0, 
 		created: new Date(), 
 		updated: new Date(), 
+		quota: 0, 
+		period_type: 'daily', 
+		period_quantity: 0, 
 	};
 }
