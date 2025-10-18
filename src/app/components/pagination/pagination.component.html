@@ -1,0 +1,13 @@
+@if (total_pages > 1) {
+  <div class="pagination my-3">
+    <div>
+      <button [disabled]="current_page == 0" type="button" class="btn btn-outline-secondary me-1 p-2" (click)="gotoPage(0)">&lt;&lt;</button>
+      <button [disabled]="current_page == 0" type="button" class="btn btn-outline-secondary p-2" (click)="gotoPage(current_page-1)">&lt;</button>
+    </div>
+    <div class="flex-grow-1 text-center indicador border p-2 bg-white">Página <b>{{current_page+1}}</b> de {{total_pages}}</div>
+    <div>
+      <button [disabled]="current_page >= total_pages-1" type="button" class="btn btn-outline-secondary p-2" (click)="gotoPage(current_page+1)">&gt;</button>
+      <button [disabled]="current_page >= total_pages-1" type="button" class="btn btn-outline-secondary ms-1 p-2" (click)="gotoPage(total_pages-1)">&gt;&gt;</button>
+    </div>
+  </div>
+}

@@ -1,0 +1,15 @@
+.indicador {
+	text-align: center;
+	border-radius: 4px;
+}
+
+.pagination {
+	display: flex !important;
+	align-items: center;
+	gap: 10px;
+}
+
+button {
+	font-weight: bold;
+	min-width: 40px;
+}
