@@ -31,6 +31,7 @@ export class ListRoleItemComponent extends BaseComponent implements OnInit {
 	role_item_list: Role_Item[] = [];
 	role_list: Role[] = [];
 	item_id: number | null = null;
+	item_info: any = null;
 
 	added_role_list: CRoleItemInfo[] = [];
 
@@ -42,10 +43,10 @@ export class ListRoleItemComponent extends BaseComponent implements OnInit {
 
 	showEditModal = false;
 	editingRoleItem: CRoleItemInfo | null = null;
+	editRoleName = '';
 	editQuota = 0;
 	editPeriodType: 'daily' | 'weekly' | 'monthly' | 'yearly' | 'unlimited' | 'Quota renewal period' = 'unlimited';
 	editPeriodQuantity = 0;
-
 	ngOnInit(): void {
 		this.route.queryParamMap.subscribe((params:ParamMap) =>
 		{
@@ -67,7 +68,7 @@ export class ListRoleItemComponent extends BaseComponent implements OnInit {
 			])
 			.then(([item_info, role_item_response, role_response]) =>
 			{
-				item_info = item_info;
+				this.item_info = item_info;
 				this.role_item_list = role_item_response.data;
 				this.role_list = role_response.data;
 
@@ -172,9 +173,9 @@ export class ListRoleItemComponent extends BaseComponent implements OnInit {
 			this.rest.showError(error);
 		}
 	}
-
 	openEditModal(crii: CRoleItemInfo): void {
 		this.editingRoleItem = crii;
+		this.editRoleName = crii.role.name;
 		this.editQuota = crii.role_item.quota;
 		this.editPeriodType = crii.role_item.period_type;
 		this.editPeriodQuantity = crii.role_item.period_quantity;
@@ -184,6 +185,7 @@ export class ListRoleItemComponent extends BaseComponent implements OnInit {
 	closeEditModal(): void {
 		this.showEditModal = false;
 		this.editingRoleItem = null;
+		this.editRoleName = '';
 		this.editQuota = 0;
 		this.editPeriodType = 'unlimited';
 		this.editPeriodQuantity = 0;
@@ -196,6 +198,7 @@ export class ListRoleItemComponent extends BaseComponent implements OnInit {
 		}
 
 		try {
+			// Update the role_item with new values
 			const updatedRoleItem = {...this.editingRoleItem.role_item};
 			updatedRoleItem.quota = this.editQuota;
 			updatedRoleItem.period_type = this.editPeriodType;
