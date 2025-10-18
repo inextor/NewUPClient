@@ -3,7 +3,7 @@ import { Ecommerce_Item } from '../../models/RestModels/Ecommerce_Item';
 import { BaseComponent } from '../base/base.component';
 import { Rest } from '../../classes/Rest';
 import { SearchObject } from '../../classes/SearchObject';
-import { ParamMap } from '@angular/router';
+import { ParamMap, RouterLink } from '@angular/router';
 import { RestResponse } from '../../classes/RestResponse';
 import { CommonModule } from '@angular/common';
 import { ImagePipe } from '../../pipes/image.pipe';
@@ -15,7 +15,7 @@ interface CEcommerceItemInfo {
 
 @Component({
 	selector: 'app-list-item',
-	imports: [CommonModule, ImagePipe],
+	imports: [CommonModule, ImagePipe, RouterLink],
 	templateUrl: './list-item.component.html',
 	styleUrl: './list-item.component.css'
 })

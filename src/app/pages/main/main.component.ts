@@ -9,7 +9,7 @@ import { MenuComponent } from '../../components/menu/menu.component';
 @Component({
 	selector: 'app-main',
 	standalone: true,
-	imports: [RouterOutlet, RouterLink, CommonModule, HeaderComponent, MenuComponent],
+	imports: [RouterOutlet, CommonModule, HeaderComponent, MenuComponent],
 	templateUrl: './main.component.html',
 	styleUrl: './main.component.css'
 })

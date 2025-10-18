@@ -1,40 +1,156 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Role_Item } from '../../models/RestModels/Role_Item';
+import { Role } from '../../models/RestModels/Role';
 import { BaseComponent } from '../base/base.component';
 import { Rest } from '../../classes/Rest';
 import { SearchObject } from '../../classes/SearchObject';
 import { ParamMap } from '@angular/router';
 import { RestResponse } from '../../classes/RestResponse';
+import { GetEmpty } from '../../models/GetEmpty';
+
+interface CRoleItemInfo {
+	role_item: Role_Item;
+	role: Role;
+}
 
 @Component({
-  selector: 'app-list-role-item',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './list-role-item.component.html',
-  styleUrl: './list-role-item.component.css'
+	selector: 'app-list-role-item',
+	standalone: true,
+	imports: [CommonModule, FormsModule],
+	templateUrl: './list-role-item.component.html',
+	styleUrl: './list-role-item.component.css'
 })
 export class ListRoleItemComponent extends BaseComponent implements OnInit {
 
-  rest_role_item: Rest<Role_Item,Role_Item> = new Rest<Role_Item,Role_Item>(this.rest, 'role_item.php');
-  role_item_list: Role_Item[] = [];
+	rest_role_item: Rest<Role_Item,Role_Item> = new Rest<Role_Item,Role_Item>(this.rest, 'role_item.php');
+	rest_role: Rest<Role,Role> = new Rest<Role,Role>(this.rest, 'role.php');
+	rest_item: Rest<any,any> = new Rest<any,any>(this.rest.pos_rest, 'item_info.php');
 
-  ngOnInit(): void {
-    this.route.queryParamMap.subscribe((params:ParamMap) =>
-    {
-      let page = params.has('page') ? parseInt( params.get('page')! ) : 0;
-      let limit = params.has('limit') ? parseInt( params.get('limit')! ) : 20;
+	role_item_list: Role_Item[] = [];
+	role_list: Role[] = [];
+	item_id: number | null = null;
 
-      let url_params = this.rest_role_item.getUrlParams( params );
+	added_role_list: CRoleItemInfo[] = [];
 
-      this.rest_role_item.search(url_params).then((response:RestResponse<Role_Item>) =>
-      {
-        this.role_item_list = response.data;
-      })
-      .catch((error:any) =>
-      {
-        this.rest.showError(error);
-      });
-    });
-  }
+	showAddModal = false;
+	newRoleName = '';
+
+	ngOnInit(): void {
+		this.route.queryParamMap.subscribe((params:ParamMap) =>
+		{
+			let page = params.has('page') ? parseInt( params.get('page')! ) : 0;
+			let limit = params.has('limit') ? parseInt( params.get('limit')! ) : 20;
+
+			let url_params = this.rest_role_item.getUrlParams( params );
+
+			// Store item_id if present
+			if(params.has('item_id')) {
+				this.item_id = parseInt(params.get('item_id')!);
+			}
+
+			Promise.all([
+				this.rest_item.get(this.item_id as number),
+				this.rest_role_item.search(url_params),
+				this.rest_role.search({limit: 999999})
+			])
+			.then(([item_info, role_item_response, role_response]) =>
+			{
+				item_info = item_info;
+				this.role_item_list = role_item_response.data;
+				this.role_list = role_response.data;
+
+				this.added_role_list = this.role_item_list
+				.map(role_item =>
+				{
+					let role = this.role_list.find(r => r.id === role_item.role_id) as Role;
+					return {
+						role_item: role_item,
+						role: role
+					}
+				});
+			})
+			.catch((error:any) =>
+			{
+				this.rest.showError(error);
+			});
+		});
+	}
+
+	deleteRoleItem(crii: CRoleItemInfo): void {
+		if(!confirm('¿Está seguro de eliminar este rol del artículo?')) {
+			return;
+		}
+
+		this.rest_role_item.delete(crii.role_item.id)
+			.then(() => {
+				this.rest.showSuccess('Rol eliminado correctamente');
+				this.added_role_list = this.added_role_list.filter(ri => ri.role_item.id !== crii.role_item.id);
+			})
+			.catch((error:any) => {
+				this.rest.showError(error);
+			});
+	}
+
+	openAddModal(): void {
+		this.showAddModal = true;
+		this.newRoleName = '';
+	}
+
+	closeAddModal(): void {
+		this.showAddModal = false;
+		this.newRoleName = '';
+	}
+
+	async addRoleToItem(): Promise<void> {
+		if(!this.item_id) {
+			this.rest.showError('No item ID provided');
+			return;
+		}
+
+		if(!this.newRoleName.trim()) {
+			this.rest.showError('El nombre del rol es requerido');
+			return;
+		}
+
+		try {
+			// Check if role exists
+			let role = this.role_list.find(r => r.name === this.newRoleName);
+
+			// If role doesn't exist, create it
+			if(!role) {
+				const newRole = GetEmpty.role();
+				newRole.name = this.newRoleName as any;
+				newRole.ecommerce_id = this.rest.ecommerce.id;
+				role = await this.rest_role.create(newRole);
+				this.role_list.push(role);
+			}
+
+			// Check if role is already assigned to this item
+			const roleAlreadyAssigned = this.added_role_list.some(crii => crii.role.id === role!.id);
+			if(roleAlreadyAssigned) {
+				this.rest.showError('Este rol ya está asignado al artículo');
+				return;
+			}
+
+			// Create role_item relationship
+			const newRoleItem = GetEmpty.role_item();
+			newRoleItem.item_id = this.item_id;
+			newRoleItem.role_id = role.id;
+
+			const createdRoleItem = await this.rest_role_item.create(newRoleItem);
+			this.role_item_list.push(createdRoleItem);
+			this.added_role_list.push
+			({
+				role_item: createdRoleItem,
+				role: role
+			});
+
+			this.rest.showSuccess('Rol agregado correctamente');
+			this.closeAddModal();
+		} catch(error) {
+			this.rest.showError(error);
+		}
+	}
 }

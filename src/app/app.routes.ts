@@ -5,6 +5,7 @@ import { ListUserComponent } from './pages/list-user/list-user.component';
 import { ListRoleComponent } from './pages/list-role/list-role.component';
 import { SaveRoleComponent } from './pages/save-role/save-role.component';
 import { ListItemComponent } from './pages/list-item/list-item.component';
+import { ListRoleItemComponent } from './pages/list-role-item/list-role-item.component';
 import { MainComponent } from './pages/main/main.component';
 import { MainHomeComponent } from './pages/main-home/main-home.component';
 import { CartComponent } from './pages/cart/cart.component';
@@ -26,6 +27,7 @@ export const routes: Routes = [
             { path: 'add-role', component: SaveRoleComponent },
             { path: 'edit-role/:id', component: SaveRoleComponent },
             { path: 'list-item', component: ListItemComponent },
+            { path: 'list-role-item', component: ListRoleItemComponent },
             { path: 'cart', component: CartComponent },
             { path: 'save-quote', component: SaveQuoteComponent },
             { path: 'save-user', component: SaveUserComponent },

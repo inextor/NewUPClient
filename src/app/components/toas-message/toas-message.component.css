@@ -1,0 +1,24 @@
+.toast-container {
+    position: fixed;
+    right: 20px;
+    z-index: 999999;
+    width: 300px;
+	bottom: 90px;
+}
+
+.toast {
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+.alert-success {
+    background-color: #28a745;
+}
+
+.alert-danger {
+    background-color: #dc3545;
+}

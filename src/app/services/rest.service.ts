@@ -32,13 +32,15 @@ export class RestService implements RestEndPoint{
 
 	public get bearer():string
 	{
-		if( this._bearer == '' )
+		if( !this._bearer )
 		{
 			let session = localStorage.getItem('session');
 			if( session )
 			{
 				let session_obj = JSON.parse(session);
-				if( 'bearer' in session_obj )
+				if( 'bearer_uuid' in session_obj )
+					this._bearer = session_obj.bearer_uuid;
+				else if( 'bearer' in session_obj )
 					this._bearer = session_obj.bearer;
 			}
 		}
