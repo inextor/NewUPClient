@@ -1,21 +1,28 @@
-<div class="container">
-    <h1>{{ user.id ? 'Agregar usuario' : 'Edit Usuario' }}</h1>
-    <form (ngSubmit)="saveUser()">
-        <div class="mb-3">
-            <label for="name" class="form-label">Name</label>
-            <input type="text" class="form-control" id="name" [(ngModel)]="user.name" name="name" required>
-        </div>
-        <div class="mb-3">
-            <label for="email" class="form-label">Nombre de usuario</label>
-            <input type="email" class="form-control" id="email" [(ngModel)]="user.username" name="email" required>
-        </div>
-        <div class="mb-3" *ngIf="user.id">
-            <label for="password" class="form-label">Password</label>
-            <input type="password" class="form-control" id="password" [(ngModel)]="user.password" name="password" required>
-        </div>
-        <button type="submit" class="btn btn-primary" [disabled]="is_loading">
-            <span *ngIf="is_loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-            {{ is_loading ? 'Guardando...' : 'Guardar' }}
-        </button>
+<div class="container mt-5">
+  <h2 class="app-page-title">{{ user.id ? 'Editar Usuario' : 'Agregar Usuario' }}</h2>
+
+  <div class="card bg-white p-3">
+    <form (ngSubmit)="save()" autocomplete="off">
+      <div class="mb-3">
+        <label for="name" class="form-label">Nombre</label>
+        <input type="text" class="form-control" id="name" [(ngModel)]="user.name" name="name" required autocomplete="off">
+      </div>
+      <div class="mb-3">
+        <label for="username" class="form-label">Nombre de Usuario</label>
+        <input type="text" class="form-control" id="username" [(ngModel)]="user.username" name="username" autocomplete="off">
+      </div>
+      <div class="mb-3">
+        <label for="code" class="form-label">Código</label>
+        <input type="text" class="form-control" id="code" [(ngModel)]="user.code" name="code" autocomplete="off">
+      </div>
+      <div class="mb-3">
+        <label for="password" class="form-label">Contraseña{{ user.id ? ' (dejar vacío para no cambiar)' : '' }}</label>
+        <input type="password" class="form-control" id="password" [(ngModel)]="user.password" name="password" autocomplete="new-password">
+      </div>
+      <button type="submit" class="btn btn-primary" [disabled]="is_loading">
+        <span *ngIf="is_loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        {{ is_loading ? 'Guardando...' : 'Guardar' }}
+      </button>
     </form>
+  </div>
 </div>
