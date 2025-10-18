@@ -204,7 +204,7 @@ export class ListRoleItemComponent extends BaseComponent implements OnInit {
 			updatedRoleItem.period_type = this.editPeriodType;
 			updatedRoleItem.period_quantity = this.editPeriodQuantity;
 
-			await this.rest_role_item.update(updatedRoleItem.id, updatedRoleItem);
+			await this.rest_role_item.update(updatedRoleItem);
 
 			// Update the local list
 			const index = this.added_role_list.findIndex(ri => ri.role_item.id === updatedRoleItem.id);
