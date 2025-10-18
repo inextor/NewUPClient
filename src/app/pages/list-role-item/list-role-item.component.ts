@@ -31,6 +31,7 @@ export class ListRoleItemComponent extends BaseComponent implements OnInit {
 	role_item_list: Role_Item[] = [];
 	role_list: Role[] = [];
 	item_id: number | null = null;
+	item_info: any = null;
 
 	added_role_list: CRoleItemInfo[] = [];
 
@@ -39,6 +40,13 @@ export class ListRoleItemComponent extends BaseComponent implements OnInit {
 	newQuota = 0;
 	newPeriodType: 'daily' | 'weekly' | 'monthly' | 'yearly' | 'unlimited' | 'Quota renewal period' = 'unlimited';
 	newPeriodQuantity = 0;
+
+	showEditModal = false;
+	editingRoleItem: CRoleItemInfo | null = null;
+	editRoleName = '';
+	editQuota = 0;
+	editPeriodType: 'daily' | 'weekly' | 'monthly' | 'yearly' | 'unlimited' | 'Quota renewal period' = 'unlimited';
+	editPeriodQuantity = 0;
 
 	ngOnInit(): void {
 		this.route.queryParamMap.subscribe((params:ParamMap) =>
@@ -61,7 +69,7 @@ export class ListRoleItemComponent extends BaseComponent implements OnInit {
 			])
 			.then(([item_info, role_item_response, role_response]) =>
 			{
-				item_info = item_info;
+				this.item_info = item_info;
 				this.role_item_list = role_item_response.data;
 				this.role_list = role_response.data;
 
@@ -162,6 +170,52 @@ export class ListRoleItemComponent extends BaseComponent implements OnInit {
 
 			this.rest.showSuccess('Rol agregado correctamente');
 			this.closeAddModal();
+		} catch(error) {
+			this.rest.showError(error);
+		}
+	}
+
+	openEditModal(crii: CRoleItemInfo): void {
+		this.editingRoleItem = crii;
+		this.editRoleName = crii.role.name;
+		this.editQuota = crii.role_item.quota;
+		this.editPeriodType = crii.role_item.period_type;
+		this.editPeriodQuantity = crii.role_item.period_quantity;
+		this.showEditModal = true;
+	}
+
+	closeEditModal(): void {
+		this.showEditModal = false;
+		this.editingRoleItem = null;
+		this.editRoleName = '';
+		this.editQuota = 0;
+		this.editPeriodType = 'unlimited';
+		this.editPeriodQuantity = 0;
+	}
+
+	async updateRoleItem(): Promise<void> {
+		if(!this.editingRoleItem) {
+			this.rest.showError('No role item selected for editing');
+			return;
+		}
+
+		try {
+			// Update the role_item with new values
+			const updatedRoleItem = {...this.editingRoleItem.role_item};
+			updatedRoleItem.quota = this.editQuota;
+			updatedRoleItem.period_type = this.editPeriodType;
+			updatedRoleItem.period_quantity = this.editPeriodQuantity;
+
+			const result = await this.rest_role_item.update(updatedRoleItem);
+
+			// Update the local list
+			const index = this.added_role_list.findIndex(crii => crii.role_item.id === this.editingRoleItem!.role_item.id);
+			if(index !== -1) {
+				this.added_role_list[index].role_item = result;
+			}
+
+			this.rest.showSuccess('Rol actualizado correctamente');
+			this.closeEditModal();
 		} catch(error) {
 			this.rest.showError(error);
 		}

@@ -26,6 +26,10 @@ export class SaveRoleComponent extends BaseComponent implements OnInit {
 			let p = id ? this.rest_role.get(id) : Promise.resolve(GetEmpty.role());
 			p.then((role) => {
 				this.role = role;
+				// Set ecommerce_id for new roles
+				if(!this.role.id) {
+					this.role.ecommerce_id = this.rest.ecommerce.id;
+				}
 			})
 			.catch((err) =>
 			{
@@ -34,9 +38,14 @@ export class SaveRoleComponent extends BaseComponent implements OnInit {
 		});
 	}
 
-	  save() {
-	    let promise = this.role.id ? this.rest_role.update(this.role) : this.rest_role.create(this.role);
-	    promise.then(() => {
-	      this.router.navigate(['/list-role']);
-	    });
-	  }}
+	save() {
+		let promise = this.role.id ? this.rest_role.update(this.role) : this.rest_role.create(this.role);
+		promise.then(() => {
+			this.rest.showSuccess('Rol guardado correctamente');
+			this.router.navigate(['/list-role']);
+		})
+		.catch((err) => {
+			this.rest.showError(err);
+		});
+	}
+}
