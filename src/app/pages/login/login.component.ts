@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -12,6 +12,8 @@ import { RestService } from '../../services/rest.service';
 	styleUrl: './login.component.css'
 })
 export class LoginComponent {
+	@ViewChild('helpModal') helpModal!: ElementRef<HTMLDialogElement>;
+
 	username = '';
 	password = '';
 
@@ -52,6 +54,19 @@ export class LoginComponent {
 			this.rest_service.showError(error);
 			// Here you would typically show an error message to the user.
 			throw error;
+		}
+	}
+
+	openHelpModal(event: Event) {
+		event.preventDefault();
+		if (this.helpModal) {
+			this.helpModal.nativeElement.showModal();
+		}
+	}
+
+	closeHelpModal() {
+		if (this.helpModal) {
+			this.helpModal.nativeElement.close();
 		}
 	}
 }

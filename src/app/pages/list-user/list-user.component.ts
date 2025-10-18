@@ -27,8 +27,9 @@ export class ListUserComponent extends BaseComponent implements OnInit {
 	ngOnInit(): void {
 		this.route.queryParamMap.subscribe((params:ParamMap) =>
 		{
-			search_object.assign( params );
-			this.rest_user.search( search_object.getUrlParams() )
+			this.search_object.assignNavigationParams( params );
+
+			this.rest_user.search( this.search_object )
 			.then((response:RestResponse<User>) =>
 			{
 				this.user_list = response.data;

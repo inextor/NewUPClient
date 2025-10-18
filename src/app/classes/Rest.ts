@@ -23,19 +23,21 @@ export class Rest<T,U>
 
 	search(p: URLSearchParams | SearchObject<T> | Object):Promise<RestResponse<U>>
 	{
-
-		let type = 'Object';
+		let params: URLSearchParams;
 
 		if( p instanceof URLSearchParams )
 		{
-			type = 'URLSearchParams';
+			params = p;
 		}
 		else if( p instanceof SearchObject )
 		{
-			type = 'SearchObject';
+			params = p.getBackendParams();
+		}
+		else
+		{
+			params = this.getUrlParams(p);
 		}
 
-		const params = p instanceof URLSearchParams ? p : this.getUrlParams(p);
 		const url = new URL(`${this.rest.base_url}/${this.path}`);
 		url.search = params.toString(); // Handles '?' and encoding
 
@@ -43,29 +45,6 @@ export class Rest<T,U>
 
 		return fetch(url, options )
 			.then(this.getJsonLambda())
-	}
-
-	search(so:Partial<SearchObject<U>> | ParamMap | null ):Promise<RestResponse<T>>
-	{
-		let search_object:Partial<SearchObject<U>> = this.getEmptySearch();
-
-		if( so !== null )
-		{
-			search_object = ('has' in so ) ?  this.getSearchObject( so as ParamMap ) : (so as Partial<SearchObject<U>>);
-		}
-
-		let params = this.getParamsFromSearch(search_object);
-		let url = `${this.domain_configuration.domain}/${this.url_base}`;
-		let options = {params,headers:this.getSessionHeaders(),withCredentials:true};
-
-		let options = { method: 'GET', headers: { 'Authorization': `Bearer ${this.rest.bearer}` } };
-
-		return this.http.get<RestResponse<T>>( url, options )
-		.pipe
-		(
-			retry(2),
-			mergeMap((r)=> of( Utils.convertToDate( r ) as RestResponse<T> ) )
-		);
 	}
 
 
