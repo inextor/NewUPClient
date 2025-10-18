@@ -1,34 +1,33 @@
 <div class="container mt-5">
-  <h2 class="app-page-title"> Listado de Roles de Usuario
-    <a routerlink="/add-role-user" class="btn btn-primary" style="float: right;" href="#/add-role-user">Agregar Rol de Usuario</a>
+  <h2 class="app-page-title"> Roles del Usuario @if(user) { {{ user.name }} (#{{ user.id }}) }
+    <button class="btn btn-primary" style="float: right;" (click)="openAddModal()">Agregar Rol</button>
   </h2>
+
   @if (role_user_list.length === 0) {
     <div class="alert alert-info">
-      No roles de usuario found.
+      No se encontraron roles para este usuario.
     </div>
   }
+
   @if (role_user_list.length > 0) {
     <div class="card bg-white p-3">
       <table class="table table-striped">
         <thead>
           <tr>
             <th>#</th>
-            <th>User ID</th>
-            <th>Role ID</th>
+            <th>Nombre del Rol</th>
             <th>Is Admin</th>
             <th class="text-end">Acciones</th>
           </tr>
         </thead>
         <tbody>
-          @for (role_user of role_user_list; track role_user.id) {
+          @for (crui of added_role_list; track crui.role_user.id) {
             <tr>
-              <th scope="row">{{ role_user.id }}</th>
-              <td>{{ role_user.user_id }}</td>
-              <td>{{ role_user.role_id }}</td>
-              <td>{{ role_user.is_admin }}</td>
+              <th scope="row">{{ crui.role.id }}</th>
+              <td>{{ crui.role.name }}</td>
+              <td>{{ crui.role_user.is_admin ? 'Sí' : 'No' }}</td>
               <td class="text-end">
-                <a class="btn btn-primary btn-sm" href="#/edit-role-user/{{ role_user.id }}">Editar</a>
-                <button class="btn btn-danger btn-sm ms-2">Eliminar</button>
+                <button class="btn btn-danger btn-sm" (click)="deleteRoleUser(crui)">Eliminar</button>
               </td>
             </tr>
           }
@@ -37,3 +36,43 @@
     </div>
   }
 </div>
+
+<!-- Add Role Modal -->
+@if (showAddModal) {
+  <div class="modal-backdrop" (click)="closeAddModal()"></div>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Agregar Rol al Usuario</h5>
+        <button type="button" class="btn-close" (click)="closeAddModal()"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label for="roleName" class="form-label">Nombre del Rol</label>
+          <input
+            type="text"
+            class="form-control"
+            id="roleName"
+            [(ngModel)]="newRoleName"
+            placeholder="Ingrese el nombre del rol"
+            (keyup.enter)="addRoleToUser()">
+          <div class="form-text">Si el rol no existe, se creará automáticamente.</div>
+        </div>
+        <div class="mb-3 form-check">
+          <input
+            type="checkbox"
+            class="form-check-input"
+            id="isAdmin"
+            [(ngModel)]="isAdmin">
+          <label class="form-check-label" for="isAdmin">
+            Es administrador
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeAddModal()">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="addRoleToUser()">Agregar</button>
+      </div>
+    </div>
+  </div>
+}
