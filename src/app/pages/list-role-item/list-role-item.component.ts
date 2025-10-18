@@ -45,6 +45,7 @@ export class ListRoleItemComponent extends BaseComponent implements OnInit {
 
 			let url_params = this.rest_role_item.getUrlParams( params );
 
+
 			// Store item_id if present
 			if(params.has('item_id')) {
 				this.item_id = parseInt(params.get('item_id')!);

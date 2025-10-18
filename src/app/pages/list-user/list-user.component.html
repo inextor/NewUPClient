@@ -2,6 +2,16 @@
   <h2 class="app-page-title"> Listado de Usuarios
     <a routerlink="/add-user" class="btn btn-primary" style="float: right;" href="#/add-user">Agregar Usuario</a>
   </h2>
+
+  <div class="mb-3">
+    <input
+      type="text"
+      class="form-control"
+      placeholder="Buscar usuarios..."
+      [(ngModel)]="searchTerm"
+      (input)="onSearch()">
+  </div>
+
   @if (user_list.length === 0) {
     <div class="alert alert-info">
       No users found.
