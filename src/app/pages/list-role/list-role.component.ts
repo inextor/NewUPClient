@@ -21,9 +21,10 @@ export class ListRoleComponent extends BaseComponent implements OnInit {
 
 	ngOnInit(): void {
 
-		this.getQueryParams().subscribe((params:ParamMap) =>
+		this.getParamsAndQueriesObservable()
+		.subscribe((response) =>
 		{
-			this.rest_role.search(url_params).then((response:RestResponse<Role>) =>
+			this.rest_role.search(response.query).then((response:RestResponse<Role>) =>
 			{
 				this.role_list = response.data;
 			})
