@@ -23,7 +23,8 @@
               <th scope="row">{{ role.id }}</th>
               <td>{{ role.name }}</td>
               <td class="text-end">
-                <a class="btn btn-primary btn-sm" [routerLink]="['/edit-role', role.id]">Editar</a>
+                <a class="btn btn-info btn-sm" [routerLink]="['/list-item-role']" [queryParams]="{role_id: role.id}">Artículos</a>
+                <a class="btn btn-primary btn-sm ms-2" href="/#/edit-role/{{ role.id }}">Editar</a>
                 <button class="btn btn-danger btn-sm ms-2">Eliminar</button>
               </td>
             </tr>
