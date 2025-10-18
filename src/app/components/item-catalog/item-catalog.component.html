@@ -1,0 +1,25 @@
+<div class="item-catalog">
+  <h2 class="app-page-title">{{ title }}</h2>
+
+  @if (items.length === 0) {
+    <div class="alert alert-info">
+      No hay artículos disponibles.
+    </div>
+  }
+
+  @if (items.length > 0) {
+    <div class="items-grid">
+      @for (ceii of items; track ceii.ecommerce_item.id) {
+        <div class="item-card">
+          <div class="item-image">
+            <img [src]="ceii.item_info.item.image_id | image" alt="{{ ceii.item_info.item.name }}">
+          </div>
+          <div class="item-info">
+            <div class="item-name">{{ ceii.item_info.item.name }}</div>
+            <div class="item-id text-muted">ID: {{ ceii.item_info.item.id }}</div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>
