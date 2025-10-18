@@ -1,0 +1,8 @@
+.menu-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 280px;
+  z-index: 1000;
+}

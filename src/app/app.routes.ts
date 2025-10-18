@@ -6,6 +6,7 @@ import { ListRoleComponent } from './pages/list-role/list-role.component';
 import { SaveRoleComponent } from './pages/save-role/save-role.component';
 import { ListItemComponent } from './pages/list-item/list-item.component';
 import { MainComponent } from './pages/main/main.component';
+import { MainHomeComponent } from './pages/main-home/main-home.component';
 import { CartComponent } from './pages/cart/cart.component';
 import { SaveQuoteComponent } from './pages/save-quote/save-quote.component';
 import { SaveUserComponent } from './pages/save-user/save-user.component';
@@ -18,7 +19,8 @@ export const routes: Routes = [
         component: MainComponent,
         canActivate: [authGuard],
         children: [
-            { path: '', redirectTo: 'list-user', pathMatch: 'full' },
+            { path: '', redirectTo: 'main-home', pathMatch: 'full' },
+            { path: 'main-home', component: MainHomeComponent },
             { path: 'list-user', component: ListUserComponent },
             { path: 'list-role', component: ListRoleComponent },
             { path: 'add-role', component: SaveRoleComponent },

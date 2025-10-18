@@ -22,3 +22,7 @@ This is a single-page application built with Angular (version 17+). It uses a mo
     - For external links, use the `externalAppBaseUrl` property from `RestService` to construct the URL dynamically.
 - **State Management:** Application state (like user and session data) is managed within the `RestService` and persisted to `localStorage`.
 - **Error Handling:** The `RestService` provides a centralized mechanism for displaying success and error messages to the user via a toast-like notification system.
+
+# Prohibitions
+
+- Never do `commit --amend ` of any type commands

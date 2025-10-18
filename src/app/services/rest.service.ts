@@ -22,6 +22,7 @@ export class RestService implements RestEndPoint{
 	public store: any = null;
 	private _bearer: string = '';
 	public ecommerce:Ecommerce = GetEmpty.ecommerce();
+	public is_menu_open: boolean = false;
 	public pos_rest:RestEndPoint = { base_url: 'https://uniformesprofesionales.integranet.xyz/api', bearer: '' };
 
 	public set bearer(bearer:string)
@@ -56,6 +57,41 @@ export class RestService implements RestEndPoint{
 		{
 			document.body.style.backgroundColor = '#ffffff';
 		});
+
+		this.loadEcommerceData();
+	}
+
+	toggleMenu():boolean {
+		return this.is_menu_open = !this.is_menu_open;
+	}
+
+	loadEcommerceData(): void
+	{
+		if (typeof localStorage !== 'undefined')
+		{
+			const ecommerceStr = localStorage.getItem('ecommerce');
+			if (ecommerceStr)
+			{
+				this.ecommerce = JSON.parse(ecommerceStr);
+			}
+			else
+			{
+				// Simulate fetching from backend
+				const hardcodedEcommerce: Ecommerce = {
+					id: 1,
+					name: 'My Ecommerce',
+					pos_id: 1,
+					pos_session_id: '1',
+					pos_main_user_id: 1,
+					color: '#333333',
+					banner_image_id: null,
+					font_color: '#FFFFFF',
+					logo_image_id: null
+				};
+				this.ecommerce = hardcodedEcommerce;
+				localStorage.setItem('ecommerce', JSON.stringify(hardcodedEcommerce));
+			}
+		}
 	}
 
 	getBaseUrl(): string
