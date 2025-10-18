@@ -40,6 +40,12 @@ export class ListRoleItemComponent extends BaseComponent implements OnInit {
 	newPeriodType: 'daily' | 'weekly' | 'monthly' | 'yearly' | 'unlimited' | 'Quota renewal period' = 'unlimited';
 	newPeriodQuantity = 0;
 
+	showEditModal = false;
+	editingRoleItem: CRoleItemInfo | null = null;
+	editQuota = 0;
+	editPeriodType: 'daily' | 'weekly' | 'monthly' | 'yearly' | 'unlimited' | 'Quota renewal period' = 'unlimited';
+	editPeriodQuantity = 0;
+
 	ngOnInit(): void {
 		this.route.queryParamMap.subscribe((params:ParamMap) =>
 		{
@@ -162,6 +168,49 @@ export class ListRoleItemComponent extends BaseComponent implements OnInit {
 
 			this.rest.showSuccess('Rol agregado correctamente');
 			this.closeAddModal();
+		} catch(error) {
+			this.rest.showError(error);
+		}
+	}
+
+	openEditModal(crii: CRoleItemInfo): void {
+		this.editingRoleItem = crii;
+		this.editQuota = crii.role_item.quota;
+		this.editPeriodType = crii.role_item.period_type;
+		this.editPeriodQuantity = crii.role_item.period_quantity;
+		this.showEditModal = true;
+	}
+
+	closeEditModal(): void {
+		this.showEditModal = false;
+		this.editingRoleItem = null;
+		this.editQuota = 0;
+		this.editPeriodType = 'unlimited';
+		this.editPeriodQuantity = 0;
+	}
+
+	async updateRoleItem(): Promise<void> {
+		if(!this.editingRoleItem) {
+			this.rest.showError('No role item selected for editing');
+			return;
+		}
+
+		try {
+			const updatedRoleItem = {...this.editingRoleItem.role_item};
+			updatedRoleItem.quota = this.editQuota;
+			updatedRoleItem.period_type = this.editPeriodType;
+			updatedRoleItem.period_quantity = this.editPeriodQuantity;
+
+			await this.rest_role_item.update(updatedRoleItem.id, updatedRoleItem);
+
+			// Update the local list
+			const index = this.added_role_list.findIndex(ri => ri.role_item.id === updatedRoleItem.id);
+			if(index !== -1) {
+				this.added_role_list[index].role_item = updatedRoleItem;
+			}
+
+			this.rest.showSuccess('Rol actualizado correctamente');
+			this.closeEditModal();
 		} catch(error) {
 			this.rest.showError(error);
 		}
