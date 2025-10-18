@@ -14,6 +14,7 @@ import { SaveQuoteComponent } from './pages/save-quote/save-quote.component';
 import { SaveUserComponent } from './pages/save-user/save-user.component';
 import { ImportUsersComponent } from './pages/import-users/import-users.component';
 import { SaveRoleItemComponent } from './pages/save-role-item/save-role-item.component';
+import { ListItemRoleComponent } from './pages/list-item-role/list-item-role.component';
 
 import { authGuard } from './guards/auth.guard';
 
@@ -33,6 +34,7 @@ export const routes: Routes = [
             { path: 'list-role-item', component: ListRoleItemComponent },
             { path: 'add-role-item', component: SaveRoleItemComponent },
             { path: 'edit-role-item', component: SaveRoleItemComponent },
+            { path: 'list-item-role', component: ListItemRoleComponent },
             { path: 'list-role-user', component: ListRoleUserComponent },
             { path: 'cart', component: CartComponent },
             { path: 'add-quote', component: SaveQuoteComponent },
