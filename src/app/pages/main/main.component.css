@@ -1,4 +1,9 @@
+.main-row {
+  height: 100vh;
+}
+
 .sidebar {
+  height: 100%;
   display: none;
 }
 

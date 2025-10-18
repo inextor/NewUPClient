@@ -19,8 +19,9 @@
         <tbody>
           @for (ceii of cecommerce_item_info; track ceii.ecommerce_item.id) {
             <tr>
-              <th scope="row">{{ ceii.item_info |json }}</th>
-              <td></td>
+              <td><img [src]="ceii.item_info.item.image_id | image" alt="" width="50"></td>
+              <td>{{ceii.item_info.item.name}}</td>
+              <td>{{ceii.item_info.item.id}}</td>
               <td class="text-end">
                 <a class="btn btn-primary btn-sm" href="#">Editar</a>
                 <a class="btn btn-info btn-sm ms-2" href="#">Roles</a>

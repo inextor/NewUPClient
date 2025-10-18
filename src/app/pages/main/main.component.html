@@ -1,23 +1,26 @@
 <!-- Header -->
 <app-header></app-header>
 <div class="container-fluid">
-	<div class="row">
+	<div class="row main-row">
 		<!-- Sidebar -->
-		<nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-light sidebar {{rest.is_menu_open?'open':'close'}}">
-			<div class="position-sticky pt-3">
-				<ul class="nav flex-column">
-					<li class="nav-item"><a class="nav-link" routerLink="/">Inicio</a></li>
-					<li class="nav-item"><a class="nav-link" routerLink="/cart">Carrito</a></li>
-					<li class="nav-item"><a class="nav-link" href="#">Ayuda</a></li>
-					<li class="nav-item"><a class="nav-link" routerLink="/save-quote">Solicitar Cotizacion</a></li>
-					<li class="nav-item"><a class="nav-link" routerLink="/list-item">Administrar Articulos</a></li>
-					<li class="nav-item"><a class="nav-link" routerLink="/list-user">Administrar Usuarios</a></li>
-					<li class="nav-item"><a class="nav-link" routerLink="/list-role">Administrar Roles</a></li>
-					<li class="nav-item"><a class="nav-link" href="#">Panel Informativo</a></li>
-					<li class="nav-item"><a class="nav-link" routerLink="/logout">Cerrar Sesion</a></li>
-				</ul>
-			</div>
-		</nav>
+		@if( rest.is_menu_open )
+		{
+			<nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-light sidebar {{rest.is_menu_open?'open':'close'}}">
+				<div class="position-sticky pt-3">
+					<ul class="nav flex-column">
+						<li class="nav-item"><a class="nav-link" routerLink="/">Inicio</a></li>
+						<li class="nav-item"><a class="nav-link" routerLink="/cart">Carrito</a></li>
+						<li class="nav-item"><a class="nav-link" href="#">Ayuda</a></li>
+						<li class="nav-item"><a class="nav-link" routerLink="/save-quote">Solicitar Cotizacion</a></li>
+						<li class="nav-item"><a class="nav-link" routerLink="/list-item">Administrar Articulos</a></li>
+						<li class="nav-item"><a class="nav-link" routerLink="/list-user">Administrar Usuarios</a></li>
+						<li class="nav-item"><a class="nav-link" routerLink="/list-role">Administrar Roles</a></li>
+						<li class="nav-item"><a class="nav-link" href="#">Panel Informativo</a></li>
+						<li class="nav-item"><a class="nav-link" routerLink="/logout">Cerrar Sesion</a></li>
+					</ul>
+				</div>
+			</nav>
+		}
 
 		<!-- Main Content -->
 		<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
