@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
-import { MenuService } from '../../services/menu.service';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { RestService } from '../../services/rest.service';
 
 @Component({
   selector: 'app-menu',
@@ -11,5 +11,5 @@ import { RouterModule } from '@angular/router';
   styleUrl: './menu.component.css'
 })
 export class MenuComponent {
-  menuService = inject(MenuService);
+  rest = inject(RestService);
 }

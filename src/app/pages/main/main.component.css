@@ -1,12 +1,5 @@
-.main-row {
-  height: 100vh;
-}
-
-.sidebar {
-  height: 100%;
-  display: none;
-}
-
-.sidebar.open {
-  display: block;
+.main-content {
+  padding: 20px;
+  margin-top: 60px;
+  min-height: calc(100vh - 60px);
 }

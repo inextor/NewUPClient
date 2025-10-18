@@ -15,10 +15,8 @@ export class Rest<T,U>
 
 	get(id:number|string):Promise<any>
 	{
-		let bearer = this.rest.bearer;
-
 		const url = `${this.rest.base_url}/${this.path}?id=${id}`;
-		let options = { method: 'GET', headers: { 'Authorization': `Bearer ${this.bearer}` } };
+		let options = { method: 'GET', headers: { 'Authorization': `Bearer ${this.rest.bearer}` } };
 		return fetch(url, options )
 			.then(this.getJsonLambda())
 	}
@@ -29,7 +27,7 @@ export class Rest<T,U>
 		const url = new URL(`${this.rest.base_url}/${this.path}`);
 		url.search = params.toString(); // Handles '?' and encoding
 
-		let options = { method: 'GET', headers: { 'Authorization': `Bearer ${this.bearer}` } };
+		let options = { method: 'GET', headers: { 'Authorization': `Bearer ${this.rest.bearer}` } };
 
 		return fetch(url, options )
 			.then(this.getJsonLambda())
@@ -172,7 +170,7 @@ export class Rest<T,U>
 		const url = `${this.rest.base_url}/${this.path}`;
 
 		let headers = {
-			'Authorization': `Bearer ${this.bearer}`,
+			'Authorization': `Bearer ${this.rest.bearer}`,
 			'Content-Type': 'application/json'
 		};
 
@@ -188,7 +186,7 @@ export class Rest<T,U>
 		const url = `${this.rest.base_url}/${this.path}`;
 
 		let headers = {
-			'Authorization': `Bearer ${this.bearer}`,
+			'Authorization': `Bearer ${this.rest.bearer}`,
 			'Content-Type': 'application/json'
 		};
 
@@ -203,7 +201,7 @@ export class Rest<T,U>
 	{
 		const url = `${this.rest.base_url}/${this.path}/${id}`;
 		let headers = {
-			'Authorization': `Bearer ${this.bearer}`,
+			'Authorization': `Bearer ${this.rest.bearer}`,
 			'Content-Type': 'application/json'
 		};
 
@@ -217,7 +215,7 @@ export class Rest<T,U>
 	postOne(data:any):Promise<any>
 	{
 		const url = `${this.rest.base_url}/${this.path}`;
-		let options = { method: 'POST', headers: { 'Authorization': `Bearer ${this.bearer}`, 'Content-Type': 'application/json' }, body: JSON.stringify(data) };
+		let options = { method: 'POST', headers: { 'Authorization': `Bearer ${this.rest.bearer}`, 'Content-Type': 'application/json' }, body: JSON.stringify(data) };
 		return fetch(url, options )
 			.then(this.getJsonLambda())
 	}

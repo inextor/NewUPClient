@@ -1,7 +1,13 @@
 .header-container {
-  padding: 1rem;
+  height: 60px;
+  padding: 0 1rem;
   display: flex;
   align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
 }
 
 h1 {

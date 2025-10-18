@@ -1,8 +1,39 @@
-.menu-container {
+.sidebar-menu {
   position: fixed;
-  top: 0;
+  top: 60px;
   left: 0;
+  bottom: 0;
+  width: 250px;
+  background-color: #f2f2f2;
+  color: #333;
+  z-index: 999;
+  overflow-y: auto;
+}
+
+.menu-content {
+  padding: 20px;
+}
+
+.menu-item {
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
+}
+
+.menu-item a {
+  color: #333 !important;
+  display: block;
+  width: 100%;
   height: 100%;
-  width: 280px;
-  z-index: 1000;
+  padding: 15px;
+  text-decoration: none;
+}
+
+.menu-item a:visited,
+.menu-item a:hover,
+.menu-item a:active {
+  color: #333 !important;
+}
+
+.menu-item:hover {
+  background-color: #e2e2e2;
 }
