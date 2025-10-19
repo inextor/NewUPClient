@@ -1,0 +1,11 @@
+export interface User_Order_Item {
+  id: number;
+  order_item_id: number;
+  user_id: number;
+  quantity: number;
+  notes: string | null;
+  created: string | Date;
+  updated: string | Date;
+}
+
+
