@@ -26,7 +26,7 @@ export class MainHomeComponent extends BaseComponent implements OnInit {
 	rest_role: Rest<Role, Role> = new Rest<Role, Role>(this.rest, 'role.php');
 	rest_item: Rest<any, any> = new Rest<any, any>(this.rest.pos_rest, 'item_info.php');
 	rest_ecommerce_item: Rest<Ecommerce_Item, Ecommerce_Item> = new Rest<Ecommerce_Item, Ecommerce_Item>(this.rest, 'ecommerce_item.php');
-	rest_role_item: Rest<any, any> = new Rest<any, any>(this.rest, 'role_item.php');
+	rest_role_ecommerce_item: Rest<any, any> = new Rest<any, any>(this.rest, 'role_ecommerce_item.php');
 
 	role_list: Role[] = [];
 	ecommerce_item_list: Ecommerce_Item[] = [];
@@ -44,19 +44,19 @@ export class MainHomeComponent extends BaseComponent implements OnInit {
 						this.role_list = [role];
 
 						// Fetch items for this role using role_item relationship
-						return this.rest_role_item.search({ role_id: role_id, limit: 999999 });
+						return this.rest_role_ecommerce_item.search({ role_id: role_id, limit: 999999 });
 					})
-					.then((role_item_response: any) => {
-						// Get item IDs from role_item
-						const item_ids = role_item_response.data.map((ri: any) => ri.item_id);
+					.then((role_ecommerce_item_response: any) => {
+						// Get ecommerce_item IDs from role_ecommerce_item
+						const ecommerce_item_ids = role_ecommerce_item_response.data.map((rei: any) => rei.ecommerce_item_id);
 
-						if (item_ids.length === 0) {
+						if (ecommerce_item_ids.length === 0) {
 							this.cecommerce_item_list = [];
 							return;
 						}
 
-						// Fetch ecommerce_items for these item_ids
-						return this.rest_ecommerce_item.search({ 'item_id,': item_ids, limit: 999999 });
+						// Fetch ecommerce_items for these ecommerce_item_ids
+						return this.rest_ecommerce_item.search({ 'id,': ecommerce_item_ids, limit: 999999 });
 					})
 					.then((ecommerce_item_response: any) => {
 						if (!ecommerce_item_response) return;

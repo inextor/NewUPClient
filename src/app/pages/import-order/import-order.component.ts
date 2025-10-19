@@ -8,7 +8,7 @@ import { User } from '../../models/RestModels/User';
 import { Order } from '../../models/RestModels/Order';
 import { Order_Item } from '../../models/RestModels/Order_Item';
 import { Role } from '../../models/RestModels/Role';
-import { Role_Item } from '../../models/RestModels/Role_Item';
+import { Role_Ecommerce_Item } from '../../models/RestModels/Role_Ecommerce_Item';
 import { Role_User } from '../../models/RestModels/Role_User';
 import { GetEmpty } from '../../models/GetEmpty';
 
@@ -46,7 +46,7 @@ export class ImportOrderComponent extends BaseComponent {
 	rest_order: Rest<Order, Order> = new Rest<Order, Order>(this.rest, 'order.php');
 	rest_order_item: Rest<Order_Item, Order_Item> = new Rest<Order_Item, Order_Item>(this.rest, 'order_item.php');
 	rest_role: Rest<Role, Role> = new Rest<Role, Role>(this.rest, 'role.php');
-	rest_role_item: Rest<Role_Item, Role_Item> = new Rest<Role_Item, Role_Item>(this.rest, 'role_item.php');
+	rest_role_ecommerce_item: Rest<Role_Ecommerce_Item, Role_Ecommerce_Item> = new Rest<Role_Ecommerce_Item, Role_Ecommerce_Item>(this.rest, 'role_ecommerce_item.php');
 	rest_role_user: Rest<Role_User, Role_User> = new Rest<Role_User, Role_User>(this.rest, 'role_user.php');
 
 	// File upload
@@ -425,21 +425,20 @@ export class ImportOrderComponent extends BaseComponent {
 				this.templateUsers = [];
 			}
 
-			// Load role items
-			const roleItemsResponse = await this.rest_role_item.search({
+			// Load role ecommerce items
+			const roleEcommerceItemsResponse = await this.rest_role_ecommerce_item.search({
 				role_id: this.selectedRoleId,
 				limit: 99999
 			});
-			const roleItems = roleItemsResponse.data;
+			const roleEcommerceItems = roleEcommerceItemsResponse.data;
 
-			// Get item IDs
-			const itemIds = roleItems.map(ri => ri.item_id);
+			// Get ecommerce item IDs
+			const ecommerceItemIds = roleEcommerceItems.map(rei => rei.ecommerce_item_id);
 
 			// Load ecommerce items
-			if (itemIds.length > 0) {
+			if (ecommerceItemIds.length > 0) {
 				const ecommerceItemsResponse = await this.rest_ecommerce_item.search({
-					'item_id,': itemIds,
-					ecommerce_id: this.rest.ecommerce.id,
+					'id,': ecommerceItemIds,
 					limit: 99999
 				});
 				this.templateItems = ecommerceItemsResponse.data;
