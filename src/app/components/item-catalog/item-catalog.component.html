@@ -10,7 +10,7 @@
   @if (items.length > 0) {
     <div class="items-grid">
       @for (ceii of items; track ceii.ecommerce_item.id) {
-        <div class="item-card">
+        <div class="item-card" (click)="navigateToProduct(ceii.item_info.item.id)">
           <div class="item-image">
             <img [src]="ceii.item_info.item.image_id | image" alt="{{ ceii.item_info.item.name }}">
           </div>

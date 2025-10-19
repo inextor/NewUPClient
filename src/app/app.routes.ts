@@ -15,6 +15,7 @@ import { SaveUserComponent } from './pages/save-user/save-user.component';
 import { ImportUsersComponent } from './pages/import-users/import-users.component';
 import { SaveRoleItemComponent } from './pages/save-role-item/save-role-item.component';
 import { ListItemRoleComponent } from './pages/list-item-role/list-item-role.component';
+import { ProductDetailComponent } from './pages/product-detail/product-detail.component';
 
 import { authGuard } from './guards/auth.guard';
 
@@ -26,6 +27,7 @@ export const routes: Routes = [
         children: [
             { path: '', redirectTo: 'main-home', pathMatch: 'full' },
             { path: 'main-home', component: MainHomeComponent },
+            { path: 'product-detail/:item_id', component: ProductDetailComponent },
             { path: 'list-user', component: ListUserComponent },
             { path: 'list-role', component: ListRoleComponent },
             { path: 'add-role', component: SaveRoleComponent },

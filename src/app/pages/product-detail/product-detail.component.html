@@ -1,0 +1,43 @@
+<div class="product-detail-container">
+	@if (product) {
+		<div class="product-card">
+			<div class="product-main-image">
+				<img [src]="mainImage || 'assets/placeholder-product.svg'" alt="Product Image">
+			</div>
+			<div class="product-info">
+				<h1 class="product-name">{{ product.item.name }}</h1>
+				<p class="product-category">{{ product.category?.name || 'N/A' }}</p>
+				<p class="product-description">{{ product.item.description || 'No description available.' }}</p>
+				<p class="product-price">{{ product.price?.price | currency }}</p>
+				<button class="btn btn-primary add-to-cart-button" (click)="addToCart(product.item.id)">
+					Añadir al carrito
+				</button>
+			</div>
+		</div>
+		<div class="row mt-3 justify-content-center">
+			@for(image of product.images; track image.id) {
+				<div class="col-2">
+					<img [src]="image.url" class="img-fluid thumbnail" [class.selected]="image.url === mainImage" (click)="setMainImage(image.url)" alt="Product Thumbnail">
+				</div>
+			}
+		</div>
+	} @else {
+		<div class="text-center">
+			<p>Cargando detalles del producto...</p>
+		</div>
+	}
+
+	@if (attachments && attachments.length > 0) {
+		<div class="attachments-section">
+			<h2>Archivos Adjuntos</h2>
+			<ul>
+				@for (attachment of attachments; track attachment.attachment_id) {
+					<li>
+						<a [href]="attachment.url" target="_blank">{{ attachment.title }}</a>
+						<p>{{ attachment.description }}</p>
+					</li>
+				}
+			</ul>
+		</div>
+	}
+</div>

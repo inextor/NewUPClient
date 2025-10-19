@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { ImagePipe } from '../../pipes/image.pipe';
 import { Ecommerce_Item } from '../../models/RestModels/Ecommerce_Item';
 
@@ -18,4 +19,10 @@ interface CEcommerceItemInfo {
 export class ItemCatalogComponent {
 	@Input() items: CEcommerceItemInfo[] = [];
 	@Input() title: string = 'Artículos';
+
+	constructor(private router: Router) {}
+
+	navigateToProduct(item_id: number): void {
+		this.router.navigate(['/product-detail', item_id]);
+	}
 }
