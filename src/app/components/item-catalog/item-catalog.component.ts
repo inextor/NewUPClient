@@ -22,7 +22,7 @@ export class ItemCatalogComponent {
 
 	constructor(private router: Router) {}
 
-	navigateToProduct(item_id: number): void {
-		this.router.navigate(['/product-detail', item_id]);
+	navigateToProduct(ecommerce_item_id: number): void {
+		this.router.navigate(['/product-detail', ecommerce_item_id]);
 	}
 }

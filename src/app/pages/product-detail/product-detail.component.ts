@@ -47,16 +47,16 @@ interface ProductInfo {
 	styleUrl: './product-detail.component.css'
 })
 export class ProductDetailComponent extends BaseComponent implements OnInit {
-	item_id: number | null = null;
+	ecommerce_item_id: number | null = null;
 	product: ProductInfo | null = null;
 	mainImage: string | undefined;
 	attachments: ProductAttachment[] = [];
 
 	ngOnInit(): void {
 		this.route.paramMap.subscribe(params => {
-			const id = params.get('item_id');
+			const id = params.get('ecommerce_item_id');
 			if (id) {
-				this.item_id = +id;
+				this.ecommerce_item_id = +id;
 				this.fetchProductDetails();
 			}
 		});
@@ -65,14 +65,14 @@ export class ProductDetailComponent extends BaseComponent implements OnInit {
 	fetchProductDetails(): void {
 		// TODO: Implement product fetch logic
 		// This will be implemented when we discuss functionality
-		console.log('Fetching product details for item_id:', this.item_id);
+		console.log('Fetching product details for ecommerce_item_id:', this.ecommerce_item_id);
 
 		// Placeholder for testing layout
-		if (this.item_id) {
+		if (this.ecommerce_item_id) {
 			// Example structure - replace with actual API call
 			this.product = {
 				item: {
-					id: this.item_id,
+					id: this.ecommerce_item_id,
 					name: 'Producto de Ejemplo',
 					description: 'Descripción del producto aquí...',
 					image_id: null
@@ -92,21 +92,21 @@ export class ProductDetailComponent extends BaseComponent implements OnInit {
 
 	fetchAttachments(): void {
 		// TODO: Implement attachments fetch logic
-		console.log('Fetching attachments for item_id:', this.item_id);
+		console.log('Fetching attachments for ecommerce_item_id:', this.ecommerce_item_id);
 	}
 
 	fetchProductImages(): void {
 		// TODO: Implement images fetch logic
-		console.log('Fetching images for item_id:', this.item_id);
+		console.log('Fetching images for ecommerce_item_id:', this.ecommerce_item_id);
 	}
 
 	setMainImage(image: string): void {
 		this.mainImage = image;
 	}
 
-	addToCart(item_id: number): void {
+	addToCart(ecommerce_item_id: number): void {
 		// TODO: Implement add to cart logic
-		console.log('Adding item to cart:', item_id);
+		console.log('Adding item to cart:', ecommerce_item_id);
 		this.rest.showSuccess('Producto agregado al carrito');
 	}
 }

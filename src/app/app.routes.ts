@@ -29,7 +29,7 @@ export const routes: Routes = [
         children: [
             { path: '', redirectTo: 'main-home', pathMatch: 'full' },
             { path: 'main-home', component: MainHomeComponent },
-            { path: 'product-detail/:item_id', component: ProductDetailComponent },
+            { path: 'product-detail/:ecommerce_item_id', component: ProductDetailComponent },
             { path: 'list-user', component: ListUserComponent },
             { path: 'list-role', component: ListRoleComponent },
             { path: 'add-role', component: SaveRoleComponent },
