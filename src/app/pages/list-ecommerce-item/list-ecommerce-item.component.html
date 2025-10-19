@@ -27,7 +27,7 @@
               <td>{{ceii.item_info.item.name}}</td>
               <td>{{ceii.item_info.item.id}}</td>
               <td class="text-end">
-                <a class="btn btn-primary btn-sm" href="#">Editar</a>
+                <a class="btn btn-primary btn-sm" [routerLink]="['/edit-ecommerce-item', ceii.ecommerce_item.id]">Editar</a>
                 <a class="btn btn-info btn-sm ms-2" [routerLink]="['/list-role-item']" [queryParams]="{item_id: ceii.item_info.item.id}">Roles</a>
                 <button class="btn btn-danger btn-sm ms-2">Eliminar</button>
               </td>

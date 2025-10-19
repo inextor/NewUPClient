@@ -4,7 +4,7 @@ import { LogoutComponent } from './pages/logout/logout.component';
 import { ListUserComponent } from './pages/list-user/list-user.component';
 import { ListRoleComponent } from './pages/list-role/list-role.component';
 import { SaveRoleComponent } from './pages/save-role/save-role.component';
-import { ListItemComponent } from './pages/list-item/list-item.component';
+import { ListEcommerceItemComponent } from './pages/list-ecommerce-item/list-ecommerce-item.component';
 import { ListRoleItemComponent } from './pages/list-role-item/list-role-item.component';
 import { ListRoleUserComponent } from './pages/list-role-user/list-role-user.component';
 import { MainComponent } from './pages/main/main.component';
@@ -16,6 +16,7 @@ import { ImportUsersComponent } from './pages/import-users/import-users.componen
 import { SaveRoleItemComponent } from './pages/save-role-item/save-role-item.component';
 import { ListItemRoleComponent } from './pages/list-item-role/list-item-role.component';
 import { ProductDetailComponent } from './pages/product-detail/product-detail.component';
+import { SaveEcommerceItemComponent } from './pages/save-ecommerce-item/save-ecommerce-item.component';
 
 import { authGuard } from './guards/auth.guard';
 
@@ -32,7 +33,8 @@ export const routes: Routes = [
             { path: 'list-role', component: ListRoleComponent },
             { path: 'add-role', component: SaveRoleComponent },
             { path: 'edit-role/:id', component: SaveRoleComponent },
-            { path: 'list-item', component: ListItemComponent },
+            { path: 'list-ecommerce-item', component: ListEcommerceItemComponent },
+            { path: 'edit-ecommerce-item/:id', component: SaveEcommerceItemComponent },
             { path: 'list-role-item', component: ListRoleItemComponent },
             { path: 'add-role-item', component: SaveRoleItemComponent },
             { path: 'edit-role-item', component: SaveRoleItemComponent },

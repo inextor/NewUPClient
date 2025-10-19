@@ -14,12 +14,12 @@ interface CEcommerceItemInfo {
 }
 
 @Component({
-	selector: 'app-list-item',
+	selector: 'app-list-ecommerce-item',
 	imports: [CommonModule, ImagePipe, RouterLink],
-	templateUrl: './list-item.component.html',
-	styleUrl: './list-item.component.css'
+	templateUrl: './list-ecommerce-item.component.html',
+	styleUrl: './list-ecommerce-item.component.css'
 })
-export class ListItemComponent extends BaseComponent implements OnInit {
+export class ListEcommerceItemComponent extends BaseComponent implements OnInit {
 
 	rest_item: Rest<any,any> = new Rest<any,any>(this.rest.pos_rest, 'item_info.php');
 	rest_ecommerce_item: Rest<Ecommerce_Item,Ecommerce_Item> = new Rest<Ecommerce_Item,Ecommerce_Item>(this.rest, 'ecommerce_item.php');
