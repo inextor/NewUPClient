@@ -1,0 +1,347 @@
+<div class="container mt-5">
+	<h2 class="app-page-title">Importar Orden desde Excel
+		<button class="btn btn-info" style="float: right;" (click)="openTemplateModal()">
+			Generar Plantilla de Excel
+		</button>
+	</h2>
+
+	<!-- File Upload -->
+	<div class="card bg-white p-3 mb-3">
+		<h5>1. Seleccionar Archivo Excel</h5>
+		<div class="mb-3">
+			<input type="file" class="form-control" accept=".xlsx,.xls" (change)="onFileSelected($event)">
+			<div class="form-text">
+				Formato: Primera columna "Codigo Empleado", segunda columna "Nombre", y del tercero en adelante los códigos de productos como encabezados
+			</div>
+		</div>
+		@if (selectedFile) {
+			<div class="alert alert-info">
+				Archivo seleccionado: <strong>{{ selectedFile.name }}</strong>
+			</div>
+		}
+	</div>
+
+	<!-- Summary Section -->
+	@if (importedRows.length > 0) {
+		<div class="card bg-white p-3 mb-3">
+			<h5>2. Resumen de Importación</h5>
+			<div class="row">
+				<div class="col-md-6">
+					<div class="alert alert-success">
+						<strong>Total de Usuarios:</strong> {{ totalUsers }}
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="alert alert-info">
+						<strong>Total de Productos Únicos:</strong> {{ productSummary.length }}
+					</div>
+				</div>
+			</div>
+
+			<!-- Product Summary -->
+			<h6 class="mt-3">Resumen por Producto</h6>
+			<table class="table table-sm table-striped">
+				<thead>
+					<tr>
+						<th>Código de Producto</th>
+						<th>Cantidad Total</th>
+						<th>Estado</th>
+					</tr>
+				</thead>
+				<tbody>
+					@for (product of productSummary; track product.code) {
+						<tr>
+							<td>{{ product.code }}</td>
+							<td>{{ product.totalQty }}</td>
+							<td>
+								@if (product.item_id) {
+									<span class="badge bg-success">Encontrado</span>
+								} @else {
+									<span class="badge bg-warning">No encontrado</span>
+								}
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+
+		<!-- Validation Section -->
+		<div class="card bg-white p-3 mb-3">
+			<h5>3. Validación</h5>
+
+			<div class="form-check mb-3">
+				<input
+					class="form-check-input"
+					type="checkbox"
+					id="createMissingUsers"
+					[(ngModel)]="createMissingUsers"
+					(change)="onCreateMissingUsersChange()">
+				<label class="form-check-label" for="createMissingUsers">
+					Crear usuarios faltantes automáticamente
+				</label>
+			</div>
+
+			<button class="btn btn-primary mb-3" (click)="validateData()">
+				Validar Datos
+			</button>
+
+			<!-- Validation Errors -->
+			@if (validationErrors.length > 0) {
+				<div class="alert alert-warning">
+					<h6>Errores de Validación:</h6>
+					<ul>
+						@for (error of validationErrors; track $index) {
+							<li>
+								@if (error.type === 'missing_user') {
+									Usuario no encontrado: <strong>{{ error.code }}</strong> ({{ error.name }})
+								}
+								@if (error.type === 'missing_product') {
+									Producto no encontrado: <strong>{{ error.code }}</strong>
+								}
+							</li>
+						}
+					</ul>
+				</div>
+			}
+
+			@if (isValidated && validationErrors.length === 0) {
+				<div class="alert alert-success">
+					✓ Todos los datos han sido validados correctamente
+				</div>
+			}
+		</div>
+
+		<!-- Raw Data Table -->
+		<div class="card bg-white p-3 mb-3">
+			<h5>4. Datos Importados</h5>
+			<div class="table-responsive">
+				<table class="table table-sm table-bordered">
+					<thead>
+						<tr>
+							<th>Codigo Empleado</th>
+							<th>Nombre</th>
+							@for (code of productCodes; track code) {
+								<th class="text-end">{{ code }}</th>
+							}
+						</tr>
+					</thead>
+					<tbody>
+						@for (row of importedRows; track row.codigo_empleado) {
+							<tr>
+								<td>{{ row.codigo_empleado }}</td>
+								<td>{{ row.nombre }}</td>
+								@for (code of productCodes; track code) {
+									<td class="text-end">
+										{{ row.quantities[code] || '' }}
+									</td>
+								}
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<!-- Order Structure Preview -->
+		@if (canSave && order) {
+			<div class="card bg-white p-3 mb-3">
+				<h5>5. Estructura de Orden Generada</h5>
+
+				<h6>Orden:</h6>
+				<div class="alert alert-secondary">
+					<strong>Ecommerce ID:</strong> {{ order.ecommerce_id }}<br>
+					<strong>Estado:</strong> {{ order.status }}<br>
+					<strong>Fecha:</strong> {{ order.order_date | date:'short' }}<br>
+					<strong>Notas:</strong> {{ order.notes }}
+				</div>
+
+				<h6>Items de la Orden ({{ orderItems.length }}):</h6>
+				<table class="table table-sm table-striped">
+					<thead>
+						<tr>
+							<th class="d-none d-md-table-cell">Item ID</th>
+							<th>Código</th>
+							<th class="d-none d-md-table-cell">Notas</th>
+							<th class="text-end">Cantidad</th>
+						</tr>
+					</thead>
+					<tbody>
+						@for (item of orderItems; track item.item_id) {
+							<tr>
+								<td class="d-none d-md-table-cell">{{ item.item_id }}</td>
+								<td>
+									@for (product of productSummary; track product.code) {
+										@if (product.item_id === item.item_id) {
+											{{ product.code }}
+										}
+									}
+									@if (item.notes) {
+										<br>
+										<a href="javascript:void(0)" class="d-md-none text-primary small" (click)="showNoteModal(item.notes)">Ver nota</a>
+									}
+								</td>
+								<td class="d-none d-md-table-cell">{{ item.notes }}</td>
+								<td class="text-end">{{ item.quantity }}</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+
+			<!-- Save Button -->
+			<div class="card bg-white p-3 mb-3">
+				<h5>6. Guardar Orden</h5>
+				<button
+					class="btn btn-success btn-lg"
+					[disabled]="!canSave"
+					(click)="saveOrder()">
+					Guardar Orden
+				</button>
+				<div class="form-text mt-2">
+					Nota: La funcionalidad de guardado está pendiente de implementación
+				</div>
+			</div>
+		}
+	}
+</div>
+
+<!-- Template Generation Modal -->
+@if (showTemplateModal) {
+	<div class="modal-backdrop" (click)="closeTemplateModal()"></div>
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Generar Plantilla de Excel</h5>
+				<button type="button" class="btn-close" (click)="closeTemplateModal()"></button>
+			</div>
+			<div class="modal-body">
+				<div class="mb-3">
+					<label for="roleSelect" class="form-label">Seleccionar Rol</label>
+					<select
+						class="form-control"
+						id="roleSelect"
+						[(ngModel)]="selectedRoleId"
+						(change)="onRoleSelected()">
+						<option [value]="null">-- Seleccione un rol --</option>
+						@for (role of roleList; track role.id) {
+							<option [value]="role.id">{{ role.name }}</option>
+						}
+					</select>
+					<div class="form-text">
+						Se cargarán los usuarios e items asignados a este rol
+					</div>
+				</div>
+
+				@if (isLoadingTemplate) {
+					<div class="alert alert-info">
+						Cargando datos del rol...
+					</div>
+				}
+
+				@if (selectedRoleId && !isLoadingTemplate) {
+					<!-- Users Preview -->
+					<div class="mb-3">
+						<h6>Usuarios ({{ templateUsers.length }})</h6>
+						@if (templateUsers.length > 0) {
+							<div class="table-responsive" style="max-height: 200px; overflow-y: auto;">
+								<table class="table table-sm table-striped">
+									<thead>
+										<tr>
+											<th>Código</th>
+											<th>Nombre</th>
+										</tr>
+									</thead>
+									<tbody>
+										@for (user of templateUsers; track user.id) {
+											<tr>
+												<td>{{ user.code }}</td>
+												<td>{{ user.name }}</td>
+											</tr>
+										}
+									</tbody>
+								</table>
+							</div>
+						} @else {
+							<div class="alert alert-info">
+								No hay usuarios asignados a este rol. Se generará una fila vacía de ejemplo.
+							</div>
+						}
+					</div>
+
+					<!-- Items Preview -->
+					<div class="mb-3">
+						<h6>Items ({{ templateItems.length }})</h6>
+						@if (templateItems.length > 0) {
+							<div class="table-responsive" style="max-height: 200px; overflow-y: auto;">
+								<table class="table table-sm table-striped">
+									<thead>
+										<tr>
+											<th>Código</th>
+											<th>Nombre</th>
+										</tr>
+									</thead>
+									<tbody>
+										@for (item of templateItems; track item.item.id) {
+											<tr>
+												<td>{{ item.item.code }}</td>
+												<td>{{ item.item.name }}</td>
+											</tr>
+										}
+									</tbody>
+								</table>
+							</div>
+						} @else {
+							<div class="alert alert-warning">
+								No hay items asignados a este rol
+							</div>
+						}
+					</div>
+
+					<!-- Template Preview -->
+					@if (templateItems.length > 0) {
+						<div class="alert alert-success">
+							La plantilla contendrá:<br>
+							@if (templateUsers.length > 0) {
+								- <strong>{{ templateUsers.length }}</strong> filas de usuarios<br>
+							} @else {
+								- <strong>1</strong> fila vacía de ejemplo (agregue sus usuarios manualmente)<br>
+							}
+							- <strong>{{ templateItems.length }}</strong> columnas de productos<br>
+							- Las cantidades estarán vacías para que las complete manualmente
+						</div>
+					}
+				}
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" (click)="closeTemplateModal()">Cancelar</button>
+				<button
+					type="button"
+					class="btn btn-primary"
+					[disabled]="!selectedRoleId || templateItems.length === 0 || isLoadingTemplate"
+					(click)="generateTemplate()">
+					Generar Excel
+				</button>
+			</div>
+		</div>
+	</div>
+}
+
+<!-- Note Modal -->
+@if (showNoteModalFlag) {
+	<div class="modal-backdrop" (click)="closeNoteModal()"></div>
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Nota</h5>
+				<button type="button" class="btn-close" (click)="closeNoteModal()"></button>
+			</div>
+			<div class="modal-body">
+				<p>{{ currentNote }}</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" (click)="closeNoteModal()">Cerrar</button>
+			</div>
+		</div>
+	</div>
+}

@@ -16,6 +16,7 @@ import { ImportUsersComponent } from './pages/import-users/import-users.componen
 import { SaveRoleItemComponent } from './pages/save-role-item/save-role-item.component';
 import { ListItemRoleComponent } from './pages/list-item-role/list-item-role.component';
 import { ProductDetailComponent } from './pages/product-detail/product-detail.component';
+import { ImportOrderComponent } from './pages/import-order/import-order.component';
 
 import { authGuard } from './guards/auth.guard';
 
@@ -44,6 +45,7 @@ export const routes: Routes = [
             { path: 'add-user', component: SaveUserComponent },
             { path: 'edit-user', component: SaveUserComponent },
             { path: 'import-users', component: ImportUsersComponent },
+            { path: 'import-order', component: ImportOrderComponent },
         ]
     },
     {
