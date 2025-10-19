@@ -59,7 +59,13 @@
 						class="form-control"
 						id="roleName"
 						[(ngModel)]="newRoleName"
+						list="roleList"
 						placeholder="Ingrese el nombre del rol">
+					<datalist id="roleList">
+						@for (role of role_list; track role.id) {
+							<option [value]="role.name">{{ role.name }}</option>
+						}
+					</datalist>
 					<div class="form-text">Si el rol no existe, se creará automáticamente.</div>
 				</div>
 
