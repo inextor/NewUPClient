@@ -22,6 +22,7 @@ interface ProductSummary {
 	code: string;
 	totalQty: number;
 	item_id?: number;
+	ecommerce_item_id?: number;
 	item?: any;
 }
 
@@ -282,6 +283,7 @@ export class ImportOrderComponent extends BaseComponent {
 				const ecomItem = existingItemMap.get(summary.code);
 				if (ecomItem) {
 					summary.item_id = ecomItem.item_id;
+					summary.ecommerce_item_id = ecomItem.id; // Store ecommerce_item.id
 					summary.item = ecomItem.item || ecomItem;
 				}
 			}
@@ -343,10 +345,10 @@ export class ImportOrderComponent extends BaseComponent {
 
 		// Create order items from product summary
 		this.orderItems = this.productSummary
-			.filter(p => p.item_id) // Only products that exist
+			.filter(p => p.ecommerce_item_id) // Only products that exist
 			.map(p => {
 				const orderItem = GetEmpty.order_item();
-				orderItem.item_id = p.item_id!;
+				orderItem.ecommerce_item_id = p.ecommerce_item_id!;
 				orderItem.quantity = p.totalQty;
 				orderItem.unit_price = null; // Will be set later if needed
 				orderItem.notes = `Code: ${p.code}`;

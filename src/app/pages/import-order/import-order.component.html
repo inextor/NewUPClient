@@ -167,12 +167,12 @@
 						</tr>
 					</thead>
 					<tbody>
-						@for (item of orderItems; track item.item_id) {
+						@for (item of orderItems; track item.ecommerce_item_id) {
 							<tr>
-								<td class="d-none d-md-table-cell">{{ item.item_id }}</td>
+								<td class="d-none d-md-table-cell">{{ item.ecommerce_item_id }}</td>
 								<td>
 									@for (product of productSummary; track product.code) {
-										@if (product.item_id === item.item_id) {
+										@if (product.ecommerce_item_id === item.ecommerce_item_id) {
 											{{ product.code }}
 										}
 									}
