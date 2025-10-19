@@ -46,6 +46,7 @@ export const routes: Routes = [
             { path: 'add-user', component: SaveUserComponent },
             { path: 'edit-user', component: SaveUserComponent },
             { path: 'import-users', component: ImportUsersComponent },
+            { path: 'import-order', component: ImportOrderComponent },
         ]
     },
     {

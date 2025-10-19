@@ -62,7 +62,7 @@ function array2xlsx(array,filename,headers)
 {
 	let ws = XLSX.utils.json_to_sheet(array, {header: headers });
 	let wb = XLSX.utils.book_new();
-	XLSX.utils.book_append_sheet(wb, ws, filename );
+	XLSX.utils.book_append_sheet(wb, ws, 'Sheet1' );
 	let x = XLSX.writeFile( wb, filename );
 	console.log( x );
 }
