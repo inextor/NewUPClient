@@ -1,5 +1,8 @@
 import { account } from './Empties/Account';
 import { ecommerce } from './Empties/Ecommerce';
+import { ecommerce_item } from './Empties/Ecommerce_Item';
+import { order } from './Empties/Order';
+import { order_item } from './Empties/Order_Item';
 import { pos_order } from './Empties/Pos_Order';
 import { role } from './Empties/Role';
 import { role_item } from './Empties/Role_Item';
@@ -12,6 +15,9 @@ import { user_item } from './Empties/User_Item';
 
 import { Account } from './RestModels/Account';
 import { Ecommerce } from './RestModels/Ecommerce';
+import { Ecommerce_Item } from './RestModels/Ecommerce_Item';
+import { Order } from './RestModels/Order';
+import { Order_Item } from './RestModels/Order_Item';
 import { Pos_Order } from './RestModels/Pos_Order';
 import { Role } from './RestModels/Role';
 import { Role_Item } from './RestModels/Role_Item';
@@ -29,6 +35,18 @@ export class GetEmpty {
 
     static ecommerce(): Ecommerce {
         return ecommerce();
+    }
+
+    static ecommerce_item(): Ecommerce_Item {
+        return ecommerce_item();
+    }
+
+    static order(): Order {
+        return order();
+    }
+
+    static order_item(): Order_Item {
+        return order_item();
     }
 
     static pos_order(): Pos_Order {
