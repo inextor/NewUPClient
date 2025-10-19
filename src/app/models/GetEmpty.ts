@@ -12,6 +12,7 @@ import { transaction } from './Empties/Transaction';
 import { user } from './Empties/User';
 import { user_credentials } from './Empties/User_Credentials';
 import { user_item } from './Empties/User_Item';
+import { user_order_item } from './Empties/User_Order_Item';
 
 import { Account } from './RestModels/Account';
 import { Ecommerce } from './RestModels/Ecommerce';
@@ -27,6 +28,7 @@ import { Transaction } from './RestModels/Transaction';
 import { User } from './RestModels/User';
 import { User_Credentials } from './RestModels/User_Credentials';
 import { User_Item } from './RestModels/User_Item';
+import { User_Order_Item } from './RestModels/User_Order_Item';
 
 export class GetEmpty {
     static account(): Account {
@@ -83,5 +85,9 @@ export class GetEmpty {
 
     static user_item(): User_Item {
         return user_item();
+    }
+
+    static user_order_item(): User_Order_Item {
+        return user_order_item();
     }
 }
