@@ -271,8 +271,8 @@
 
 					<!-- Items Preview -->
 					<div class="mb-3">
-						<h6>Items ({{ templateItems.length }})</h6>
-						@if (templateItems.length > 0) {
+						<h6>Items ({{ templateEcommerceItems.length }})</h6>
+						@if (templateEcommerceItems.length > 0) {
 							<div class="table-responsive" style="max-height: 200px; overflow-y: auto;">
 								<table class="table table-sm table-striped">
 									<thead>
@@ -282,10 +282,10 @@
 										</tr>
 									</thead>
 									<tbody>
-										@for (item of templateItems; track item.id) {
+										@for (ecommerceItem of templateEcommerceItems; track ecommerceItem.id) {
 											<tr>
-												<td>{{ item.code }}</td>
-												<td>{{ item.name }}</td>
+												<td>{{ ecommerceItem.code }}</td>
+												<td>{{ ecommerceItem.name }}</td>
 											</tr>
 										}
 									</tbody>
@@ -299,7 +299,7 @@
 					</div>
 
 					<!-- Template Preview -->
-					@if (templateItems.length > 0) {
+					@if (templateEcommerceItems.length > 0) {
 						<div class="alert alert-success">
 							La plantilla contendrá:<br>
 							@if (templateUsers.length > 0) {
@@ -307,7 +307,7 @@
 							} @else {
 								- <strong>1</strong> fila vacía de ejemplo (agregue sus usuarios manualmente)<br>
 							}
-							- <strong>{{ templateItems.length }}</strong> columnas de productos<br>
+							- <strong>{{ templateEcommerceItems.length }}</strong> columnas de productos<br>
 							- Las cantidades estarán vacías para que las complete manualmente
 						</div>
 					}
@@ -318,7 +318,7 @@
 				<button
 					type="button"
 					class="btn btn-primary"
-					[disabled]="!selectedRoleId || templateItems.length === 0 || isLoadingTemplate"
+					[disabled]="!selectedRoleId || templateEcommerceItems.length === 0 || isLoadingTemplate"
 					(click)="generateTemplate()">
 					Generar Excel
 				</button>

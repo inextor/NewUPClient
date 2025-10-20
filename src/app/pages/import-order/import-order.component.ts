@@ -23,7 +23,7 @@ interface ProductSummary {
 	totalQty: number;
 	item_id?: number;
 	ecommerce_item_id?: number;
-	item?: any;
+	ecommerce_item?: any;
 }
 
 interface ValidationError {
@@ -76,7 +76,7 @@ export class ImportOrderComponent extends BaseComponent {
 	roleList: Role[] = [];
 	selectedRoleId: number | null = null;
 	templateUsers: User[] = [];
-	templateItems: any[] = [];
+	templateEcommerceItems: any[] = [];
 	isLoadingTemplate: boolean = false;
 
 	// Note modal
@@ -284,7 +284,7 @@ export class ImportOrderComponent extends BaseComponent {
 				if (ecomItem) {
 					summary.item_id = ecomItem.item_id;
 					summary.ecommerce_item_id = ecomItem.id; // Store ecommerce_item.id
-					summary.item = ecomItem;
+					summary.ecommerce_item = ecomItem;
 				}
 			}
 
@@ -376,7 +376,7 @@ export class ImportOrderComponent extends BaseComponent {
 		this.showTemplateModal = true;
 		this.selectedRoleId = null;
 		this.templateUsers = [];
-		this.templateItems = [];
+		this.templateEcommerceItems = [];
 
 		try {
 			// Load roles
@@ -391,13 +391,13 @@ export class ImportOrderComponent extends BaseComponent {
 		this.showTemplateModal = false;
 		this.selectedRoleId = null;
 		this.templateUsers = [];
-		this.templateItems = [];
+		this.templateEcommerceItems = [];
 	}
 
 	async onRoleSelected(): Promise<void> {
 		if (!this.selectedRoleId) {
 			this.templateUsers = [];
-			this.templateItems = [];
+			this.templateEcommerceItems = [];
 			return;
 		}
 
@@ -441,12 +441,12 @@ export class ImportOrderComponent extends BaseComponent {
 					'id,': ecommerceItemIds,
 					limit: 99999
 				});
-				this.templateItems = ecommerceItemsResponse.data;
+				this.templateEcommerceItems = ecommerceItemsResponse.data;
 			} else {
-				this.templateItems = [];
+				this.templateEcommerceItems = [];
 			}
 
-			this.rest.showSuccess(`Cargados ${this.templateUsers.length} usuarios y ${this.templateItems.length} items`);
+			this.rest.showSuccess(`Cargados ${this.templateUsers.length} usuarios y ${this.templateEcommerceItems.length} items`);
 
 		} catch (error) {
 			this.rest.showError(error);
@@ -456,7 +456,7 @@ export class ImportOrderComponent extends BaseComponent {
 	}
 
 	generateTemplate(): void {
-		if (!this.selectedRoleId || this.templateItems.length === 0) {
+		if (!this.selectedRoleId || this.templateEcommerceItems.length === 0) {
 			this.rest.showError('Debe seleccionar un rol con al menos un item');
 			return;
 		}
@@ -465,7 +465,7 @@ export class ImportOrderComponent extends BaseComponent {
 		const headers = [
 			'Codigo Empleado',
 			'Nombre',
-			...this.templateItems.map(item => item.code || `#${item.item_id}`)
+			...this.templateEcommerceItems.map(ecommerceItem => ecommerceItem.code || `#${ecommerceItem.item_id}`)
 		];
 
 		// Create array of objects (not 2D array)
@@ -477,8 +477,8 @@ export class ImportOrderComponent extends BaseComponent {
 					'Nombre': user.name
 				};
 				// Add empty quantities for each item
-				this.templateItems.forEach(item => {
-					const itemKey = item.code || `#${item.item_id}`;
+				this.templateEcommerceItems.forEach(ecommerceItem => {
+					const itemKey = ecommerceItem.code || `#${ecommerceItem.item_id}`;
 					row[itemKey] = '';
 				});
 				return row;
@@ -489,8 +489,8 @@ export class ImportOrderComponent extends BaseComponent {
 				'Codigo Empleado': '',
 				'Nombre': ''
 			};
-			this.templateItems.forEach(item => {
-				const itemKey = item.code || `#${item.item_id}`;
+			this.templateEcommerceItems.forEach(ecommerceItem => {
+				const itemKey = ecommerceItem.code || `#${ecommerceItem.item_id}`;
 				row[itemKey] = '';
 			});
 			excelData = [row];
