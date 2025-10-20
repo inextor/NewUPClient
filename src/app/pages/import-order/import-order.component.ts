@@ -11,6 +11,7 @@ import { Role } from '../../models/RestModels/Role';
 import { Role_Ecommerce_Item } from '../../models/RestModels/Role_Ecommerce_Item';
 import { Role_User } from '../../models/RestModels/Role_User';
 import { GetEmpty } from '../../models/GetEmpty';
+import { Order_Info } from '../../models/InfoModels/Order_Info';
 
 interface ImportedRow {
 	codigo_empleado: string;
@@ -454,13 +455,19 @@ export class ImportOrderComponent extends BaseComponent {
 				};
 			});
 
-			const payload = {
+			const payload: Order_Info = {
 				order: {
+					id: 0,
 					ecommerce_id: this.order.ecommerce_id,
+					order_number: null,
 					status: this.order.status,
+					pos_order_id: null,
+					pos_order_json: null,
 					order_date: this.order.order_date,
 					notes: this.order.notes,
-					created_by_user_id: this.order.created_by_user_id
+					created_by_user_id: this.order.created_by_user_id,
+					created: new Date(),
+					updated: new Date()
 				},
 				order_items_info: order_items_info
 			};
@@ -478,10 +485,10 @@ export class ImportOrderComponent extends BaseComponent {
 			// Call backend endpoint
 			// NOTE: You'll need to create a specific endpoint for this,
 			// or add an 'action' parameter to your order.php endpoint
-			const rest_order_import = new Rest<any, any>(this.rest, 'order_import.php');
+			const rest_order_import = new Rest<Order_Info, Order_Info>(this.rest, 'order_import.php');
 			const result = await rest_order_import.create(payload);
 
-			this.rest.showSuccess(`Orden #${result.id} creada exitosamente con ${this.orderItems.length} items`);
+			this.rest.showSuccess(`Orden #${result.order.id} creada exitosamente con ${this.orderItems.length} items`);
 
 			// Optionally: reset form or navigate away
 			// this.router.navigate(['/list-order']);
