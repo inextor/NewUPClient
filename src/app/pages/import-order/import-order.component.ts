@@ -362,13 +362,133 @@ export class ImportOrderComponent extends BaseComponent {
 			return;
 		}
 
-		// TODO: Implement save logic when ready
-		// This will create users, order, and order items
+		try {
+			// Step 1: Create missing users first
+			const userMap = new Map<string, number>(); // Maps user_code -> user_id
 
-		this.rest.showSuccess('Función de guardado pendiente de implementación');
-		console.log('Order:', this.order);
-		console.log('Order Items:', this.orderItems);
-		console.log('Imported Rows:', this.importedRows);
+			if (this.createMissingUsers) {
+				const missingUsers = this.validationErrors.filter(e => e.type === 'missing_user');
+
+				for (const error of missingUsers) {
+					// Create the user
+					const newUser = GetEmpty.user();
+					newUser.code = error.code.startsWith('#') ? null : error.code;
+					newUser.name = error.name || error.code;
+					newUser.ecommerce_id = this.rest.ecommerce.id;
+
+					const createdUser = await this.rest_user.create(newUser);
+					userMap.set(error.code, createdUser.id);
+
+					this.rest.showSuccess(`Usuario creado: ${error.name}`);
+				}
+			}
+
+			// Step 2: Get existing user IDs
+			const userCodes: string[] = [];
+			const userIds: number[] = [];
+
+			for (const row of this.importedRows) {
+				const code = row.codigo_empleado;
+				if (!userMap.has(code)) { // Only if not already created
+					if (code.startsWith('#')) {
+						const id = parseInt(code.substring(1));
+						if (!isNaN(id)) {
+							userIds.push(id);
+						}
+					} else {
+						userCodes.push(code);
+					}
+				}
+			}
+
+			// Fetch existing users
+			let existingUsers: User[] = [];
+			if (userCodes.length > 0) {
+				const usersResponse = await this.rest_user.search({ 'code,': userCodes, limit: 99999 });
+				existingUsers = [...existingUsers, ...usersResponse.data];
+			}
+			if (userIds.length > 0) {
+				const usersResponse = await this.rest_user.search({ 'id,': userIds, limit: 99999 });
+				existingUsers = [...existingUsers, ...usersResponse.data];
+			}
+
+			// Add existing users to map
+			for (const user of existingUsers) {
+				if (user.code) {
+					userMap.set(user.code, user.id);
+				}
+				userMap.set(`#${user.id}`, user.id);
+			}
+
+			// Step 3: Build the payload for the backend following compound object convention
+			const order_items_info = this.orderItems.map(orderItem => {
+				// Find which users get this item
+				const productCode = this.productSummary.find(
+					p => p.ecommerce_item_id === orderItem.ecommerce_item_id
+				)?.code;
+
+				const user_order_items = this.importedRows
+					.filter(row => productCode && row.quantities[productCode] > 0)
+					.map(row => {
+						const user_id = userMap.get(row.codigo_empleado);
+						if (!user_id) {
+							throw new Error(`User ID not found for code: ${row.codigo_empleado}`);
+						}
+						return {
+							user_id: user_id,
+							order_item_id: 0, // Will be set by backend after creating order_item
+							qty: row.quantities[productCode!],
+							notes: null
+						};
+					});
+
+				return {
+					order_item: {
+						order_id: 0, // Will be set by backend after creating order
+						ecommerce_item_id: orderItem.ecommerce_item_id,
+						qty: orderItem.qty,
+						unit_price: orderItem.unit_price,
+						notes: orderItem.notes
+					},
+					user_order_items: user_order_items
+				};
+			});
+
+			const payload = {
+				order: {
+					ecommerce_id: this.order.ecommerce_id,
+					status: this.order.status,
+					order_date: this.order.order_date,
+					notes: this.order.notes,
+					created_by_user_id: this.order.created_by_user_id
+				},
+				order_items_info: order_items_info
+			};
+
+			// Save payload to file for review
+			console.log('Payload to be sent:', JSON.stringify(payload, null, 2));
+			const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+			const url = window.URL.createObjectURL(blob);
+			const a = document.createElement('a');
+			a.href = url;
+			a.download = 'payload.json';
+			a.click();
+			window.URL.revokeObjectURL(url);
+
+			// Call backend endpoint
+			// NOTE: You'll need to create a specific endpoint for this,
+			// or add an 'action' parameter to your order.php endpoint
+			const rest_order_import = new Rest<any, any>(this.rest, 'order_import.php');
+			const result = await rest_order_import.create(payload);
+
+			this.rest.showSuccess(`Orden #${result.id} creada exitosamente con ${this.orderItems.length} items`);
+
+			// Optionally: reset form or navigate away
+			// this.router.navigate(['/list-order']);
+
+		} catch (error) {
+			this.rest.showError(error);
+		}
 	}
 
 	// Template generation methods
