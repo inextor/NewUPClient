@@ -20,6 +20,9 @@ import { SaveEcommerceItemComponent } from './pages/save-ecommerce-item/save-eco
 import { ImportOrderComponent } from './pages/import-order/import-order.component';
 import { ListOrderComponent } from './pages/list-order/list-order.component';
 import { ViewOrderComponent } from './pages/view-order/view-order.component';
+import { ListCategoryComponent } from './pages/list-category/list-category.component';
+import { DeliverItemsByUserComponent } from './pages/deliver-items-by-user/deliver-items-by-user.component';
+import { DeliverItemsByOrderComponent } from './pages/deliver-items-by-order/deliver-items-by-order.component';
 
 import { authGuard } from './guards/auth.guard';
 
@@ -52,6 +55,9 @@ export const routes: Routes = [
             { path: 'import-order', component: ImportOrderComponent },
             { path: 'view-order/:id', component: ViewOrderComponent },
             { path: 'list-order', component: ListOrderComponent },
+            { path: 'list-category', component: ListCategoryComponent },
+            { path: 'deliver-items-by-user', component: DeliverItemsByUserComponent },
+            { path: 'deliver-items-by-order', component: DeliverItemsByOrderComponent },
         ]
     },
     {

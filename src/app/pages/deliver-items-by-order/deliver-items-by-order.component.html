@@ -1,0 +1,117 @@
+<div class="container-fluid py-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Entregar Items por Orden</h2>
+        <button class="btn btn-secondary" routerLink="/">Volver</button>
+      </div>
+
+      <!-- Search -->
+      <div class="card mb-3">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <label class="form-label">Buscar Orden</label>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Buscar por número de orden o ID..."
+                [(ngModel)]="searchTerm">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loading spinner -->
+      <div *ngIf="isLoading && orders_with_pending.length === 0" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Cargando...</span>
+        </div>
+        <p class="mt-2">Cargando órdenes con items pendientes...</p>
+      </div>
+
+      <!-- Orders list -->
+      <div *ngIf="!isLoading || orders_with_pending.length > 0">
+        <div *ngIf="filteredOrders.length === 0" class="alert alert-info">
+          <strong>No hay órdenes con items pendientes de entrega.</strong>
+          <p class="mb-0">Todas las órdenes han sido entregadas completamente.</p>
+        </div>
+
+        <div *ngIf="filteredOrders.length > 0" class="row">
+          <div class="col-12 mb-3">
+            <h5>Órdenes con Items Pendientes ({{ filteredOrders.length }})</h5>
+          </div>
+
+          <div *ngFor="let orderInfo of filteredOrders" class="col-md-6 col-lg-4 mb-4">
+            <div class="card shadow-sm h-100">
+              <div class="card-header bg-primary text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                  <h6 class="mb-0">Orden #{{ orderInfo.order.order_number || orderInfo.order.id }}</h6>
+                  <span [class]="getStatusClass(orderInfo.order.status)">
+                    {{ orderInfo.order.status }}
+                  </span>
+                </div>
+              </div>
+
+              <div class="card-body">
+                <div class="mb-3">
+                  <small class="text-muted">Fecha de Orden:</small><br>
+                  <strong>{{ formatDate(orderInfo.order.order_date) }}</strong>
+                </div>
+
+                <div class="mb-3">
+                  <small class="text-muted">Última actualización:</small><br>
+                  {{ formatDate(orderInfo.order.updated) }}
+                </div>
+
+                <div *ngIf="orderInfo.order.notes" class="alert alert-info py-2 mb-3">
+                  <small><strong>Notas:</strong> {{ orderInfo.order.notes }}</small>
+                </div>
+
+                <hr>
+
+                <div class="d-flex justify-content-between mb-2">
+                  <span class="text-muted">Items pendientes:</span>
+                  <span class="badge bg-warning text-dark">{{ getPendingItemsCount(orderInfo) }}</span>
+                </div>
+
+                <div class="d-flex justify-content-between mb-3">
+                  <span class="text-muted">Total de items:</span>
+                  <span class="badge bg-secondary">{{ getTotalItemsCount(orderInfo) }}</span>
+                </div>
+
+                <div class="progress mb-3" style="height: 25px;">
+                  <div
+                    class="progress-bar"
+                    [class.bg-success]="getPendingItemsCount(orderInfo) === 0"
+                    [class.bg-warning]="getPendingItemsCount(orderInfo) > 0"
+                    role="progressbar"
+                    [style.width.%]="((getTotalItemsCount(orderInfo) - getPendingItemsCount(orderInfo)) / getTotalItemsCount(orderInfo)) * 100">
+                    {{ ((getTotalItemsCount(orderInfo) - getPendingItemsCount(orderInfo)) / getTotalItemsCount(orderInfo) * 100).toFixed(0) }}% Entregado
+                  </div>
+                </div>
+              </div>
+
+              <div class="card-footer bg-light">
+                <div class="d-grid gap-2">
+                  <button
+                    class="btn btn-success"
+                    [disabled]="isLoading || getPendingItemsCount(orderInfo) === 0"
+                    (click)="deliverAllByOrder(orderInfo.order.id, orderInfo.order.order_number || orderInfo.order.id.toString())">
+                    <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
+                    Entregar Todos los Items
+                  </button>
+                  <a
+                    class="btn btn-outline-primary btn-sm"
+                    [routerLink]="['/view-order', orderInfo.order.id]">
+                    Ver Detalle de Orden
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

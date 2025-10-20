@@ -1,0 +1,147 @@
+<div class="container-fluid py-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Entregar Items a Usuarios</h2>
+        <button class="btn btn-secondary" routerLink="/">Volver</button>
+      </div>
+
+      <!-- Search and Actions -->
+      <div class="card mb-3">
+        <div class="card-body">
+          <div class="row align-items-end">
+            <div class="col-md-6">
+              <label class="form-label">Buscar</label>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Buscar por usuario, producto o código..."
+                [(ngModel)]="searchTerm">
+            </div>
+            <div class="col-md-6 text-end">
+              <button
+                class="btn btn-success"
+                [disabled]="selectedItems.size === 0 || isLoading"
+                (click)="deliverSelected()">
+                <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
+                Entregar Seleccionados ({{ selectedItems.size }})
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loading spinner -->
+      <div *ngIf="isLoading && user_order_items_info.length === 0" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Cargando...</span>
+        </div>
+        <p class="mt-2">Cargando items pendientes...</p>
+      </div>
+
+      <!-- Items table -->
+      <div *ngIf="!isLoading || user_order_items_info.length > 0" class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Items Pendientes de Entrega ({{ filteredItems.length }})</h5>
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="selectAll"
+                [checked]="selectedItems.size === filteredItems.length && filteredItems.length > 0"
+                (change)="toggleAll()">
+              <label class="form-check-label text-white" for="selectAll">
+                Seleccionar Todos
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-body p-0">
+          <div *ngIf="filteredItems.length === 0" class="alert alert-info m-3">
+            <strong>No hay items pendientes de entrega.</strong>
+            <p class="mb-0">Todos los items han sido entregados o no hay items asignados.</p>
+          </div>
+
+          <div *ngIf="filteredItems.length > 0" class="table-responsive">
+            <table class="table table-hover mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th style="width: 50px;">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      [checked]="selectedItems.size === filteredItems.length"
+                      (change)="toggleAll()">
+                  </th>
+                  <th>Usuario</th>
+                  <th>Producto</th>
+                  <th>Código</th>
+                  <th class="text-center">Cantidad</th>
+                  <th>Notas</th>
+                  <th>Fecha Asignación</th>
+                  <th class="text-end">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let info of filteredItems" [class.table-active]="selectedItems.has(info.user_order_item.id)">
+                  <td>
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      [checked]="selectedItems.has(info.user_order_item.id)"
+                      (change)="toggleSelection(info.user_order_item.id)">
+                  </td>
+                  <td>
+                    <strong>{{ getUserName(info.user_order_item.user_id) }}</strong>
+                  </td>
+                  <td>{{ getEcommerceItemName(info) }}</td>
+                  <td>
+                    <span *ngIf="getEcommerceItemCode(info)" class="badge bg-secondary">
+                      {{ getEcommerceItemCode(info) }}
+                    </span>
+                    <span *ngIf="!getEcommerceItemCode(info)" class="text-muted">-</span>
+                  </td>
+                  <td class="text-center">
+                    <span class="badge bg-primary">{{ info.user_order_item.qty }}</span>
+                  </td>
+                  <td>
+                    <small>{{ info.user_order_item.notes || '-' }}</small>
+                  </td>
+                  <td>
+                    <small class="text-muted">{{ formatDate(info.user_order_item.created) }}</small>
+                  </td>
+                  <td class="text-end">
+                    <button
+                      class="btn btn-success btn-sm"
+                      [disabled]="isLoading"
+                      (click)="deliverSingle(info.user_order_item.id)"
+                      title="Marcar como entregado">
+                      <i class="bi bi-check-circle"></i> Entregar
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div *ngIf="filteredItems.length > 0" class="card-footer bg-light">
+          <div class="row">
+            <div class="col-md-6">
+              <small class="text-muted">
+                Mostrando {{ filteredItems.length }} de {{ user_order_items_info.length }} items pendientes
+              </small>
+            </div>
+            <div class="col-md-6 text-end">
+              <small class="text-muted">
+                {{ selectedItems.size }} item(s) seleccionado(s)
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

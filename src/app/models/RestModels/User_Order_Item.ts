@@ -4,6 +4,7 @@ export interface User_Order_Item {
   user_id: number;
   qty: number;
   notes: string | null;
+  delivered: string | Date | null;
   created: string | Date;
   updated: string | Date;
 }

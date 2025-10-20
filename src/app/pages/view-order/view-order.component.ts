@@ -58,8 +58,6 @@ export class ViewOrderComponent extends BaseComponent implements OnInit {
       const response = await this.rest_order_info.get(this.order_id);
       this.order_info = response;
 
-      console.log('Order Info:', this.order_info);
-
       // Collect unique user IDs and ecommerce item IDs
       const userIds = new Set<number>();
       const ecommerceItemIds = new Set<number>();
@@ -150,5 +148,59 @@ export class ViewOrderComponent extends BaseComponent implements OnInit {
     } catch (error) {
       return String(date);
     }
+  }
+
+  formatJSON(json: any): string {
+    if (!json) return '';
+
+    try {
+      if (typeof json === 'string') {
+        return JSON.stringify(JSON.parse(json), null, 2);
+      }
+      return JSON.stringify(json, null, 2);
+    } catch (error) {
+      return String(json);
+    }
+  }
+
+  getTotalAssignedQty(userOrderItems: any[]): number {
+    return userOrderItems.reduce((sum, item) => sum + (item.qty || 0), 0);
+  }
+
+  getTotalOrderQty(): number {
+    if (!this.order_info) return 0;
+    return this.order_info.order_items_info.reduce((sum, itemInfo) => sum + (itemInfo.order_item.qty || 0), 0);
+  }
+
+  getTotalUniqueUsers(): number {
+    if (!this.order_info) return 0;
+
+    const uniqueUserIds = new Set<number>();
+    for (const itemInfo of this.order_info.order_items_info) {
+      for (const userOrderItem of itemInfo.user_order_items) {
+        uniqueUserIds.add(userOrderItem.user_id);
+      }
+    }
+    return uniqueUserIds.size;
+  }
+
+  getOrderTotal(): string {
+    if (!this.order_info) return '$0.00';
+
+    let total = 0;
+    let hasPrice = false;
+
+    for (const itemInfo of this.order_info.order_items_info) {
+      if (itemInfo.order_item.unit_price !== null) {
+        total += itemInfo.order_item.qty * itemInfo.order_item.unit_price;
+        hasPrice = true;
+      }
+    }
+
+    if (!hasPrice) {
+      return 'Sin precio';
+    }
+
+    return '$' + total.toFixed(2);
   }
 }

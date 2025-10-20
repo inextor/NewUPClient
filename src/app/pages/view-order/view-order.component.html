@@ -17,7 +17,7 @@
       </div>
 
       <!-- Order info -->
-      <div *ngIf="!isLoading && order_info" class="card shadow-sm">
+      <div *ngIf="!isLoading && order_info && order_info.order" class="card shadow-sm">
         <!-- Order header -->
         <div class="card-header bg-primary text-white">
           <h5 class="mb-0">Orden #{{ order_info.order.id }}</h5>
@@ -32,7 +32,7 @@
                 <tbody>
                   <tr>
                     <th scope="row" style="width: 200px;">Número de Orden:</th>
-                    <td>{{ order_info.order.order_number || '-' }}</td>
+                    <td><strong>{{ order_info.order.order_number || order_info.order.id }}</strong></td>
                   </tr>
                   <tr>
                     <th scope="row">Estado:</th>
@@ -63,11 +63,7 @@
                     <td>{{ order_info.order.pos_order_id || '-' }}</td>
                   </tr>
                   <tr>
-                    <th scope="row">Creado:</th>
-                    <td>{{ formatDate(order_info.order.created) }}</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">Actualizado:</th>
+                    <th scope="row">Última Actualización:</th>
                     <td>{{ formatDate(order_info.order.updated) }}</td>
                   </tr>
                 </tbody>
@@ -77,8 +73,18 @@
 
           <!-- Notes -->
           <div *ngIf="order_info.order.notes" class="alert alert-info mb-4">
-            <h6 class="alert-heading">Notas:</h6>
+            <h6 class="alert-heading">Notas de la Orden:</h6>
             <p class="mb-0">{{ order_info.order.notes }}</p>
+          </div>
+
+          <!-- POS Order JSON -->
+          <div *ngIf="order_info.order.pos_order_json" class="card mb-4">
+            <div class="card-header bg-secondary text-white">
+              <h6 class="mb-0">Datos POS Order JSON</h6>
+            </div>
+            <div class="card-body">
+              <pre class="mb-0" style="max-height: 300px; overflow-y: auto;">{{ formatJSON(order_info.order.pos_order_json) }}</pre>
+            </div>
           </div>
 
           <!-- Order items -->
@@ -88,18 +94,26 @@
             <div *ngFor="let itemInfo of order_info.order_items_info; let i = index" class="card mb-3">
               <div class="card-header bg-light">
                 <div class="row align-items-center">
-                  <div class="col-md-6">
-                    <strong>{{ getEcommerceItemName(itemInfo.order_item.ecommerce_item_id) }}</strong>
-                    <span *ngIf="getEcommerceItemCode(itemInfo.order_item.ecommerce_item_id)" class="text-muted ms-2">
-                      ({{ getEcommerceItemCode(itemInfo.order_item.ecommerce_item_id) }})
+                  <div class="col-md-5">
+                    <strong class="fs-5">{{ getEcommerceItemName(itemInfo.order_item.ecommerce_item_id) }}</strong>
+                    <br>
+                    <span *ngIf="getEcommerceItemCode(itemInfo.order_item.ecommerce_item_id)" class="text-muted">
+                      Código: {{ getEcommerceItemCode(itemInfo.order_item.ecommerce_item_id) }}
                     </span>
                   </div>
-                  <div class="col-md-3">
-                    <span class="badge bg-primary">Cantidad Total: {{ itemInfo.order_item.qty }}</span>
+                  <div class="col-md-2 text-center">
+                    <span class="badge bg-primary fs-6">{{ itemInfo.order_item.qty }} unidades</span>
+                  </div>
+                  <div class="col-md-2 text-center">
+                    <span *ngIf="itemInfo.order_item.unit_price !== null">
+                      <small class="text-muted d-block">Precio unitario</small>
+                      <strong class="text-success">${{ itemInfo.order_item.unit_price | number:'1.2-2' }}</strong>
+                    </span>
                   </div>
                   <div class="col-md-3 text-end">
-                    <span *ngIf="itemInfo.order_item.unit_price" class="text-success">
-                      Precio: ${{ itemInfo.order_item.unit_price }}
+                    <span *ngIf="itemInfo.order_item.unit_price !== null">
+                      <small class="text-muted d-block">Total</small>
+                      <strong class="text-success fs-5">${{ itemInfo.order_item.qty * itemInfo.order_item.unit_price | number:'1.2-2' }}</strong>
                     </span>
                   </div>
                 </div>
@@ -108,33 +122,40 @@
               <div class="card-body">
                 <!-- Item notes -->
                 <div *ngIf="itemInfo.order_item.notes" class="alert alert-secondary mb-3">
-                  <small><strong>Notas del item:</strong> {{ itemInfo.order_item.notes }}</small>
+                  <strong>Notas:</strong> {{ itemInfo.order_item.notes }}
                 </div>
 
                 <!-- User order items -->
-                <h6 class="mb-2">Asignación por Usuario:</h6>
+                <h6 class="mb-3">Asignación a Usuarios:</h6>
                 <div class="table-responsive">
-                  <table class="table table-sm table-striped table-hover">
-                    <thead>
+                  <table class="table table-sm table-hover">
+                    <thead class="table-light">
                       <tr>
                         <th>Usuario</th>
                         <th class="text-center">Cantidad</th>
                         <th>Notas</th>
-                        <th class="text-end">Actualizado</th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr *ngFor="let userOrderItem of itemInfo.user_order_items">
-                        <td>{{ getUserName(userOrderItem.user_id) }}</td>
+                        <td>
+                          <strong>{{ getUserName(userOrderItem.user_id) }}</strong>
+                        </td>
                         <td class="text-center">
                           <span class="badge bg-secondary">{{ userOrderItem.qty }}</span>
                         </td>
                         <td>{{ userOrderItem.notes || '-' }}</td>
-                        <td class="text-end text-muted">
-                          <small>{{ formatDate(userOrderItem.updated) }}</small>
-                        </td>
                       </tr>
                     </tbody>
+                    <tfoot *ngIf="itemInfo.user_order_items.length > 0" class="table-light">
+                      <tr>
+                        <td class="text-end"><strong>Total asignado:</strong></td>
+                        <td class="text-center">
+                          <span class="badge bg-info">{{ getTotalAssignedQty(itemInfo.user_order_items) }}</span>
+                        </td>
+                        <td></td>
+                      </tr>
+                    </tfoot>
                   </table>
                 </div>
               </div>
@@ -147,8 +168,25 @@
           </div>
         </div>
 
-        <div class="card-footer text-muted">
-          <small>Orden ID: {{ order_info.order.id }} | Ecommerce ID: {{ order_info.order.ecommerce_id }}</small>
+        <!-- Order Summary -->
+        <div class="card-footer bg-light">
+          <div class="row">
+            <div class="col-md-4">
+              <h6 class="text-muted mb-2">Resumen de Productos</h6>
+              <p class="mb-1"><strong>Productos diferentes:</strong> {{ order_info.order_items_info.length }}</p>
+              <p class="mb-0"><strong>Unidades totales:</strong> {{ getTotalOrderQty() }}</p>
+            </div>
+            <div class="col-md-4">
+              <h6 class="text-muted mb-2">Usuarios</h6>
+              <p class="mb-0"><strong>Usuarios asignados:</strong> {{ getTotalUniqueUsers() }}</p>
+            </div>
+            <div class="col-md-4">
+              <h6 class="text-muted mb-2">Total de la Orden</h6>
+              <p class="mb-0 fs-4 text-success">
+                <strong>{{ getOrderTotal() }}</strong>
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
