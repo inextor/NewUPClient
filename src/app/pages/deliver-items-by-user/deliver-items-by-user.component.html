@@ -2,7 +2,7 @@
   <div class="row">
     <div class="col-12">
       <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Entregar Items a Usuarios</h2>
+        <h2>Entregar Artículos a Usuarios</h2>
         <button class="btn btn-secondary" routerLink="/">Volver</button>
       </div>
 
@@ -43,7 +43,7 @@
       <div *ngIf="!isLoading || user_order_items_info.length > 0" class="card shadow-sm">
         <div class="card-header bg-primary text-white">
           <div class="d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Items Pendientes de Entrega ({{ filteredItems.length }})</h5>
+            <h5 class="mb-0">Artículos Pendientes de Entrega ({{ filteredItems.length }})</h5>
             <div class="form-check">
               <input
                 class="form-check-input"
@@ -60,8 +60,8 @@
 
         <div class="card-body p-0">
           <div *ngIf="filteredItems.length === 0" class="alert alert-info m-3">
-            <strong>No hay items pendientes de entrega.</strong>
-            <p class="mb-0">Todos los items han sido entregados o no hay items asignados.</p>
+            <strong>No hay artículos pendientes de entrega.</strong>
+            <p class="mb-0">Todos los artículos han sido entregados o no hay artículos asignados.</p>
           </div>
 
           <div *ngIf="filteredItems.length > 0" class="table-responsive">
@@ -131,12 +131,12 @@
           <div class="row">
             <div class="col-md-6">
               <small class="text-muted">
-                Mostrando {{ filteredItems.length }} de {{ user_order_items_info.length }} items pendientes
+                Mostrando {{ filteredItems.length }} de {{ user_order_items_info.length }} artículos pendientes
               </small>
             </div>
             <div class="col-md-6 text-end">
               <small class="text-muted">
-                {{ selectedItems.size }} item(s) seleccionado(s)
+                {{ selectedItems.size }} artículo(s) seleccionado(s)
               </small>
             </div>
           </div>

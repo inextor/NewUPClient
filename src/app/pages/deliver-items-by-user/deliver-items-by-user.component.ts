@@ -44,13 +44,20 @@ export class DeliverItemsByUserComponent extends BaseComponent implements OnInit
     this.isLoading = true;
 
     try {
-      // Search for user_order_items where delivered is null
+      // Search for user_order_items where delivery_timestamp IS NULL
       const response = await this.rest_user_order_item.search({
-        'delivered': null,
+        _NULL: 'delivery_timestamp',
         limit: 99999
       });
 
-      this.user_order_items_info = response.data;
+      // Transform the data to match User_Order_Item_Info structure
+      this.user_order_items_info = response.data.map((item: any) => ({
+        user_order_item: item.user_order_item || item,
+        user: item.user,
+        order_item: item.order_item,
+        ecommerce_item: item.ecommerce_item,
+        order: item.order
+      }));
 
       // Collect unique user IDs and ecommerce item IDs
       const userIds = new Set<number>();
@@ -58,9 +65,32 @@ export class DeliverItemsByUserComponent extends BaseComponent implements OnInit
       const orderItemIds = new Set<number>();
 
       for (const info of this.user_order_items_info) {
-        userIds.add(info.user_order_item.user_id);
-        if (info.order_item) {
-          ecommerceItemIds.add(info.order_item.ecommerce_item_id);
+        if (info.user_order_item) {
+          userIds.add(info.user_order_item.user_id);
+          if (info.order_item) {
+            ecommerceItemIds.add(info.order_item.ecommerce_item_id);
+          } else {
+            orderItemIds.add(info.user_order_item.order_item_id);
+          }
+        }
+      }
+
+      // Fetch order items if needed
+      if (orderItemIds.size > 0) {
+        const rest_order_item = new Rest<any, any>(this.rest, 'order_item.php');
+        const orderItemsResponse = await rest_order_item.search({
+          'id,': Array.from(orderItemIds),
+          limit: 99999
+        });
+
+        // Map order items back to the info objects
+        for (const info of this.user_order_items_info) {
+          if (info.user_order_item && !info.order_item) {
+            info.order_item = orderItemsResponse.data.find((oi: any) => oi.id === info.user_order_item.order_item_id);
+            if (info.order_item) {
+              ecommerceItemIds.add(info.order_item.ecommerce_item_id);
+            }
+          }
         }
       }
 
@@ -87,6 +117,8 @@ export class DeliverItemsByUserComponent extends BaseComponent implements OnInit
           this.ecommerceItemMap.set(ecomItem.id, ecomItem);
         }
       }
+
+      console.log('Final user_order_items_info:', this.user_order_items_info);
 
     } catch (error) {
       this.rest.showError(error);
@@ -137,12 +169,12 @@ export class DeliverItemsByUserComponent extends BaseComponent implements OnInit
 
   async deliverSelected(): Promise<void> {
     if (this.selectedItems.size === 0) {
-      this.rest.showError('Por favor seleccione al menos un item para entregar');
+      this.rest.showError('Por favor seleccione al menos un artículo para entregar');
       return;
     }
 
     const confirmed = confirm(
-      `¿Está seguro de marcar ${this.selectedItems.size} item(s) como entregado(s)?`
+      `¿Está seguro de marcar ${this.selectedItems.size} artículo(s) como entregado(s)?`
     );
 
     if (!confirmed) return;
@@ -167,7 +199,7 @@ export class DeliverItemsByUserComponent extends BaseComponent implements OnInit
         throw errorData;
       }
 
-      this.rest.showSuccess(`${this.selectedItems.size} item(s) marcado(s) como entregado(s)`);
+      this.rest.showSuccess(`${this.selectedItems.size} artículo(s) marcado(s) como entregado(s)`);
       this.selectedItems.clear();
       await this.loadPendingItems();
 
@@ -180,7 +212,7 @@ export class DeliverItemsByUserComponent extends BaseComponent implements OnInit
 
   async deliverSingle(id: number): Promise<void> {
     const confirmed = confirm(
-      '¿Está seguro de marcar este item como entregado?'
+      '¿Está seguro de marcar este artículo como entregado?'
     );
 
     if (!confirmed) return;
@@ -204,7 +236,7 @@ export class DeliverItemsByUserComponent extends BaseComponent implements OnInit
         throw errorData;
       }
 
-      this.rest.showSuccess('Item marcado como entregado');
+      this.rest.showSuccess('Artículo marcado como entregado');
       await this.loadPendingItems();
 
     } catch (error) {

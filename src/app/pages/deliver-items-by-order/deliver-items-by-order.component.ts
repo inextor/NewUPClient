@@ -42,11 +42,11 @@ export class DeliverItemsByOrderComponent extends BaseComponent implements OnIni
         limit: 99999
       });
 
-      // Filter orders that have pending items (items with delivery_timestamp = null)
+      // Filter orders that have pending items (items with delivery_timestamp IS NULL)
       this.orders_with_pending = response.data.filter((orderInfo: Order_Info) => {
         return orderInfo.order_items_info.some(itemInfo =>
           itemInfo.user_order_items.some(userOrderItem =>
-            userOrderItem.delivery_timestamp === null
+            userOrderItem.delivery_timestamp === null || userOrderItem.delivery_timestamp === undefined
           )
         );
       });
