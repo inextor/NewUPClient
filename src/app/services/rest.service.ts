@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RestEndPoint } from '../classes/RestEndPoint';
 import { GetEmpty } from '../models/GetEmpty';
 import { Ecommerce } from '../models/RestModels/Ecommerce';
+import { Role_Info } from '../models/InfoModels/Role_Info';
 
 @Injectable({
 	providedIn: 'root'
@@ -24,6 +25,8 @@ export class RestService implements RestEndPoint{
 	public ecommerce:Ecommerce = GetEmpty.ecommerce();
 	public is_menu_open: boolean = false;
 	public pos_rest:RestEndPoint = { base_url: 'https://uniformesprofesionales.integranet.xyz/api', bearer: '' };
+	public roles_info: Role_Info[] = [];
+	public admin_roles: Role_Info[] = [];
 
 	public set bearer(bearer:string)
 	{
@@ -106,8 +109,11 @@ export class RestService implements RestEndPoint{
 	logout() {
 		localStorage.removeItem('session');
 		localStorage.removeItem('user');
+		localStorage.removeItem('roles_info');
 		this.user = null;
 		this.session = null;
+		this.roles_info = [];
+		this.admin_roles = [];
 		this.is_logged_in = false;
 		this.router.navigate(['/login']);
 	}
@@ -120,11 +126,18 @@ export class RestService implements RestEndPoint{
 			const sessionStr = localStorage.getItem('session');
 			const permissionStr = localStorage.getItem('permission');
 			const storeStr = localStorage.getItem('store');
+			const rolesInfoStr = localStorage.getItem('roles_info');
 
 			if (userStr) this.user = JSON.parse(userStr);
 			if (sessionStr) this.session = JSON.parse(sessionStr);
 			if (permissionStr) this.permission = JSON.parse(permissionStr);
 			if (storeStr) this.store = JSON.parse(storeStr);
+
+			if (rolesInfoStr) {
+				this.roles_info = JSON.parse(rolesInfoStr);
+				// Filter admin roles (where is_admin is true/1)
+				this.admin_roles = this.roles_info.filter(ri => ri.role_user.is_admin == 1 || ri.role_user.is_admin === true);
+			}
 
 			this.is_logged_in = this.session !== null;
 		}
@@ -195,5 +208,61 @@ export class RestService implements RestEndPoint{
 			}
 			return response.blob();
 		});
+	}
+
+	/**
+	 * Check if current user is a system ADMIN
+	 */
+	isSystemAdmin(): boolean {
+		return this.user && this.user.type === 'ADMIN';
+	}
+
+	/**
+	 * Check if current user is admin of any role
+	 */
+	isRoleAdmin(): boolean {
+		return this.admin_roles.length > 0;
+	}
+
+	/**
+	 * Check if current user is admin of a specific role
+	 */
+	isAdminOfRole(role_id: number): boolean {
+		return this.admin_roles.some(ri => ri.role.id === role_id);
+	}
+
+	/**
+	 * Check if current user can add users
+	 * System admins can always add users
+	 * Role admins can only add users if they have at least one admin role
+	 */
+	canAddUsers(): boolean {
+		return this.isSystemAdmin() || this.isRoleAdmin();
+	}
+
+	/**
+	 * Get all role IDs that the current user is admin of
+	 */
+	getAdminRoleIds(): number[] {
+		return this.admin_roles.map(ri => ri.role.id);
+	}
+
+	/**
+	 * Check if current user can manage a specific user
+	 * System admins can manage everyone
+	 * Role admins can only manage users in their admin roles
+	 */
+	canManageUser(user_roles: number[]): boolean {
+		if (this.isSystemAdmin()) {
+			return true;
+		}
+
+		if (this.isRoleAdmin()) {
+			const adminRoleIds = this.getAdminRoleIds();
+			// Check if any of the user's roles match admin roles
+			return user_roles.some(role_id => adminRoleIds.includes(role_id));
+		}
+
+		return false;
 	}
 }

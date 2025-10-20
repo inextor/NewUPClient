@@ -47,6 +47,11 @@ export class LoginComponent {
 			localStorage.setItem('user', JSON.stringify(data.user));
 			localStorage.setItem('ecommerce', JSON.stringify(data.ecommerce));
 
+			// Store roles_info if provided by backend
+			if (data.roles_info) {
+				localStorage.setItem('roles_info', JSON.stringify(data.roles_info));
+			}
+
 			this.rest_service.loadAuthDataFromLocalStorage();
 			this.router.navigate(['/']);
 

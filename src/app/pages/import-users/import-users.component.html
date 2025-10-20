@@ -1,11 +1,134 @@
 <div class="container mt-5">
-  <h2 class="app-page-title">Import Users</h2>
+  <h2 class="app-page-title">Importar Usuarios</h2>
 
-  <div class="card bg-white p-3">
-    <div class="mb-3">
-      <label for="formFile" class="form-label">Select file to import</label>
-      <input class="form-control" type="file" id="formFile">
+  @if (!canImport()) {
+    <div class="alert alert-warning">
+      No tiene permisos para importar usuarios. Debe ser administrador del sistema o administrador de al menos un rol.
     </div>
-    <button type="button" class="btn btn-primary">Import</button>
-  </div>
+  }
+
+  @if (canImport()) {
+    <div class="card bg-white p-4 mb-3">
+      <h5 class="mb-3">Generar Plantilla</h5>
+      <p class="text-muted">Descargue una plantilla de Excel para importar usuarios con el formato correcto.</p>
+      <button type="button" class="btn btn-info" (click)="generateTemplate()">
+        Descargar Plantilla Excel
+      </button>
+    </div>
+
+    <div class="card bg-white p-4">
+      <h5 class="mb-3">Importar Usuarios</h5>
+
+      <!-- Role selector (only shown if multiple admin roles) -->
+      @if (adminRoles.length > 1) {
+        <div class="mb-3">
+          <label for="roleSelect" class="form-label">Seleccionar Rol *</label>
+          <select class="form-select" id="roleSelect" [(ngModel)]="selectedRoleId">
+            <option [value]="null">-- Seleccione un rol --</option>
+            @for (roleInfo of adminRoles; track roleInfo.role.id) {
+              <option [value]="roleInfo.role.id">{{ roleInfo.role.name }}</option>
+            }
+          </select>
+          <div class="form-text">Los usuarios serán asignados a este rol.</div>
+        </div>
+      }
+
+      @if (adminRoles.length === 1) {
+        <div class="mb-3">
+          <div class="alert alert-info">
+            Los usuarios serán asignados al rol: <strong>{{ adminRoles[0].role.name }}</strong>
+          </div>
+        </div>
+      }
+
+      @if (adminRoles.length === 0) {
+        <div class="alert alert-danger">
+          No tiene roles de administrador asignados. Contacte al administrador del sistema.
+        </div>
+      }
+
+      <!-- File upload -->
+      @if (adminRoles.length > 0) {
+        <div class="mb-3">
+          <label for="formFile" class="form-label">Seleccionar Archivo Excel</label>
+          <input
+            class="form-control"
+            type="file"
+            id="formFile"
+            accept=".xlsx,.xls"
+            (change)="onFileSelected($event)">
+          <div class="form-text">
+            El archivo debe contener las columnas: Código, Nombre, Username, Password
+          </div>
+        </div>
+
+        <!-- Preview -->
+        @if (importedUsers.length > 0) {
+          <div class="mb-3">
+            <h6>Vista Previa</h6>
+            <p class="text-muted">Se importarán {{ totalUsers }} usuarios</p>
+            <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+              <table class="table table-sm table-striped">
+                <thead>
+                  <tr>
+                    <th>Código</th>
+                    <th>Nombre</th>
+                    <th>Username</th>
+                    <th>Password</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (user of importedUsers; track $index) {
+                    <tr>
+                      <td>{{ user.codigo || '-' }}</td>
+                      <td>{{ user.nombre }}</td>
+                      <td>{{ user.username || '-' }}</td>
+                      <td>{{ user.password ? '********' : '-' }}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        }
+
+        <!-- Import button -->
+        <div class="d-flex gap-2">
+          <button
+            type="button"
+            class="btn btn-primary"
+            [disabled]="isImporting || importedUsers.length === 0 || !selectedRoleId"
+            (click)="importUsers()">
+            @if (isImporting) {
+              <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              Importando...
+            } @else {
+              Importar Usuarios
+            }
+          </button>
+
+          @if (importedUsers.length > 0) {
+            <button
+              type="button"
+              class="btn btn-secondary"
+              [disabled]="isImporting"
+              (click)="importedUsers = []; totalUsers = 0; selectedFile = null">
+              Cancelar
+            </button>
+          }
+        </div>
+
+        <!-- Import results -->
+        @if (importResults.created > 0 || importResults.assigned > 0) {
+          <div class="alert alert-success mt-3">
+            <strong>Resultados de la importación:</strong>
+            <ul class="mb-0 mt-2">
+              <li>Usuarios nuevos creados: {{ importResults.created }}</li>
+              <li>Usuarios existentes asignados al rol: {{ importResults.assigned }}</li>
+            </ul>
+          </div>
+        }
+      }
+    </div>
+  }
 </div>
