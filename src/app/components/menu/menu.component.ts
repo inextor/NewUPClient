@@ -16,6 +16,9 @@ export class MenuComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private routerSubscription?: Subscription;
 
+  // Track which section is currently open (only one at a time)
+  openSection: string = 'home';
+
   ngOnInit() {
     // Subscribe to navigation events to close menu on route/query changes
     this.routerSubscription = this.router.events
@@ -27,5 +30,14 @@ export class MenuComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.routerSubscription?.unsubscribe();
+  }
+
+  toggleSection(section: string): void {
+    // If clicking the same section, close it; otherwise open the new section
+    this.openSection = this.openSection === section ? '' : section;
+  }
+
+  isSectionOpen(section: string): boolean {
+    return this.openSection === section;
   }
 }
