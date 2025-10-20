@@ -1,0 +1,90 @@
+<div class="container mt-5">
+	<h2 class="app-page-title">
+		@if (role_ecommerce_item.id) {
+			Editar Relación Rol-Artículo
+		} @else {
+			Agregar Relación Rol-Artículo
+		}
+	</h2>
+
+	<div class="card bg-white p-4">
+		<form (ngSubmit)="save()">
+			<div class="mb-3">
+				<label for="ecommerce_item_id" class="form-label">ID del Artículo</label>
+				<input
+					type="number"
+					class="form-control"
+					id="ecommerce_item_id"
+					[(ngModel)]="role_ecommerce_item.ecommerce_item_id"
+					name="ecommerce_item_id"
+					required>
+			</div>
+
+			<div class="mb-3">
+				<label for="role_id" class="form-label">Rol</label>
+				<select
+					class="form-control"
+					id="role_id"
+					[(ngModel)]="role_ecommerce_item.role_id"
+					name="role_id"
+					required>
+					<option [value]="0">Seleccione un rol</option>
+					@for (role of role_list; track role.id) {
+						<option [value]="role.id">{{ role.name }}</option>
+					}
+				</select>
+			</div>
+
+			<div class="mb-3">
+				<label for="quota" class="form-label">Cuota</label>
+				<input
+					type="number"
+					class="form-control"
+					id="quota"
+					[(ngModel)]="role_ecommerce_item.quota"
+					name="quota"
+					placeholder="Ingrese la cuota">
+			</div>
+
+			<div class="mb-3">
+				<label for="period_type" class="form-label">Tipo de Periodo</label>
+				<select
+					class="form-control"
+					id="period_type"
+					[(ngModel)]="role_ecommerce_item.period_type"
+					name="period_type">
+					<option value="daily">Diario</option>
+					<option value="weekly">Semanal</option>
+					<option value="monthly">Mensual</option>
+					<option value="yearly">Anual</option>
+					<option value="unlimited">Ilimitado</option>
+					<option value="Quota renewal period">Periodo de renovación de cuota</option>
+				</select>
+			</div>
+
+			<div class="mb-3">
+				<label for="period_quantity" class="form-label">Cantidad de Periodo</label>
+				<input
+					type="number"
+					class="form-control"
+					id="period_quantity"
+					[(ngModel)]="role_ecommerce_item.period_quantity"
+					name="period_quantity"
+					placeholder="Ingrese la cantidad de periodo">
+			</div>
+
+			<div class="d-flex justify-content-end gap-2">
+				<button type="button" class="btn btn-secondary" (click)="cancel()" [disabled]="is_loading">
+					Cancelar
+				</button>
+				<button type="submit" class="btn btn-primary" [disabled]="is_loading">
+					@if (is_loading) {
+						Guardando...
+					} @else {
+						Guardar
+					}
+				</button>
+			</div>
+		</form>
+	</div>
+</div>

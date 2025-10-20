@@ -5,7 +5,7 @@ import { ListUserComponent } from './pages/list-user/list-user.component';
 import { ListRoleComponent } from './pages/list-role/list-role.component';
 import { SaveRoleComponent } from './pages/save-role/save-role.component';
 import { ListEcommerceItemComponent } from './pages/list-ecommerce-item/list-ecommerce-item.component';
-import { ListRoleItemComponent } from './pages/list-role-item/list-role-item.component';
+import { ListRoleEcommerceItemComponent } from './pages/list-role-ecommerce-item/list-role-ecommerce-item.component';
 import { ListRoleUserComponent } from './pages/list-role-user/list-role-user.component';
 import { MainComponent } from './pages/main/main.component';
 import { MainHomeComponent } from './pages/main-home/main-home.component';
@@ -13,8 +13,8 @@ import { CartComponent } from './pages/cart/cart.component';
 import { SaveQuoteComponent } from './pages/save-quote/save-quote.component';
 import { SaveUserComponent } from './pages/save-user/save-user.component';
 import { ImportUsersComponent } from './pages/import-users/import-users.component';
-import { SaveRoleItemComponent } from './pages/save-role-item/save-role-item.component';
-import { ListItemRoleComponent } from './pages/list-item-role/list-item-role.component';
+import { SaveRoleEcommerceItemComponent } from './pages/save-role-ecommerce-item/save-role-ecommerce-item.component';
+import { ListEcommerceItemRoleComponent } from './pages/list-ecommerce-item-role/list-ecommerce-item-role.component';
 import { ProductDetailComponent } from './pages/product-detail/product-detail.component';
 import { SaveEcommerceItemComponent } from './pages/save-ecommerce-item/save-ecommerce-item.component';
 import { ImportOrderComponent } from './pages/import-order/import-order.component';
@@ -36,10 +36,10 @@ export const routes: Routes = [
             { path: 'edit-role/:id', component: SaveRoleComponent },
             { path: 'list-ecommerce-item', component: ListEcommerceItemComponent },
             { path: 'edit-ecommerce-item/:id', component: SaveEcommerceItemComponent },
-            { path: 'list-role-item', component: ListRoleItemComponent },
-            { path: 'add-role-item', component: SaveRoleItemComponent },
-            { path: 'edit-role-item', component: SaveRoleItemComponent },
-            { path: 'list-item-role', component: ListItemRoleComponent },
+            { path: 'list-role-ecommerce-item', component: ListRoleEcommerceItemComponent },
+            { path: 'add-role-ecommerce-item', component: SaveRoleEcommerceItemComponent },
+            { path: 'edit-role-ecommerce-item', component: SaveRoleEcommerceItemComponent },
+            { path: 'list-ecommerce-item-role', component: ListEcommerceItemRoleComponent },
             { path: 'list-role-user', component: ListRoleUserComponent },
             { path: 'cart', component: CartComponent },
             { path: 'add-quote', component: SaveQuoteComponent },

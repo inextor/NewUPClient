@@ -3,13 +3,13 @@
 		Artículos del Rol @if(role) { "{{ role.name }}" } @else if(role_id) { #{{ role_id }} }
 	</h2>
 
-	@if (role_item_list.length === 0) {
+	@if (role_ecommerce_item_list.length === 0) {
 		<div class="alert alert-info">
 			No se encontraron artículos para este rol.
 		</div>
 	}
 
-	@if (role_item_list.length > 0) {
+	@if (role_ecommerce_item_list.length > 0) {
 		<div class="card bg-white p-3">
 			<table class="table table-striped">
 				<thead>
@@ -25,15 +25,15 @@
 					</tr>
 				</thead>
 				<tbody>
-					@for (ciri of added_item_list; track ciri.role_item.id) {
+					@for (ciri of added_item_list; track ciri.role_ecommerce_item.id) {
 						<tr>
-							<th scope="row">{{ ciri.role_item.id }}</th>
-							<td>{{ ciri.role_item.item_id }}</td>
-							<td>{{ ciri.role_item.role_id }}</td>
+							<th scope="row">{{ ciri.role_ecommerce_item.id }}</th>
+							<td>{{ ciri.role_ecommerce_item.ecommerce_item_id }}</td>
+							<td>{{ ciri.role_ecommerce_item.role_id }}</td>
 							<td>{{ ciri.item?.name || 'N/A' }}</td>
-							<td>{{ ciri.role_item.quota }}</td>
-							<td>{{ ciri.role_item.period_type }}</td>
-							<td>{{ ciri.role_item.period_quantity }}</td>
+							<td>{{ ciri.role_ecommerce_item.quota }}</td>
+							<td>{{ ciri.role_ecommerce_item.period_type }}</td>
+							<td>{{ ciri.role_ecommerce_item.period_quantity }}</td>
 							<td class="text-end">
 								<button class="btn btn-danger btn-sm" (click)="deleteRoleItem(ciri)">Eliminar</button>
 							</td>
