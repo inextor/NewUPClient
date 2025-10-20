@@ -435,40 +435,40 @@ export class ImportOrderComponent extends BaseComponent {
 						if (!user_id) {
 							throw new Error(`User ID not found for code: ${row.codigo_empleado}`);
 						}
-						return {
-							user_id: user_id,
-							order_item_id: 0, // Will be set by backend after creating order_item
-							qty: row.quantities[productCode!],
-							notes: null
-						};
+						const user_order_item = GetEmpty.user_order_item();
+						user_order_item.user_id = user_id;
+						user_order_item.order_item_id = 0; // Will be set by backend
+						user_order_item.qty = row.quantities[productCode!];
+						user_order_item.notes = null;
+						return user_order_item;
 					});
 
+				const order_item = GetEmpty.order_item();
+				order_item.order_id = 0; // Will be set by backend
+				order_item.ecommerce_item_id = orderItem.ecommerce_item_id;
+				order_item.qty = orderItem.qty;
+				order_item.unit_price = orderItem.unit_price;
+				order_item.notes = orderItem.notes;
+
 				return {
-					order_item: {
-						order_id: 0, // Will be set by backend after creating order
-						ecommerce_item_id: orderItem.ecommerce_item_id,
-						qty: orderItem.qty,
-						unit_price: orderItem.unit_price,
-						notes: orderItem.notes
-					},
+					order_item: order_item,
 					user_order_items: user_order_items
 				};
 			});
 
+			const order = GetEmpty.order();
+			order.id = 0;
+			order.ecommerce_id = this.order.ecommerce_id;
+			order.order_number = null;
+			order.status = this.order.status;
+			order.pos_order_id = null;
+			order.pos_order_json = null;
+			order.order_date = this.order.order_date;
+			order.notes = this.order.notes;
+			order.created_by_user_id = this.order.created_by_user_id;
+
 			const payload: Order_Info = {
-				order: {
-					id: 0,
-					ecommerce_id: this.order.ecommerce_id,
-					order_number: null,
-					status: this.order.status,
-					pos_order_id: null,
-					pos_order_json: null,
-					order_date: this.order.order_date,
-					notes: this.order.notes,
-					created_by_user_id: this.order.created_by_user_id,
-					created: new Date(),
-					updated: new Date()
-				},
+				order: order,
 				order_items_info: order_items_info
 			};
 
