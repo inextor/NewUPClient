@@ -221,7 +221,7 @@ export class ImportOrderComponent extends BaseComponent {
 			// Validate products via ecommerce_item
 			// Separate product codes and IDs
 			const itemCodes: string[] = [];
-			const itemIds: number[] = [];
+			const ecommerceItemIds: number[] = [];
 
 			for (const code of this.productCodes) {
 				// Ensure code is a string
@@ -229,7 +229,7 @@ export class ImportOrderComponent extends BaseComponent {
 				if (codeStr.startsWith('#')) {
 					const id = parseInt(codeStr.substring(1));
 					if (!isNaN(id)) {
-						itemIds.push(id);
+						ecommerceItemIds.push(id);
 					}
 				} else if (codeStr) {
 					itemCodes.push(codeStr);
@@ -237,13 +237,13 @@ export class ImportOrderComponent extends BaseComponent {
 			}
 
 			console.log('Item codes to search:', itemCodes);
-			console.log('Item IDs to search:', itemIds);
+			console.log('Ecommerce Item IDs to search:', ecommerceItemIds);
 
 			// Search ecommerce_items by item codes
 			let ecommerceItems: any[] = [];
 			if (itemCodes.length > 0) {
 				const ecommerceItemsResponse = await this.rest_ecommerce_item.search({
-					'item.code,': itemCodes,
+					'code,': itemCodes,
 					ecommerce_id: this.rest.ecommerce.id,
 					limit: 99999
 				});
@@ -251,14 +251,14 @@ export class ImportOrderComponent extends BaseComponent {
 				ecommerceItems = ecommerceItemsResponse.data;
 			}
 
-			// Search ecommerce_items by item IDs
-			if (itemIds.length > 0) {
+			// Search ecommerce_items by ecommerce_item.id
+			if (ecommerceItemIds.length > 0) {
 				const ecommerceItemsResponse = await this.rest_ecommerce_item.search({
-					'item_id,': itemIds,
+					'id,': ecommerceItemIds,
 					ecommerce_id: this.rest.ecommerce.id,
 					limit: 99999
 				});
-				console.log('Ecommerce items found by item_id:', ecommerceItemsResponse.data);
+				console.log('Ecommerce items found by id:', ecommerceItemsResponse.data);
 				ecommerceItems = [...ecommerceItems, ...ecommerceItemsResponse.data];
 			}
 
@@ -270,9 +270,9 @@ export class ImportOrderComponent extends BaseComponent {
 				if (ecomItem.code) {
 					existingItemMap.set(ecomItem.code, ecomItem);
 				}
-				// Map by #ID
-				if (ecomItem.item_id) {
-					existingItemMap.set(`#${ecomItem.item_id}`, ecomItem);
+				// Map by #ecommerce_item.id
+				if (ecomItem.id) {
+					existingItemMap.set(`#${ecomItem.id}`, ecomItem);
 				}
 			}
 
@@ -575,7 +575,7 @@ export class ImportOrderComponent extends BaseComponent {
 			return;
 		}
 
-		// Create Excel data with item codes (or #ecommerce_item_id if no code)
+		// Create Excel data with item codes (or #ecommerce_item.id if no code)
 		const headers = [
 			'Codigo Empleado',
 			'Nombre',
