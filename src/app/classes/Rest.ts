@@ -181,6 +181,25 @@ export class Rest<T,U>
 		}, {} as Record<string, T>);
 	}
 
+	private formatDateForMySQL(date: Date): string {
+		const year = date.getFullYear();
+		const month = String(date.getMonth() + 1).padStart(2, '0');
+		const day = String(date.getDate()).padStart(2, '0');
+		const hours = String(date.getHours()).padStart(2, '0');
+		const minutes = String(date.getMinutes()).padStart(2, '0');
+		const seconds = String(date.getSeconds()).padStart(2, '0');
+		return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+	}
+
+	private stringifyWithDates(obj: any): string {
+		return JSON.stringify(obj, (key, value) => {
+			if (value instanceof Date) {
+				return this.formatDateForMySQL(value);
+			}
+			return value;
+		});
+	}
+
 	public create(z:Partial<U>):Promise<U>
 	{
 		const url = `${this.rest.base_url}/${this.path}`;
@@ -191,7 +210,7 @@ export class Rest<T,U>
 		};
 
 		let method = 'POST';
-		let body = JSON.stringify(z);
+		let body = this.stringifyWithDates(z);
 		let options = { method, headers , body };
 
 		return fetch(url, options ).then(this.getJsonLambda())
@@ -207,7 +226,7 @@ export class Rest<T,U>
 		};
 
 		let method = 'PUT';
-		let body = JSON.stringify(z);
+		let body = this.stringifyWithDates(z);
 		let options = { method, headers , body };
 
 		return fetch(url, options ).then(this.getJsonLambda())
@@ -231,7 +250,7 @@ export class Rest<T,U>
 	postOne(data:any):Promise<any>
 	{
 		const url = `${this.rest.base_url}/${this.path}`;
-		let options = { method: 'POST', headers: { 'Authorization': `Bearer ${this.rest.bearer}`, 'Content-Type': 'application/json' }, body: JSON.stringify(data) };
+		let options = { method: 'POST', headers: { 'Authorization': `Bearer ${this.rest.bearer}`, 'Content-Type': 'application/json' }, body: this.stringifyWithDates(data) };
 		return fetch(url, options )
 			.then(this.getJsonLambda())
 	}
