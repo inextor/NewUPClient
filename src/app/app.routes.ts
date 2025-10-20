@@ -18,6 +18,7 @@ import { ListEcommerceItemRoleComponent } from './pages/list-ecommerce-item-role
 import { ProductDetailComponent } from './pages/product-detail/product-detail.component';
 import { SaveEcommerceItemComponent } from './pages/save-ecommerce-item/save-ecommerce-item.component';
 import { ImportOrderComponent } from './pages/import-order/import-order.component';
+import { ViewOrderComponent } from './pages/view-order/view-order.component';
 
 import { authGuard } from './guards/auth.guard';
 
@@ -48,6 +49,7 @@ export const routes: Routes = [
             { path: 'edit-user', component: SaveUserComponent },
             { path: 'import-users', component: ImportUsersComponent },
             { path: 'import-order', component: ImportOrderComponent },
+            { path: 'view-order/:id', component: ViewOrderComponent },
         ]
     },
     {

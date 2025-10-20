@@ -1,0 +1,162 @@
+<div class="container-fluid py-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Ver Orden</h2>
+        <button class="btn btn-secondary" (click)="router.navigate(['/'])">
+          Volver
+        </button>
+      </div>
+
+      <!-- Loading spinner -->
+      <div *ngIf="isLoading" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Cargando...</span>
+        </div>
+        <p class="mt-2">Cargando información de la orden...</p>
+      </div>
+
+      <!-- Order info -->
+      <div *ngIf="!isLoading && order_info" class="card shadow-sm">
+        <!-- Order header -->
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0">Orden #{{ order_info.order.id }}</h5>
+        </div>
+
+        <div class="card-body">
+          <!-- Order details -->
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <h6 class="text-muted">Detalles de la Orden</h6>
+              <table class="table table-sm">
+                <tbody>
+                  <tr>
+                    <th scope="row" style="width: 200px;">Número de Orden:</th>
+                    <td>{{ order_info.order.order_number || '-' }}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Estado:</th>
+                    <td>
+                      <span [class]="getStatusClass(order_info.order.status)">
+                        {{ order_info.order.status }}
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Fecha de Orden:</th>
+                    <td>{{ formatDate(order_info.order.order_date) }}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Creado por:</th>
+                    <td>{{ order_info.order.created_by_user_id ? getUserName(order_info.order.created_by_user_id) : '-' }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="col-md-6">
+              <h6 class="text-muted">Información Adicional</h6>
+              <table class="table table-sm">
+                <tbody>
+                  <tr>
+                    <th scope="row" style="width: 200px;">POS Order ID:</th>
+                    <td>{{ order_info.order.pos_order_id || '-' }}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Creado:</th>
+                    <td>{{ formatDate(order_info.order.created) }}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Actualizado:</th>
+                    <td>{{ formatDate(order_info.order.updated) }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Notes -->
+          <div *ngIf="order_info.order.notes" class="alert alert-info mb-4">
+            <h6 class="alert-heading">Notas:</h6>
+            <p class="mb-0">{{ order_info.order.notes }}</p>
+          </div>
+
+          <!-- Order items -->
+          <div class="mb-4">
+            <h5 class="mb-3">Items de la Orden</h5>
+
+            <div *ngFor="let itemInfo of order_info.order_items_info; let i = index" class="card mb-3">
+              <div class="card-header bg-light">
+                <div class="row align-items-center">
+                  <div class="col-md-6">
+                    <strong>{{ getEcommerceItemName(itemInfo.order_item.ecommerce_item_id) }}</strong>
+                    <span *ngIf="getEcommerceItemCode(itemInfo.order_item.ecommerce_item_id)" class="text-muted ms-2">
+                      ({{ getEcommerceItemCode(itemInfo.order_item.ecommerce_item_id) }})
+                    </span>
+                  </div>
+                  <div class="col-md-3">
+                    <span class="badge bg-primary">Cantidad Total: {{ itemInfo.order_item.qty }}</span>
+                  </div>
+                  <div class="col-md-3 text-end">
+                    <span *ngIf="itemInfo.order_item.unit_price" class="text-success">
+                      Precio: ${{ itemInfo.order_item.unit_price }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card-body">
+                <!-- Item notes -->
+                <div *ngIf="itemInfo.order_item.notes" class="alert alert-secondary mb-3">
+                  <small><strong>Notas del item:</strong> {{ itemInfo.order_item.notes }}</small>
+                </div>
+
+                <!-- User order items -->
+                <h6 class="mb-2">Asignación por Usuario:</h6>
+                <div class="table-responsive">
+                  <table class="table table-sm table-striped table-hover">
+                    <thead>
+                      <tr>
+                        <th>Usuario</th>
+                        <th class="text-center">Cantidad</th>
+                        <th>Notas</th>
+                        <th class="text-end">Actualizado</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let userOrderItem of itemInfo.user_order_items">
+                        <td>{{ getUserName(userOrderItem.user_id) }}</td>
+                        <td class="text-center">
+                          <span class="badge bg-secondary">{{ userOrderItem.qty }}</span>
+                        </td>
+                        <td>{{ userOrderItem.notes || '-' }}</td>
+                        <td class="text-end text-muted">
+                          <small>{{ formatDate(userOrderItem.updated) }}</small>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- Empty state -->
+            <div *ngIf="order_info.order_items_info.length === 0" class="alert alert-warning">
+              Esta orden no tiene items asociados.
+            </div>
+          </div>
+        </div>
+
+        <div class="card-footer text-muted">
+          <small>Orden ID: {{ order_info.order.id }} | Ecommerce ID: {{ order_info.order.ecommerce_id }}</small>
+        </div>
+      </div>
+
+      <!-- Error state -->
+      <div *ngIf="!isLoading && !order_info" class="alert alert-danger">
+        <h5 class="alert-heading">Error</h5>
+        <p>No se pudo cargar la información de la orden. Por favor, intente nuevamente.</p>
+      </div>
+    </div>
+  </div>
+</div>
