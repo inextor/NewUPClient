@@ -470,16 +470,6 @@ export class ImportOrderComponent extends BaseComponent {
 				order_items_info: order_items_info
 			};
 
-			// Save payload to file for review
-			console.log('Payload to be sent:', JSON.stringify(payload, null, 2));
-			const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-			const url = window.URL.createObjectURL(blob);
-			const a = document.createElement('a');
-			a.href = url;
-			a.download = 'payload.json';
-			a.click();
-			window.URL.revokeObjectURL(url);
-
 			// Call backend endpoint order_info.php
 			// Searches by Order fields, returns Order_Info with full structure
 			const rest_order_info = new Rest<Order, Order_Info>(this.rest, 'order_info.php');
