@@ -282,10 +282,10 @@
 										</tr>
 									</thead>
 									<tbody>
-										@for (item of templateItems; track item.item.id) {
+										@for (item of templateItems; track item.id) {
 											<tr>
-												<td>{{ item.item.code }}</td>
-												<td>{{ item.item.name }}</td>
+												<td>{{ item.code }}</td>
+												<td>{{ item.name }}</td>
 											</tr>
 										}
 									</tbody>

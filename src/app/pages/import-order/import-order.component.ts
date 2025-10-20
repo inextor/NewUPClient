@@ -267,8 +267,8 @@ export class ImportOrderComponent extends BaseComponent {
 			for (const ecomItem of ecommerceItems) {
 				console.log('Processing ecommerce_item:', ecomItem);
 				// Map by code if available
-				if (ecomItem.item && ecomItem.item.code) {
-					existingItemMap.set(ecomItem.item.code, ecomItem);
+				if (ecomItem.code) {
+					existingItemMap.set(ecomItem.code, ecomItem);
 				}
 				// Map by #ID
 				if (ecomItem.item_id) {
@@ -284,7 +284,7 @@ export class ImportOrderComponent extends BaseComponent {
 				if (ecomItem) {
 					summary.item_id = ecomItem.item_id;
 					summary.ecommerce_item_id = ecomItem.id; // Store ecommerce_item.id
-					summary.item = ecomItem.item || ecomItem;
+					summary.item = ecomItem;
 				}
 			}
 
@@ -465,7 +465,7 @@ export class ImportOrderComponent extends BaseComponent {
 		const headers = [
 			'Codigo Empleado',
 			'Nombre',
-			...this.templateItems.map(item => item.item.code || `#${item.item.id}`)
+			...this.templateItems.map(item => item.code || `#${item.item_id}`)
 		];
 
 		// Create array of objects (not 2D array)
@@ -478,7 +478,7 @@ export class ImportOrderComponent extends BaseComponent {
 				};
 				// Add empty quantities for each item
 				this.templateItems.forEach(item => {
-					const itemKey = item.item.code || `#${item.item.id}`;
+					const itemKey = item.code || `#${item.item_id}`;
 					row[itemKey] = '';
 				});
 				return row;
@@ -490,7 +490,7 @@ export class ImportOrderComponent extends BaseComponent {
 				'Nombre': ''
 			};
 			this.templateItems.forEach(item => {
-				const itemKey = item.item.code || `#${item.item.id}`;
+				const itemKey = item.code || `#${item.item_id}`;
 				row[itemKey] = '';
 			});
 			excelData = [row];
