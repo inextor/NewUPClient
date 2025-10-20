@@ -3,14 +3,14 @@ import { CommonModule } from '@angular/common';
 import { BaseComponent } from '../base/base.component';
 import { Rest } from '../../classes/Rest';
 import { Category } from '../../models/RestModels/Category';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { GetEmpty } from '../../models/GetEmpty';
 
 @Component({
 	selector: 'app-save-category',
 	standalone: true,
-	imports: [CommonModule, FormsModule],
+	imports: [CommonModule, FormsModule, RouterLink],
 	templateUrl: './save-category.component.html',
 	styleUrls: ['./save-category.component.css']
 })

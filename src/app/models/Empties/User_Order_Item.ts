@@ -7,6 +7,7 @@ export function user_order_item(): User_Order_Item {
 		user_id: 0,
 		qty: 0,
 		notes: null,
+		delivery_timestamp: null,
 		created: new Date(),
 		updated: new Date(),
 	};

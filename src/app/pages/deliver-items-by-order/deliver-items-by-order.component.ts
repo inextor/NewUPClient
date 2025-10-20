@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Injector, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -22,9 +22,11 @@ export class DeliverItemsByOrderComponent extends BaseComponent implements OnIni
   orders_with_pending: Order_Info[] = [];
   isLoading: boolean = false;
   searchTerm: string = '';
+  confirmationService: ConfirmationService;
 
-  constructor(private confirmationService: ConfirmationService) {
-    super();
+  constructor(injector: Injector) {
+    super(injector);
+    this.confirmationService = injector.get(ConfirmationService);
   }
 
   ngOnInit(): void {
@@ -40,11 +42,11 @@ export class DeliverItemsByOrderComponent extends BaseComponent implements OnIni
         limit: 99999
       });
 
-      // Filter orders that have pending items (items with delivered = null)
+      // Filter orders that have pending items (items with delivery_timestamp = null)
       this.orders_with_pending = response.data.filter((orderInfo: Order_Info) => {
         return orderInfo.order_items_info.some(itemInfo =>
           itemInfo.user_order_items.some(userOrderItem =>
-            userOrderItem.delivered === null
+            userOrderItem.delivery_timestamp === null
           )
         );
       });
@@ -60,7 +62,7 @@ export class DeliverItemsByOrderComponent extends BaseComponent implements OnIni
     let count = 0;
     for (const itemInfo of orderInfo.order_items_info) {
       for (const userOrderItem of itemInfo.user_order_items) {
-        if (userOrderItem.delivered === null) {
+        if (userOrderItem.delivery_timestamp === null) {
           count++;
         }
       }
@@ -77,7 +79,7 @@ export class DeliverItemsByOrderComponent extends BaseComponent implements OnIni
   }
 
   async deliverAllByOrder(order_id: number, orderNumber: string): Promise<void> {
-    const confirmed = await this.confirmationService.confirm(
+    const confirmed = confirm(
       `¿Está seguro de marcar todos los items de la orden "${orderNumber}" como entregados?`
     );
 
@@ -89,7 +91,7 @@ export class DeliverItemsByOrderComponent extends BaseComponent implements OnIni
       const response = await fetch(this.rest.base_url + '/user_order_item.php', {
         method: 'PATCH',
         headers: {
-          'Authorization': 'Bearer ' + this.rest.getBearerToken(),
+          'Authorization': 'Bearer ' + this.rest.bearer,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({

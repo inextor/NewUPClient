@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Injector, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -29,9 +29,11 @@ export class DeliverItemsByUserComponent extends BaseComponent implements OnInit
   // Maps for user and item names
   userMap: Map<number, User> = new Map();
   ecommerceItemMap: Map<number, any> = new Map();
+  confirmationService: ConfirmationService;
 
-  constructor(private confirmationService: ConfirmationService) {
-    super();
+  constructor(injector: Injector) {
+    super(injector);
+    this.confirmationService = injector.get(ConfirmationService);
   }
 
   ngOnInit(): void {
@@ -139,7 +141,7 @@ export class DeliverItemsByUserComponent extends BaseComponent implements OnInit
       return;
     }
 
-    const confirmed = await this.confirmationService.confirm(
+    const confirmed = confirm(
       `¿Está seguro de marcar ${this.selectedItems.size} item(s) como entregado(s)?`
     );
 
@@ -152,7 +154,7 @@ export class DeliverItemsByUserComponent extends BaseComponent implements OnInit
       const response = await fetch(this.rest.base_url + '/user_order_item.php', {
         method: 'PATCH',
         headers: {
-          'Authorization': 'Bearer ' + this.rest.getBearerToken(),
+          'Authorization': 'Bearer ' + this.rest.bearer,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
@@ -177,7 +179,7 @@ export class DeliverItemsByUserComponent extends BaseComponent implements OnInit
   }
 
   async deliverSingle(id: number): Promise<void> {
-    const confirmed = await this.confirmationService.confirm(
+    const confirmed = confirm(
       '¿Está seguro de marcar este item como entregado?'
     );
 
@@ -189,7 +191,7 @@ export class DeliverItemsByUserComponent extends BaseComponent implements OnInit
       const response = await fetch(this.rest.base_url + '/user_order_item.php', {
         method: 'PATCH',
         headers: {
-          'Authorization': 'Bearer ' + this.rest.getBearerToken(),
+          'Authorization': 'Bearer ' + this.rest.bearer,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
