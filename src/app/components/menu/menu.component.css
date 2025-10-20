@@ -37,3 +37,19 @@
 .menu-item:hover {
   background-color: #e2e2e2;
 }
+
+.menu-section-title {
+  color: #666;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 15px 15px 5px 15px;
+  margin-top: 10px;
+  border-top: 1px solid #ddd;
+}
+
+.menu-section-title:first-child {
+  margin-top: 0;
+  border-top: none;
+}

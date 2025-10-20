@@ -1,14 +1,30 @@
 <nav *ngIf="rest.is_menu_open" class="sidebar-menu">
     <div class="menu-content">
+        <!-- Home & Shopping -->
         <div class="menu-item"><a [routerLink]="['/']">Inicio</a></div>
         <div class="menu-item"><a [routerLink]="['/cart']">Carrito</a></div>
-        <div class="menu-item"><a href="#">Ayuda</a></div>
-        <div class="menu-item"><a [routerLink]="['/edit-quote']">Solicitar Cotizacion</a></div>
-        <div class="menu-item"><a [routerLink]="['/list-ecommerce-item']">Administrar Articulos</a></div>
+        <div class="menu-item"><a [routerLink]="['/edit-quote']">Solicitar Cotización</a></div>
+
+        <!-- Catalog Management -->
+        <div class="menu-section-title">Catálogo</div>
+        <div class="menu-item"><a [routerLink]="['/list-ecommerce-item']">Administrar Artículos</a></div>
+        <div class="menu-item"><a [routerLink]="['/list-category']">Administrar Categorías</a></div>
+
+        <!-- User & Role Management -->
+        <div class="menu-section-title">Administración</div>
         <div class="menu-item"><a [routerLink]="['/list-user']">Administrar Usuarios</a></div>
         <div class="menu-item"><a [routerLink]="['/list-role']">Administrar Roles</a></div>
+
+        <!-- Order Management -->
+        <div class="menu-section-title">Órdenes</div>
         <div class="menu-item"><a [routerLink]="['/list-order']">Listar Órdenes</a></div>
         <div class="menu-item"><a [routerLink]="['/import-order']">Importar Pedidos</a></div>
+        <div class="menu-item"><a [routerLink]="['/deliver-items-by-user']">Entregar por Usuario</a></div>
+        <div class="menu-item"><a [routerLink]="['/deliver-items-by-order']">Entregar por Orden</a></div>
+
+        <!-- Other -->
+        <div class="menu-section-title">Otros</div>
+        <div class="menu-item"><a href="#">Ayuda</a></div>
         <div class="menu-item"><a href="#">Panel Informativo</a></div>
         <div class="menu-item"><a [routerLink]="['/logout']">Cerrar Sesión</a></div>
     </div>
