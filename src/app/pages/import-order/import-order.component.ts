@@ -482,11 +482,10 @@ export class ImportOrderComponent extends BaseComponent {
 			a.click();
 			window.URL.revokeObjectURL(url);
 
-			// Call backend endpoint
-			// NOTE: You'll need to create a specific endpoint for this,
-			// or add an 'action' parameter to your order.php endpoint
-			const rest_order_import = new Rest<Order_Info, Order_Info>(this.rest, 'order_import.php');
-			const result = await rest_order_import.create(payload);
+			// Call backend endpoint order_info.php
+			// Searches by Order fields, returns Order_Info with full structure
+			const rest_order_info = new Rest<Order, Order_Info>(this.rest, 'order_info.php');
+			const result = await rest_order_info.create(payload);
 
 			this.rest.showSuccess(`Orden #${result.order.id} creada exitosamente con ${this.orderItems.length} items`);
 
