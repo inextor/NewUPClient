@@ -1,8 +1,8 @@
-export interface User_Order_Item {
+export interface User_Ecommerce_Order_Item {
   id: number;
   order_item_id: number;
   user_id: number;
-  quantity: number;
+  qty: number;
   notes: string | null;
   created: string | Date;
   updated: string | Date;
