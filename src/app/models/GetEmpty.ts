@@ -1,4 +1,5 @@
 import { account } from './Empties/Account';
+import { category } from './Empties/Category';
 import { ecommerce } from './Empties/Ecommerce';
 import { ecommerce_item } from './Empties/Ecommerce_Item';
 import { order } from './Empties/Order';
@@ -16,6 +17,7 @@ import { user_item } from './Empties/User_Item';
 import { user_order_item } from './Empties/User_Order_Item';
 
 import { Account } from './RestModels/Account';
+import { Category } from './RestModels/Category';
 import { Ecommerce } from './RestModels/Ecommerce';
 import { Ecommerce_Item } from './RestModels/Ecommerce_Item';
 import { Order } from './RestModels/Order';
@@ -35,6 +37,10 @@ import { User_Order_Item } from './RestModels/User_Order_Item';
 export class GetEmpty {
     static account(): Account {
         return account();
+    }
+
+    static category(): Category {
+        return category();
     }
 
     static ecommerce(): Ecommerce {

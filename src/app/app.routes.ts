@@ -20,6 +20,7 @@ import { SaveEcommerceItemComponent } from './pages/save-ecommerce-item/save-eco
 import { ImportOrderComponent } from './pages/import-order/import-order.component';
 import { ListOrderComponent } from './pages/list-order/list-order.component';
 import { ViewOrderComponent } from './pages/view-order/view-order.component';
+import { SaveCategoryComponent } from './pages/save-category/save-category.component';
 
 import { authGuard } from './guards/auth.guard';
 
@@ -52,6 +53,8 @@ export const routes: Routes = [
             { path: 'import-order', component: ImportOrderComponent },
             { path: 'view-order/:id', component: ViewOrderComponent },
             { path: 'list-order', component: ListOrderComponent },
+            { path: 'add-category', component: SaveCategoryComponent },
+            { path: 'edit-category/:id', component: SaveCategoryComponent },
         ]
     },
     {
