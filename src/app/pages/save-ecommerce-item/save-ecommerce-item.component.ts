@@ -5,6 +5,7 @@ import { BaseComponent } from '../base/base.component';
 import { Rest } from '../../classes/Rest';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Ecommerce_Item } from '../../models/RestModels/Ecommerce_Item';
+import { Category } from '../../models/RestModels/Category';
 import { GetEmpty } from '../../models/GetEmpty';
 
 @Component({
@@ -16,9 +17,17 @@ import { GetEmpty } from '../../models/GetEmpty';
 export class SaveEcommerceItemComponent extends BaseComponent implements OnInit {
 
   rest_ecommerce_item: Rest<Ecommerce_Item, Ecommerce_Item> = new Rest<Ecommerce_Item, Ecommerce_Item>(this.rest, 'ecommerce_item.php');
+  rest_category: Rest<Category, Category> = new Rest<Category, Category>(this.rest, 'category.php');
+
   ecommerce_item: Ecommerce_Item = GetEmpty.ecommerce_item();
+  categories: Category[] = [];
+  isLoadingCategories: boolean = false;
 
   ngOnInit(): void {
+    // Load categories
+    this.loadCategories();
+
+    // Load ecommerce item if editing
     this.route.paramMap.subscribe(params => {
       const id = params.get('id');
       if (id) {
@@ -31,6 +40,21 @@ export class SaveEcommerceItemComponent extends BaseComponent implements OnInit 
           });
       }
     });
+  }
+
+  async loadCategories(): Promise<void> {
+    this.isLoadingCategories = true;
+    try {
+      const response = await this.rest_category.search({
+        ecommerce_id: this.rest.ecommerce.id,
+        limit: 99999
+      });
+      this.categories = response.data;
+    } catch (error) {
+      this.rest.showError(error);
+    } finally {
+      this.isLoadingCategories = false;
+    }
   }
 
   save() {

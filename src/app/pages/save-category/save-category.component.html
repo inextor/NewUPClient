@@ -1,0 +1,20 @@
+<div class="container mt-5">
+  <h2 class="app-page-title">{{ category.id ? 'Editar Categoría' : 'Agregar Categoría' }}</h2>
+
+  <div class="card bg-white p-3">
+    <form (ngSubmit)="save()">
+      <div class="mb-3">
+        <label for="name" class="form-label">Nombre</label>
+        <input type="text" class="form-control" id="name" [(ngModel)]="category.name" name="name" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="description" class="form-label">Descripción</label>
+        <textarea class="form-control" id="description" [(ngModel)]="category.description" name="description" rows="3"></textarea>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Guardar</button>
+      <a [routerLink]="['/list-category']" class="btn btn-secondary ms-2">Cancelar</a>
+    </form>
+  </div>
+</div>
