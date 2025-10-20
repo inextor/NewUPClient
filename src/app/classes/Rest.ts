@@ -193,8 +193,14 @@ export class Rest<T,U>
 
 	private stringifyWithDates(obj: any): string {
 		return JSON.stringify(obj, (key, value) => {
+			// Handle Date objects
 			if (value instanceof Date) {
 				return this.formatDateForMySQL(value);
+			}
+			// Handle ISO date strings (from JSON serialization)
+			if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/.test(value)) {
+				const date = new Date(value);
+				return this.formatDateForMySQL(date);
 			}
 			return value;
 		});
