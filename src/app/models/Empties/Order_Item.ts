@@ -5,7 +5,7 @@ export function order_item(): Order_Item {
 		id: 0,
 		order_id: 0,
 		ecommerce_item_id: 0,
-		quantity: 0,
+		qty: 0,
 		unit_price: null,
 		notes: null,
 		created: new Date(),

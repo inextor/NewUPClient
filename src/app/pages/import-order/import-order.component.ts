@@ -349,7 +349,7 @@ export class ImportOrderComponent extends BaseComponent {
 			.map(p => {
 				const orderItem = GetEmpty.order_item();
 				orderItem.ecommerce_item_id = p.ecommerce_item_id!;
-				orderItem.quantity = p.totalQty;
+				orderItem.qty = p.totalQty;
 				orderItem.unit_price = null; // Will be set later if needed
 				orderItem.notes = `Code: ${p.code}`;
 				return orderItem;
