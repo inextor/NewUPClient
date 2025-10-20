@@ -22,7 +22,6 @@ interface ImportedRow {
 interface ProductSummary {
 	code: string;
 	totalQty: number;
-	item_id?: number;
 	ecommerce_item_id?: number;
 	ecommerce_item?: any;
 }
@@ -283,7 +282,6 @@ export class ImportOrderComponent extends BaseComponent {
 			for (const summary of this.productSummary) {
 				const ecomItem = existingItemMap.get(summary.code);
 				if (ecomItem) {
-					summary.item_id = ecomItem.item_id;
 					summary.ecommerce_item_id = ecomItem.id; // Store ecommerce_item.id
 					summary.ecommerce_item = ecomItem;
 				}
@@ -587,11 +585,11 @@ export class ImportOrderComponent extends BaseComponent {
 			return;
 		}
 
-		// Create Excel data with item codes (or #ID if no code)
+		// Create Excel data with item codes (or #ecommerce_item_id if no code)
 		const headers = [
 			'Codigo Empleado',
 			'Nombre',
-			...this.templateEcommerceItems.map(ecommerceItem => ecommerceItem.code || `#${ecommerceItem.item_id}`)
+			...this.templateEcommerceItems.map(ecommerceItem => ecommerceItem.code || `#${ecommerceItem.id}`)
 		];
 
 		// Create array of objects (not 2D array)
@@ -604,7 +602,7 @@ export class ImportOrderComponent extends BaseComponent {
 				};
 				// Add empty quantities for each item
 				this.templateEcommerceItems.forEach(ecommerceItem => {
-					const itemKey = ecommerceItem.code || `#${ecommerceItem.item_id}`;
+					const itemKey = ecommerceItem.code || `#${ecommerceItem.id}`;
 					row[itemKey] = '';
 				});
 				return row;
@@ -616,7 +614,7 @@ export class ImportOrderComponent extends BaseComponent {
 				'Nombre': ''
 			};
 			this.templateEcommerceItems.forEach(ecommerceItem => {
-				const itemKey = ecommerceItem.code || `#${ecommerceItem.item_id}`;
+				const itemKey = ecommerceItem.code || `#${ecommerceItem.id}`;
 				row[itemKey] = '';
 			});
 			excelData = [row];

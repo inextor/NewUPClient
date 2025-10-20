@@ -54,7 +54,7 @@
 							<td>{{ product.code }}</td>
 							<td>{{ product.totalQty }}</td>
 							<td>
-								@if (product.item_id) {
+								@if (product.ecommerce_item_id) {
 									<span class="badge bg-success">Encontrado</span>
 								} @else {
 									<span class="badge bg-warning">No encontrado</span>
@@ -160,8 +160,8 @@
 				<table class="table table-sm table-striped">
 					<thead>
 						<tr>
-							<th class="d-none d-md-table-cell">Item ID</th>
 							<th>Código</th>
+							<th>Nombre</th>
 							<th class="d-none d-md-table-cell">Notas</th>
 							<th class="text-end">Cantidad</th>
 						</tr>
@@ -169,16 +169,22 @@
 					<tbody>
 						@for (item of orderItems; track item.ecommerce_item_id) {
 							<tr>
-								<td class="d-none d-md-table-cell">{{ item.ecommerce_item_id }}</td>
 								<td>
 									@for (product of productSummary; track product.code) {
 										@if (product.ecommerce_item_id === item.ecommerce_item_id) {
-											{{ product.code }}
+											{{ product.ecommerce_item?.code || '#' + product.ecommerce_item_id }}
 										}
 									}
 									@if (item.notes) {
 										<br>
 										<a href="javascript:void(0)" class="d-md-none text-primary small" (click)="showNoteModal(item.notes)">Ver nota</a>
+									}
+								</td>
+								<td>
+									@for (product of productSummary; track product.code) {
+										@if (product.ecommerce_item_id === item.ecommerce_item_id) {
+											{{ product.ecommerce_item?.name || 'N/A' }}
+										}
 									}
 								</td>
 								<td class="d-none d-md-table-cell">{{ item.notes }}</td>
