@@ -21,6 +21,7 @@ import { ImportOrderComponent } from './pages/import-order/import-order.componen
 import { ListOrderComponent } from './pages/list-order/list-order.component';
 import { ViewOrderComponent } from './pages/view-order/view-order.component';
 import { ListCategoryComponent } from './pages/list-category/list-category.component';
+import { SaveCategoryComponent } from './pages/save-category/save-category.component';
 import { DeliverItemsByUserComponent } from './pages/deliver-items-by-user/deliver-items-by-user.component';
 import { DeliverItemsByOrderComponent } from './pages/deliver-items-by-order/deliver-items-by-order.component';
 
@@ -56,6 +57,8 @@ export const routes: Routes = [
             { path: 'view-order/:id', component: ViewOrderComponent },
             { path: 'list-order', component: ListOrderComponent },
             { path: 'list-category', component: ListCategoryComponent },
+            { path: 'add-category', component: SaveCategoryComponent },
+            { path: 'edit-category/:id', component: SaveCategoryComponent },
             { path: 'deliver-items-by-user', component: DeliverItemsByUserComponent },
             { path: 'deliver-items-by-order', component: DeliverItemsByOrderComponent },
         ]

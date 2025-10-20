@@ -13,6 +13,28 @@
         <input type="text" class="form-control" id="name" [(ngModel)]="ecommerce_item.name" name="name" required>
       </div>
 
+      <div class="mb-3">
+        <label for="category" class="form-label">Categoría</label>
+        <select
+          class="form-select"
+          id="category"
+          [(ngModel)]="ecommerce_item.category_id"
+          name="category_id"
+          [disabled]="isLoadingCategories">
+          <option [ngValue]="null">Sin categoría</option>
+          <option *ngFor="let category of categories" [ngValue]="category.id">
+            {{ category.name }}
+          </option>
+        </select>
+        <div *ngIf="isLoadingCategories" class="form-text">
+          <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+          Cargando categorías...
+        </div>
+        <div *ngIf="!isLoadingCategories && categories.length === 0" class="form-text text-warning">
+          No hay categorías disponibles
+        </div>
+      </div>
+
       <button type="submit" class="btn btn-primary">Guardar</button>
       <a [routerLink]="['/list-ecommerce-item']" class="btn btn-secondary ms-2">Cancelar</a>
     </form>
