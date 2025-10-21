@@ -10,28 +10,7 @@
 				<p class="product-description">{{ item_info.item.description || 'No description available.' }}</p>
 				<p class="product-price">{{ ecommerce_item.price | currency }}</p>
 
-				<!-- Size selection inputs (shown only if not 'unico') -->
-				@if (availableSizes.length > 0 && ecommerce_item.sizes !== 'unico') {
-					<div class="size-selection">
-						<h4>Seleccionar Tallas:</h4>
-						<div class="size-inputs">
-							@for (size of availableSizes; track size) {
-								<div class="size-input-row">
-									<label class="size-label">{{ size }}</label>
-									<input
-										type="number"
-										class="form-control size-input"
-										[(ngModel)]="sizeQuantities[size]"
-										min="0"
-										placeholder="0"
-									/>
-								</div>
-							}
-						</div>
-					</div>
-				}
-
-				<button class="btn btn-primary add-to-cart-button" (click)="addToCart(ecommerce_item.id)">
+				<button class="btn btn-primary add-to-cart-button" (click)="openSizeModal(ecommerce_item.id)">
 					Añadir al carrito
 				</button>
 			</div>
@@ -48,6 +27,41 @@
 	} @else {
 		<div class="text-center">
 			<p>Cargando detalles del producto...</p>
+		</div>
+	}
+
+	<!-- Size Selection Modal -->
+	@if (showSizeModal) {
+		<div class="modal-backdrop" (click)="closeSizeModal()"></div>
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Seleccionar Tallas</h5>
+					<button type="button" class="btn-close" (click)="closeSizeModal()"></button>
+				</div>
+				<div class="modal-body">
+					@if (availableSizes.length > 0) {
+						<div class="size-inputs">
+							@for (size of availableSizes; track size) {
+								<div class="size-input-row">
+									<label class="size-label">{{ size }}</label>
+									<input
+										type="number"
+										class="form-control size-input"
+										[(ngModel)]="sizeQuantities[size]"
+										min="0"
+										placeholder="0"
+									/>
+								</div>
+							}
+						</div>
+					}
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" (click)="closeSizeModal()">Cancelar</button>
+					<button type="button" class="btn btn-primary" (click)="confirmAddToCart()">Agregar al carrito</button>
+				</div>
+			</div>
 		</div>
 	}
 </div>

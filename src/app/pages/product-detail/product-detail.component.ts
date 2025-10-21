@@ -48,6 +48,8 @@ export class ProductDetailComponent extends BaseComponent implements OnInit {
 	// Size selection
 	availableSizes: string[] = [];
 	sizeQuantities: { [size: string]: number } = {};
+	showSizeModal: boolean = false;
+	pendingEcommerceItemId: number | null = null;
 
 	rest_item: Rest<any,any> = new Rest<any,any>(this.rest.pos_rest, 'item_info.php');
 	rest_ecommerce_item: Rest<Ecommerce_Item,Ecommerce_Item> = new Rest<Ecommerce_Item,Ecommerce_Item>(this.rest, 'ecommerce_item.php');
@@ -139,7 +141,7 @@ export class ProductDetailComponent extends BaseComponent implements OnInit {
 		this.mainImageId = imageId;
 	}
 
-	addToCart(ecommerce_item_id: number): void {
+	openSizeModal(ecommerce_item_id: number): void {
 		// If size is 'unico' or no sizes available, add directly
 		if (!this.ecommerce_item?.sizes || this.ecommerce_item.sizes === 'unico') {
 			// TODO: Implement actual cart logic for single item
@@ -148,6 +150,17 @@ export class ProductDetailComponent extends BaseComponent implements OnInit {
 			return;
 		}
 
+		// Open modal for size selection
+		this.pendingEcommerceItemId = ecommerce_item_id;
+		this.showSizeModal = true;
+	}
+
+	closeSizeModal(): void {
+		this.showSizeModal = false;
+		this.pendingEcommerceItemId = null;
+	}
+
+	confirmAddToCart(): void {
 		// Get sizes with quantities > 0
 		const selectedSizes = Object.entries(this.sizeQuantities)
 			.filter(([size, qty]) => qty > 0)
@@ -166,5 +179,12 @@ export class ProductDetailComponent extends BaseComponent implements OnInit {
 		this.availableSizes.forEach(size => {
 			this.sizeQuantities[size] = 0;
 		});
+
+		// Close modal
+		this.closeSizeModal();
+	}
+
+	addToCart(ecommerce_item_id: number): void {
+		this.openSizeModal(ecommerce_item_id);
 	}
 }
