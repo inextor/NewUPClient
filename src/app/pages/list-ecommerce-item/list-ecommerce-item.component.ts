@@ -7,6 +7,7 @@ import { ParamMap, RouterLink } from '@angular/router';
 import { RestResponse } from '../../classes/RestResponse';
 import { CommonModule } from '@angular/common';
 import { ImagePipe } from '../../pipes/image.pipe';
+import { PaginationComponent } from '../../components/pagination/pagination.component';
 
 interface CEcommerceItemInfo {
 	ecommerce_item: Ecommerce_Item;
@@ -15,7 +16,7 @@ interface CEcommerceItemInfo {
 
 @Component({
 	selector: 'app-list-ecommerce-item',
-	imports: [CommonModule, ImagePipe, RouterLink],
+	imports: [CommonModule, ImagePipe, RouterLink, PaginationComponent],
 	templateUrl: './list-ecommerce-item.component.html',
 	styleUrl: './list-ecommerce-item.component.css'
 })
@@ -28,11 +29,15 @@ export class ListEcommerceItemComponent extends BaseComponent implements OnInit 
 
 	ngOnInit(): void
 	{
+		this.path = '/list-ecommerce-item';
+
 		this.route.queryParamMap.subscribe((params:ParamMap) =>
 		{
 			let page = params.has('page') ? parseInt( params.get('page')! ) : 0;
 			let limit = params.has('limit') ? parseInt( params.get('limit')! ) : 20;
 
+			this.current_page = page;
+			this.page_size = limit;
 
 			let url_params = this.rest_ecommerce_item.getUrlParams( params );
 
@@ -42,6 +47,7 @@ export class ListEcommerceItemComponent extends BaseComponent implements OnInit 
 			.then((response:RestResponse<Ecommerce_Item>) =>
 			{
 				this.ecommerce_item_list = response.data;
+				this.setPages(this.current_page, response.total);
 				let ids = response.data.map((i)=>i.item_id);
 				return Promise.all([response, this.rest_item.search({ 'id,': ids })]);
 			})

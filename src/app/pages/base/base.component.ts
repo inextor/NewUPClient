@@ -23,11 +23,45 @@ export class BaseComponent {
 	public router: Router;
     public route: ActivatedRoute;
 
+	// Pagination properties
+	public current_page: number = 0;
+	public path: string = '';
+	public total_pages: number = 0;
+	public total_items: number = 0;
+	public pages: number[] = [];
+	public page_size: number = 20;
+
 	constructor(public injector: Injector)
 	{
 		this.rest = this.injector.get(RestService);
 		this.router = this.injector.get(Router);
 		this.route = injector.get(ActivatedRoute);
+	}
+
+	setPages(current_page: number, totalItems: number): void
+	{
+		this.current_page = current_page;
+		this.pages = [];
+		this.total_items = totalItems;
+
+		if ((this.total_items % this.page_size) > 0)
+		{
+			this.total_pages = Math.floor(this.total_items / this.page_size) + 1;
+		}
+		else
+		{
+			this.total_pages = this.total_items / this.page_size;
+		}
+
+		for (let i = this.current_page - 5; i < this.current_page + 5; i++)
+		{
+			if (i >= 0 && i < this.total_pages)
+			{
+				this.pages.push(i);
+			}
+		}
+
+		this.is_loading = false;
 	}
 
 	private _getQueryParamObservable():Observable<ParamMap[]>
