@@ -6,6 +6,7 @@ import { Ecommerce_Item } from '../../models/RestModels/Ecommerce_Item';
 import { Rest } from '../../classes/Rest';
 import { RestResponse } from '../../classes/RestResponse';
 import { ImagePipe } from '../../pipes/image.pipe';
+import { ProductSizeRanges } from '../../classes/ProductSizeRanges';
 
 interface ItemInfo {
 	item: {
@@ -103,10 +104,24 @@ export class ProductDetailComponent extends BaseComponent implements OnInit {
 
 			// Parse available sizes from ecommerce_item.sizes
 			if (this.ecommerce_item?.sizes) {
-				this.availableSizes = this.ecommerce_item.sizes
-					.split(',')
-					.map(s => s.trim())
-					.filter(s => s.length > 0);
+				const sizesValue = this.ecommerce_item.sizes.toLowerCase().trim();
+
+				// Check if it's a category that maps to ProductSizeRanges
+				if (sizesValue === 'pantalon dama' || sizesValue.includes('dama')) {
+					this.availableSizes = [...ProductSizeRanges.PANTALON_DAMA];
+				} else if (sizesValue === 'pantalon caballero' || sizesValue.includes('caballero')) {
+					this.availableSizes = [...ProductSizeRanges.PANTALON_CABALLERO];
+				} else if (sizesValue === 'camisa') {
+					this.availableSizes = [...ProductSizeRanges.CAMISAS_CHALECOS_SUDADERAS_CHAMARRAS];
+				} else if (sizesValue === 'calzado') {
+					this.availableSizes = [...ProductSizeRanges.CALZADO];
+				} else {
+					// Otherwise split by comma
+					this.availableSizes = this.ecommerce_item.sizes
+						.split(',')
+						.map(s => s.trim())
+						.filter(s => s.length > 0);
+				}
 
 				// Initialize size quantities to 0
 				this.sizeQuantities = {};
