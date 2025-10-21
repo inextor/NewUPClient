@@ -71,12 +71,16 @@ export class MainHomeComponent extends BaseComponent implements OnInit {
 						if (!result) return;
 
 						const [ecommerce_item_response, item_response] = result;
-						this.cecommerce_item_list = ecommerce_item_response.data.map((item: Ecommerce_Item, i: number) => {
-							return {
-								ecommerce_item: item,
-								item_info: item_response.data[i]
-							}
-						});
+						this.cecommerce_item_list = ecommerce_item_response.data
+							.map((ecommerce_item: Ecommerce_Item) => {
+								// Find the matching item_info by item_id
+								const matching_item_info = item_response.data.find((item_info: any) => item_info.item.id === ecommerce_item.item_id);
+								return {
+									ecommerce_item: ecommerce_item,
+									item_info: matching_item_info
+								}
+							})
+							.filter((ceii: CEcommerceItemInfo) => ceii.item_info !== undefined);
 					})
 					.catch((error: any) => {
 						this.rest.showError(error);

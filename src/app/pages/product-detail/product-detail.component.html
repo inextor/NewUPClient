@@ -6,6 +6,7 @@
 			</div>
 			<div class="product-info">
 				<h1 class="product-name">{{ item_info.item.name }}</h1>
+				<p class="product-id">ID: {{ ecommerce_item.id }}</p>
 				<p class="product-category">{{ item_info.category?.name || ecommerce_item.category_name || 'N/A' }}</p>
 				<p class="product-description">{{ item_info.item.description || 'No description available.' }}</p>
 				<p class="product-price">{{ ecommerce_item.price | currency }}</p>
