@@ -1,0 +1,45 @@
+# .htaccess for Angular SPA deployment
+# Deploy this file along with your build to uniformesprofesionales.mx/semprainfraestructura/
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Set the base directory
+    RewriteBase /semprainfraestructura/
+
+    # If an existing asset or directory is requested go to it as it is
+    RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} -f [OR]
+    RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} -d
+    RewriteRule ^ - [L]
+
+    # If the requested resource doesn't exist, use index.html
+    RewriteRule ^ /semprainfraestructura/index.html [L]
+</IfModule>
+
+# Prevent directory listing
+Options -Indexes
+
+# Security headers
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+</IfModule>
+
+# Compression
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json
+</IfModule>
+
+# Browser caching for static assets
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpg "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType text/javascript "access plus 1 month"
+</IfModule>
