@@ -4,15 +4,15 @@
   </h2>
   @if (role_list.length === 0) {
     <div class="alert alert-info">
-      No roles found.
+      No se encontraron roles.
     </div>
   }
   @if (role_list.length > 0) {
     <div class="card bg-white p-3">
-      <table class="table table-discrete-striped">
-        <thead>
+      <table class="table table-hover table-sm">
+        <thead class="table-light">
           <tr>
-            <th>#</th>
+            <th class="text-center">#</th>
             <th>Nombre</th>
             <th class="text-end">Acciones</th>
           </tr>
@@ -20,12 +20,14 @@
         <tbody>
           @for (role of role_list; track role.id) {
             <tr>
-              <th scope="row">{{ role.id }}</th>
+              <td class="text-center">{{ role.id }}</td>
               <td>{{ role.name }}</td>
               <td class="text-end">
-                <a class="btn btn-info btn-sm" [routerLink]="['/list-item-role']" [queryParams]="{role_id: role.id}">Artículos</a>
-                <a class="btn btn-primary btn-sm ms-2" [routerLink]="['/edit-role', role.id]">Editar</a>
-                <button class="btn btn-danger btn-sm ms-2">Eliminar</button>
+                <div class="btn-group btn-group-sm" role="group">
+                  <a class="btn btn-info" [routerLink]="['/list-item-role']" [queryParams]="{role_id: role.id}">Artículos</a>
+                  <a class="btn btn-primary" [routerLink]="['/edit-role', role.id]">Editar</a>
+                  <button class="btn btn-danger">Eliminar</button>
+                </div>
               </td>
             </tr>
           }
