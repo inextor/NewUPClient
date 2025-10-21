@@ -1,0 +1,15 @@
+/* Select boxes with size attribute */
+select[size] {
+	min-height: 150px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+	.table-responsive {
+		font-size: 0.875rem;
+	}
+
+	select[size] {
+		min-height: 120px;
+	}
+}
