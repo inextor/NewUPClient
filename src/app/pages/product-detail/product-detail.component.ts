@@ -81,10 +81,20 @@ export class ProductDetailComponent extends BaseComponent implements OnInit {
 			return this.rest_item_image.search({ 'item_id': this.item_info.item.id });
 		})
 		.then((item_image_response: RestResponse<any>) => {
-			// Extract image_id from each item_image
-			if (item_image_response.data && item_image_response.data.length > 0) {
-				this.additionalImageIds = item_image_response.data.map((img: any) => img.image_id);
+			// Start with main image
+			const imageIds: number[] = [];
+
+			if (this.mainImageId) {
+				imageIds.push(this.mainImageId);
 			}
+
+			// Add additional images from item_image
+			if (item_image_response.data && item_image_response.data.length > 0) {
+				const additionalIds = item_image_response.data.map((img: any) => img.image_id);
+				imageIds.push(...additionalIds);
+			}
+
+			this.additionalImageIds = imageIds;
 		})
 		.catch((error: any) => {
 			this.rest.showError(error);
