@@ -2,12 +2,12 @@
 	@if (ecommerce_item && item_info) {
 		<div class="product-card">
 			<div class="product-main-image">
-				<img [src]="mainImageId | image" alt="{{ item_info.name }}">
+				<img [src]="mainImageId | image" alt="{{ item_info.item.name }}">
 			</div>
 			<div class="product-info">
-				<h1 class="product-name">{{ item_info.name }}</h1>
-				<p class="product-category">{{ ecommerce_item.category_name || 'N/A' }}</p>
-				<p class="product-description">{{ item_info.description || 'No description available.' }}</p>
+				<h1 class="product-name">{{ item_info.item.name }}</h1>
+				<p class="product-category">{{ item_info.category?.name || ecommerce_item.category_name || 'N/A' }}</p>
+				<p class="product-description">{{ item_info.item.description || 'No description available.' }}</p>
 				<p class="product-price">{{ ecommerce_item.price | currency }}</p>
 				<button class="btn btn-primary add-to-cart-button" (click)="addToCart(ecommerce_item.id)">
 					Añadir al carrito
@@ -28,18 +28,31 @@
 			<p>Cargando detalles del producto...</p>
 		</div>
 	}
-
-	@if (attachments && attachments.length > 0) {
-		<div class="attachments-section">
-			<h2>Archivos Adjuntos</h2>
-			<ul>
-				@for (attachment of attachments; track attachment.attachment_id) {
-					<li>
-						<a [href]="attachment.url" target="_blank">{{ attachment.title }}</a>
-						<p>{{ attachment.description }}</p>
-					</li>
-				}
-			</ul>
-		</div>
-	}
 </div>
+
+<!-- Size Selection Modal -->
+@if (showSizeModal) {
+	<div class="modal-overlay" (click)="closeSizeModal()">
+		<div class="modal-content" (click)="$event.stopPropagation()">
+			<h3>Seleccionar Tallas</h3>
+			<div class="size-grid">
+				@for (size of availableSizes; track size) {
+					<div class="size-row">
+						<label class="size-label">{{ size }}</label>
+						<input
+							type="number"
+							class="form-control size-input"
+							[(ngModel)]="sizeQuantities[size]"
+							min="0"
+							placeholder="0"
+						/>
+					</div>
+				}
+			</div>
+			<div class="modal-actions">
+				<button class="btn btn-secondary" (click)="closeSizeModal()">Cancelar</button>
+				<button class="btn btn-primary" (click)="confirmAddToCart()">Confirmar</button>
+			</div>
+		</div>
+	</div>
+}
