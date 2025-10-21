@@ -16,7 +16,8 @@ export class RestService implements RestEndPoint{
 	error_behavior_subject = new BehaviorSubject<ErrorMessage>(new ErrorMessage('',''));
 	public error_observable = this.error_behavior_subject.asObservable();
 
-	public base_url = 'http://localhost/NewUpServer'//environment.base_url;
+	public base_url = this.getApiUrl();
+	public externalAppBaseUrl = this.getAppBaseUrl();
 	public user: any = null;
 	public session: any = null;
 	public permission: any = null;
@@ -97,6 +98,50 @@ export class RestService implements RestEndPoint{
 				localStorage.setItem('ecommerce', JSON.stringify(hardcodedEcommerce));
 			}
 		}
+	}
+
+	/**
+	 * Determines the API URL based on the current hostname
+	 */
+	private getApiUrl(): string
+	{
+		if (typeof window !== 'undefined')
+		{
+			const hostname = window.location.hostname;
+
+			if (hostname === 'localhost' || hostname === '127.0.0.1')
+			{
+				return 'http://localhost/NewUpServer';
+			}
+			else
+			{
+				return 'https://uniformesprofesionales.mx/semprainfraestructura/api';
+			}
+		}
+		// Fallback for SSR or build time
+		return 'http://localhost/NewUpServer';
+	}
+
+	/**
+	 * Determines the app base URL for external links
+	 */
+	private getAppBaseUrl(): string
+	{
+		if (typeof window !== 'undefined')
+		{
+			const hostname = window.location.hostname;
+
+			if (hostname === 'localhost' || hostname === '127.0.0.1')
+			{
+				return 'http://localhost:4200';
+			}
+			else
+			{
+				return 'https://uniformesprofesionales.mx/semprainfraestructura';
+			}
+		}
+		// Fallback for SSR or build time
+		return 'http://localhost:4200';
 	}
 
 	getBaseUrl(): string
