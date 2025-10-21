@@ -34,8 +34,7 @@ export const routes: Routes = [
         component: MainComponent,
         canActivate: [authGuard],
         children: [
-            { path: '', redirectTo: 'main-home', pathMatch: 'full' },
-            { path: 'main-home', component: MainHomeComponent },
+            { path: '', component: MainHomeComponent, pathMatch: 'full' },
             { path: 'product-detail/:ecommerce_item_id', component: ProductDetailComponent },
             { path: 'list-user', component: ListUserComponent },
             { path: 'list-role', component: ListRoleComponent },
