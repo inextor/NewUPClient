@@ -11,7 +11,7 @@
 				<p class="product-price">{{ ecommerce_item.price | currency }}</p>
 
 				<!-- Size selection inputs (shown only if not 'unico') -->
-				@if (availableSizes.length > 0 && ecommerce_item.sizes.toLowerCase() !== 'unico') {
+				@if (availableSizes.length > 0 && ecommerce_item.sizes !== 'unico') {
 					<div class="size-selection">
 						<h4>Seleccionar Tallas:</h4>
 						<div class="size-inputs">

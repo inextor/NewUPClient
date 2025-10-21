@@ -104,23 +104,23 @@ export class ProductDetailComponent extends BaseComponent implements OnInit {
 
 			// Parse available sizes from ecommerce_item.sizes
 			if (this.ecommerce_item?.sizes) {
-				const sizesValue = this.ecommerce_item.sizes.toLowerCase().trim();
-
-				// Check if it's a category that maps to ProductSizeRanges
-				if (sizesValue === 'pantalon dama' || sizesValue.includes('dama')) {
-					this.availableSizes = [...ProductSizeRanges.PANTALON_DAMA];
-				} else if (sizesValue === 'pantalon caballero' || sizesValue.includes('caballero')) {
-					this.availableSizes = [...ProductSizeRanges.PANTALON_CABALLERO];
-				} else if (sizesValue === 'camisa') {
-					this.availableSizes = [...ProductSizeRanges.CAMISAS_CHALECOS_SUDADERAS_CHAMARRAS];
-				} else if (sizesValue === 'calzado') {
-					this.availableSizes = [...ProductSizeRanges.CALZADO];
-				} else {
-					// Otherwise split by comma
-					this.availableSizes = this.ecommerce_item.sizes
-						.split(',')
-						.map(s => s.trim())
-						.filter(s => s.length > 0);
+				// Map size category to ProductSizeRanges
+				switch (this.ecommerce_item.sizes) {
+					case 'pantalon dama':
+						this.availableSizes = [...ProductSizeRanges.PANTALON_DAMA];
+						break;
+					case 'pantalon caballero':
+						this.availableSizes = [...ProductSizeRanges.PANTALON_CABALLERO];
+						break;
+					case 'camisa':
+						this.availableSizes = [...ProductSizeRanges.CAMISAS_CHALECOS_SUDADERAS_CHAMARRAS];
+						break;
+					case 'calzado':
+						this.availableSizes = [...ProductSizeRanges.CALZADO];
+						break;
+					case 'unico':
+						this.availableSizes = [];
+						break;
 				}
 
 				// Initialize size quantities to 0
@@ -141,7 +141,7 @@ export class ProductDetailComponent extends BaseComponent implements OnInit {
 
 	addToCart(ecommerce_item_id: number): void {
 		// If size is 'unico' or no sizes available, add directly
-		if (!this.ecommerce_item?.sizes || this.ecommerce_item.sizes.toLowerCase() === 'unico') {
+		if (!this.ecommerce_item?.sizes || this.ecommerce_item.sizes === 'unico') {
 			// TODO: Implement actual cart logic for single item
 			console.log('Adding to cart (unico):', ecommerce_item_id);
 			this.rest.showSuccess('Producto agregado al carrito');
