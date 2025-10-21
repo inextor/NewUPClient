@@ -50,6 +50,13 @@
   margin-bottom: 5px;
 }
 
+.item-price {
+  font-size: 18px;
+  font-weight: 600;
+  color: #28a745;
+  margin-bottom: 5px;
+}
+
 .item-id {
   font-size: 14px;
 }

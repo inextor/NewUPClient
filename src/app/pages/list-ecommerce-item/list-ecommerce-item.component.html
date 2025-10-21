@@ -25,7 +25,7 @@
                 </div>
               </td>
               <td>{{ceii.item_info.item.name}}</td>
-              <td>{{ceii.item_info.item.id}}</td>
+              <td>{{ceii.ecommerce_item.price | currency}}</td>
               <td class="text-end">
                 <a class="btn btn-primary btn-sm" [routerLink]="['/edit-ecommerce-item', ceii.ecommerce_item.id]">Editar</a>
                 <a class="btn btn-info btn-sm ms-2" [routerLink]="['/list-role-ecommerce-item']" [queryParams]="{ecommerce_item_id: ceii.ecommerce_item.id}">Roles</a>
