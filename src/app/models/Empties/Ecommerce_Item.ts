@@ -12,5 +12,6 @@ export function ecommerce_item(): Ecommerce_Item {
 		category_name: null, 
 		price: 0, 
 		category_id: null, 
+		sizes: 'unico', 
 	};
 }

@@ -3,7 +3,7 @@ export interface Cart {
   user_id: number;
   qty: number;
   ecommerce_item: number;
-  variation: 'calzado' | 'camisa' | 'pantalon caballero' | 'pantalon dama' | 'unico' | null;
+  variation: 'calzado' | 'camisa' | 'pantalon caballero' | 'pantalon dama' | 'unico';
 }
 
 
