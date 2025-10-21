@@ -44,8 +44,7 @@ export class ProductDetailComponent extends BaseComponent implements OnInit {
 	mainImageId: number | null = null;
 	additionalImageIds: number[] = [];
 
-	// Size selection modal
-	showSizeModal: boolean = false;
+	// Size selection
 	availableSizes: string[] = [];
 	sizeQuantities: { [size: string]: number } = {};
 
@@ -108,6 +107,12 @@ export class ProductDetailComponent extends BaseComponent implements OnInit {
 					.split(',')
 					.map(s => s.trim())
 					.filter(s => s.length > 0);
+
+				// Initialize size quantities to 0
+				this.sizeQuantities = {};
+				this.availableSizes.forEach(size => {
+					this.sizeQuantities[size] = 0;
+				});
 			}
 		})
 		.catch((error: any) => {
@@ -120,22 +125,14 @@ export class ProductDetailComponent extends BaseComponent implements OnInit {
 	}
 
 	addToCart(ecommerce_item_id: number): void {
-		// Initialize size quantities to 0
-		this.sizeQuantities = {};
-		this.availableSizes.forEach(size => {
-			this.sizeQuantities[size] = 0;
-		});
+		// If size is 'unico' or no sizes available, add directly
+		if (!this.ecommerce_item?.sizes || this.ecommerce_item.sizes.toLowerCase() === 'unico') {
+			// TODO: Implement actual cart logic for single item
+			console.log('Adding to cart (unico):', ecommerce_item_id);
+			this.rest.showSuccess('Producto agregado al carrito');
+			return;
+		}
 
-		// Show modal for size selection
-		this.showSizeModal = true;
-	}
-
-	closeSizeModal(): void {
-		this.showSizeModal = false;
-		this.sizeQuantities = {};
-	}
-
-	confirmAddToCart(): void {
 		// Get sizes with quantities > 0
 		const selectedSizes = Object.entries(this.sizeQuantities)
 			.filter(([size, qty]) => qty > 0)
@@ -146,9 +143,13 @@ export class ProductDetailComponent extends BaseComponent implements OnInit {
 			return;
 		}
 
-		// TODO: Implement actual cart logic
+		// TODO: Implement actual cart logic with sizes
 		console.log('Adding to cart:', selectedSizes);
 		this.rest.showSuccess(`Producto agregado al carrito: ${selectedSizes.length} talla(s)`);
-		this.closeSizeModal();
+
+		// Reset quantities after adding to cart
+		this.availableSizes.forEach(size => {
+			this.sizeQuantities[size] = 0;
+		});
 	}
 }

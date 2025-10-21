@@ -9,6 +9,28 @@
 				<p class="product-category">{{ item_info.category?.name || ecommerce_item.category_name || 'N/A' }}</p>
 				<p class="product-description">{{ item_info.item.description || 'No description available.' }}</p>
 				<p class="product-price">{{ ecommerce_item.price | currency }}</p>
+
+				<!-- Size selection inputs (shown only if not 'unico') -->
+				@if (availableSizes.length > 0 && ecommerce_item.sizes.toLowerCase() !== 'unico') {
+					<div class="size-selection">
+						<h4>Seleccionar Tallas:</h4>
+						<div class="size-inputs">
+							@for (size of availableSizes; track size) {
+								<div class="size-input-row">
+									<label class="size-label">{{ size }}</label>
+									<input
+										type="number"
+										class="form-control size-input"
+										[(ngModel)]="sizeQuantities[size]"
+										min="0"
+										placeholder="0"
+									/>
+								</div>
+							}
+						</div>
+					</div>
+				}
+
 				<button class="btn btn-primary add-to-cart-button" (click)="addToCart(ecommerce_item.id)">
 					Añadir al carrito
 				</button>
@@ -29,30 +51,3 @@
 		</div>
 	}
 </div>
-
-<!-- Size Selection Modal -->
-@if (showSizeModal) {
-	<div class="modal-overlay" (click)="closeSizeModal()">
-		<div class="modal-content" (click)="$event.stopPropagation()">
-			<h3>Seleccionar Tallas</h3>
-			<div class="size-grid">
-				@for (size of availableSizes; track size) {
-					<div class="size-row">
-						<label class="size-label">{{ size }}</label>
-						<input
-							type="number"
-							class="form-control size-input"
-							[(ngModel)]="sizeQuantities[size]"
-							min="0"
-							placeholder="0"
-						/>
-					</div>
-				}
-			</div>
-			<div class="modal-actions">
-				<button class="btn btn-secondary" (click)="closeSizeModal()">Cancelar</button>
-				<button class="btn btn-primary" (click)="confirmAddToCart()">Confirmar</button>
-			</div>
-		</div>
-	</div>
-}
