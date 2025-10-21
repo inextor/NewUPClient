@@ -21,7 +21,7 @@ interface CartItemWithDetails extends Cart {
 })
 export class CartComponent extends BaseComponent implements OnInit {
 	cart_items: CartItemWithDetails[] = [];
-	is_loading: boolean = false;
+	override is_loading: boolean = false;
 
 	rest_cart: Rest<Cart,Cart> = new Rest<Cart,Cart>(this.rest, 'cart.php');
 	rest_ecommerce_item: Rest<Ecommerce_Item,Ecommerce_Item> = new Rest<Ecommerce_Item,Ecommerce_Item>(this.rest, 'ecommerce_item.php');
