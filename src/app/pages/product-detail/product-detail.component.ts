@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BaseComponent } from '../base/base.component';
 import { Ecommerce_Item } from '../../models/RestModels/Ecommerce_Item';
+import { Cart } from '../../models/RestModels/Cart';
 import { Rest } from '../../classes/Rest';
 import { RestResponse } from '../../classes/RestResponse';
 import { ImagePipe } from '../../pipes/image.pipe';
@@ -54,6 +55,7 @@ export class ProductDetailComponent extends BaseComponent implements OnInit {
 	rest_item: Rest<any,any> = new Rest<any,any>(this.rest.pos_rest, 'item_info.php');
 	rest_ecommerce_item: Rest<Ecommerce_Item,Ecommerce_Item> = new Rest<Ecommerce_Item,Ecommerce_Item>(this.rest, 'ecommerce_item.php');
 	rest_item_image: Rest<any,any> = new Rest<any,any>(this.rest.pos_rest, 'item_image.php');
+	rest_cart: Rest<Cart,Cart> = new Rest<Cart,Cart>(this.rest, 'cart.php');
 
 	ngOnInit(): void {
 		this.route.paramMap.subscribe(params => {
@@ -144,9 +146,22 @@ export class ProductDetailComponent extends BaseComponent implements OnInit {
 	openSizeModal(ecommerce_item_id: number): void {
 		// If size is 'unico' or no sizes available, add directly
 		if (!this.ecommerce_item?.sizes || this.ecommerce_item.sizes === 'unico') {
-			// TODO: Implement actual cart logic for single item
-			console.log('Adding to cart (unico):', ecommerce_item_id);
-			this.rest.showSuccess('Producto agregado al carrito');
+			// Add single item to cart without size selection
+			const cart_item: Cart = {
+				id: 0,
+				user_id: this.rest.user?.id || 0,
+				qty: 1,
+				ecommerce_item_id: ecommerce_item_id,
+				size: 'unico'
+			};
+
+			this.rest_cart.create(cart_item)
+				.then(() => {
+					this.rest.showSuccess('Producto agregado al carrito');
+				})
+				.catch((error: any) => {
+					this.rest.showError(error);
+				});
 			return;
 		}
 
@@ -171,17 +186,37 @@ export class ProductDetailComponent extends BaseComponent implements OnInit {
 			return;
 		}
 
-		// TODO: Implement actual cart logic with sizes
-		console.log('Adding to cart:', selectedSizes);
-		this.rest.showSuccess(`Producto agregado al carrito: ${selectedSizes.length} talla(s)`);
+		if (!this.pendingEcommerceItemId) {
+			return;
+		}
 
-		// Reset quantities after adding to cart
-		this.availableSizes.forEach(size => {
-			this.sizeQuantities[size] = 0;
+		// Create cart items for each selected size
+		const promises = selectedSizes.map(({ size, quantity }) => {
+			const cart_item: Cart = {
+				id: 0,
+				user_id: this.rest.user?.id || 0,
+				qty: quantity,
+				ecommerce_item_id: this.pendingEcommerceItemId!,
+				size: size
+			};
+			return this.rest_cart.create(cart_item);
 		});
 
-		// Close modal
-		this.closeSizeModal();
+		Promise.all(promises)
+			.then(() => {
+				this.rest.showSuccess(`Producto agregado al carrito: ${selectedSizes.length} talla(s)`);
+
+				// Reset quantities after adding to cart
+				this.availableSizes.forEach(size => {
+					this.sizeQuantities[size] = 0;
+				});
+
+				// Close modal
+				this.closeSizeModal();
+			})
+			.catch((error: any) => {
+				this.rest.showError(error);
+			});
 	}
 
 	addToCart(ecommerce_item_id: number): void {
