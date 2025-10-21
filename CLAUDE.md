@@ -121,6 +121,17 @@ src/app/
 - Component-scoped CSS for custom styles
 - Global styles in `src/styles.css`
 
+## Development Workflow
+
+### Multi-Instance Development
+- Developers frequently work with multiple project instances/branches running simultaneously
+- Each instance typically has its own:
+  - Terminal/console session
+  - Browser tab (usually on different ports)
+  - Local server instance
+- **When investigating errors**: Always verify you're checking the correct terminal and browser tab that corresponds to the specific branch/instance where the error occurred
+- Common pitfall: The error may be appearing in a different branch's terminal or browser tab than expected
+
 ## Important Notes
 
 - All components are standalone (do not use NgModules)
