@@ -16,13 +16,22 @@
 	width: 100%;
 	max-width: 500px;
 	margin-bottom: 20px;
+	position: relative;
+	padding-bottom: 100%; /* 1:1 Aspect Ratio (square) */
+	border-radius: 8px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	background-color: #ffffff;
+	border: 1px solid #ddd;
 }
 
 .product-main-image img {
+	position: absolute;
+	top: 0;
+	left: 0;
 	width: 100%;
-	height: auto;
+	height: 100%;
+	object-fit: contain; /* Fit inside without cropping */
 	border-radius: 8px;
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .product-info {
@@ -72,8 +81,13 @@
 
 .thumbnail {
 	cursor: pointer;
-	border: 2px solid transparent;
+	border: 2px solid #ddd;
 	transition: border-color 0.3s ease;
+	width: 100%;
+	aspect-ratio: 1 / 1; /* Square thumbnails */
+	object-fit: contain; /* Fit inside without cropping */
+	border-radius: 4px;
+	background-color: #ffffff;
 }
 
 .thumbnail:hover {
