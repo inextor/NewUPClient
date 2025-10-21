@@ -1,26 +1,28 @@
 <div class="product-detail-container">
-	@if (product) {
+	@if (ecommerce_item && item_info) {
 		<div class="product-card">
 			<div class="product-main-image">
-				<img [src]="mainImage || 'assets/placeholder-product.svg'" alt="Product Image">
+				<img [src]="mainImageId | image" alt="{{ item_info.name }}">
 			</div>
 			<div class="product-info">
-				<h1 class="product-name">{{ product.item.name }}</h1>
-				<p class="product-category">{{ product.category?.name || 'N/A' }}</p>
-				<p class="product-description">{{ product.item.description || 'No description available.' }}</p>
-				<p class="product-price">{{ product.price?.price | currency }}</p>
-				<button class="btn btn-primary add-to-cart-button" (click)="addToCart(product.item.id)">
+				<h1 class="product-name">{{ item_info.name }}</h1>
+				<p class="product-category">{{ ecommerce_item.category_name || 'N/A' }}</p>
+				<p class="product-description">{{ item_info.description || 'No description available.' }}</p>
+				<p class="product-price">{{ ecommerce_item.price | currency }}</p>
+				<button class="btn btn-primary add-to-cart-button" (click)="addToCart(ecommerce_item.id)">
 					Añadir al carrito
 				</button>
 			</div>
 		</div>
-		<div class="row mt-3 justify-content-center">
-			@for(image of product.images; track image.id) {
-				<div class="col-2">
-					<img [src]="image.url" class="img-fluid thumbnail" [class.selected]="image.url === mainImage" (click)="setMainImage(image.url)" alt="Product Thumbnail">
-				</div>
-			}
-		</div>
+		@if (additionalImageIds && additionalImageIds.length > 0) {
+			<div class="row mt-3 justify-content-center">
+				@for(imageId of additionalImageIds; track imageId) {
+					<div class="col-2">
+						<img [src]="imageId | image" class="img-fluid thumbnail" [class.selected]="imageId === mainImageId" (click)="setMainImage(imageId)" alt="Product Thumbnail">
+					</div>
+				}
+			</div>
+		}
 	} @else {
 		<div class="text-center">
 			<p>Cargando detalles del producto...</p>

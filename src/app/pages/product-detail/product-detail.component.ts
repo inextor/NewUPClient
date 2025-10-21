@@ -1,11 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BaseComponent } from '../base/base.component';
+import { Ecommerce_Item } from '../../models/RestModels/Ecommerce_Item';
+import { Rest } from '../../classes/Rest';
+import { RestResponse } from '../../classes/RestResponse';
+import { ImagePipe } from '../../pipes/image.pipe';
 
-// Simplified interfaces for product detail - can be expanded later
-interface ProductImage {
+interface ItemInfo {
 	id: number;
-	url: string;
+	name: string;
+	description: string | null;
+	image_id: number | null;
+	images: Array<{
+		attachment_id: number;
+		file_id: number;
+	}>;
 }
 
 interface ProductAttachment {
@@ -15,42 +24,24 @@ interface ProductAttachment {
 	url: string;
 }
 
-interface ProductItem {
-	id: number;
-	name: string;
-	description: string | null;
-	image_id: number | null;
-}
-
-interface ProductCategory {
-	id: number;
-	name: string;
-}
-
-interface ProductPrice {
-	price: number;
-}
-
-interface ProductInfo {
-	item: ProductItem;
-	category: ProductCategory | null;
-	price: ProductPrice | null;
-	image_url: string | null;
-	images: ProductImage[];
-}
-
 @Component({
 	selector: 'app-product-detail',
 	standalone: true,
-	imports: [CommonModule],
+	imports: [CommonModule, ImagePipe],
 	templateUrl: './product-detail.component.html',
 	styleUrl: './product-detail.component.css'
 })
 export class ProductDetailComponent extends BaseComponent implements OnInit {
 	ecommerce_item_id: number | null = null;
-	product: ProductInfo | null = null;
-	mainImage: string | undefined;
+	ecommerce_item: Ecommerce_Item | null = null;
+	item_info: ItemInfo | null = null;
+	mainImageId: number | null = null;
+	additionalImageIds: number[] = [];
 	attachments: ProductAttachment[] = [];
+
+	rest_item: Rest<any,any> = new Rest<any,any>(this.rest.pos_rest, 'item_info.php');
+	rest_ecommerce_item: Rest<Ecommerce_Item,Ecommerce_Item> = new Rest<Ecommerce_Item,Ecommerce_Item>(this.rest, 'ecommerce_item.php');
+	rest_attachment: Rest<any,any> = new Rest<any,any>(this.rest.pos_rest, 'attachment.php');
 
 	ngOnInit(): void {
 		this.route.paramMap.subscribe(params => {
@@ -63,45 +54,55 @@ export class ProductDetailComponent extends BaseComponent implements OnInit {
 	}
 
 	fetchProductDetails(): void {
-		// TODO: Implement product fetch logic
-		// This will be implemented when we discuss functionality
-		console.log('Fetching product details for ecommerce_item_id:', this.ecommerce_item_id);
-
-		// Placeholder for testing layout
-		if (this.ecommerce_item_id) {
-			// Example structure - replace with actual API call
-			this.product = {
-				item: {
-					id: this.ecommerce_item_id,
-					name: 'Producto de Ejemplo',
-					description: 'Descripción del producto aquí...',
-					image_id: null
-				},
-				category: {
-					id: 1,
-					name: 'Categoría de Ejemplo'
-				},
-				price: {
-					price: 99.99
-				},
-				image_url: null,
-				images: []
-			};
+		if (!this.ecommerce_item_id) {
+			return;
 		}
+
+		this.rest_ecommerce_item.get(this.ecommerce_item_id)
+		.then((ecommerce_item: Ecommerce_Item) => {
+			this.ecommerce_item = ecommerce_item;
+
+			// Fetch item_info from POS API using item_id
+			return this.rest_item.get(this.ecommerce_item.item_id);
+		})
+		.then((item_info: ItemInfo) => {
+			this.item_info = item_info;
+
+			// Set main image
+			if (this.item_info.image_id) {
+				this.mainImageId = this.item_info.image_id;
+			}
+
+			// Set additional images from item_info.images
+			if (this.item_info.images && this.item_info.images.length > 0) {
+				this.additionalImageIds = this.item_info.images.map(img => img.file_id);
+			}
+
+			// Fetch attachments for this item
+			this.fetchAttachments();
+		})
+		.catch((error: any) => {
+			this.rest.showError(error);
+		});
 	}
 
 	fetchAttachments(): void {
-		// TODO: Implement attachments fetch logic
-		console.log('Fetching attachments for ecommerce_item_id:', this.ecommerce_item_id);
+		if (!this.ecommerce_item) {
+			return;
+		}
+
+		// Search for attachments related to this item using ecommerce_item.item_id
+		this.rest_attachment.search({ 'item_id': this.ecommerce_item.item_id })
+		.then((response: RestResponse<ProductAttachment>) => {
+			this.attachments = response.data;
+		})
+		.catch((error: any) => {
+			this.rest.showError(error);
+		});
 	}
 
-	fetchProductImages(): void {
-		// TODO: Implement images fetch logic
-		console.log('Fetching images for ecommerce_item_id:', this.ecommerce_item_id);
-	}
-
-	setMainImage(image: string): void {
-		this.mainImage = image;
+	setMainImage(imageId: number): void {
+		this.mainImageId = imageId;
 	}
 
 	addToCart(ecommerce_item_id: number): void {

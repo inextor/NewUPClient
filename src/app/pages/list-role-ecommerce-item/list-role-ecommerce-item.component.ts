@@ -9,6 +9,7 @@ import { SearchObject } from '../../classes/SearchObject';
 import { ParamMap } from '@angular/router';
 import { RestResponse } from '../../classes/RestResponse';
 import { GetEmpty } from '../../models/GetEmpty';
+import { Ecommerce_Item } from '../../models/RestModels/Ecommerce_Item';
 
 interface CRoleItemInfo {
 	role_ecommerce_item: Role_Ecommerce_Item;
@@ -47,6 +48,7 @@ export class ListRoleEcommerceItemComponent extends BaseComponent implements OnI
 	editQuota = 0;
 	editPeriodType: 'daily' | 'weekly' | 'monthly' | 'yearly' | 'unlimited' | 'Quota renewal period' = 'unlimited';
 	editPeriodQuantity = 0;
+    rest_ecommerce_item: Rest<Ecommerce_Item,Ecommerce_Item> = new Rest<Ecommerce_Item,Ecommerce_Item>(this.rest, 'ecommerce_item.php');
 	ngOnInit(): void {
 		this.route.queryParamMap.subscribe((params:ParamMap) =>
 		{
@@ -62,10 +64,18 @@ export class ListRoleEcommerceItemComponent extends BaseComponent implements OnI
 			}
 
 			Promise.all([
-				this.rest_item.get(this.ecommerce_item_id as number),
+				this.rest_ecommerce_item.get( this.ecommerce_item_id! ),
 				this.rest_role_ecommerce_item.search(url_params),
 				this.rest_role.search({limit: 999999})
 			])
+			.then(([ecommerce_item, role_ecommerce_item_response, role_response]) =>
+			{
+				return Promise.all([
+					this.rest_item.get(ecommerce_item.item_id as number),
+					role_ecommerce_item_response,
+					role_response
+				]);
+			})
 			.then(([item_info, role_ecommerce_item_response, role_response]) =>
 			{
 				this.item_info = item_info;
