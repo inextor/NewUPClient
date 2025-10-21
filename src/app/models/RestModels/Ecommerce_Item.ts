@@ -9,6 +9,7 @@ export interface Ecommerce_Item {
   category_name: string | null;
   price: number;
   category_id: number | null;
+  sizes: string;
 }
 
 

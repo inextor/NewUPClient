@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { BaseComponent } from '../base/base.component';
 import { Ecommerce_Item } from '../../models/RestModels/Ecommerce_Item';
 import { Rest } from '../../classes/Rest';
@@ -32,7 +33,7 @@ interface ItemInfo {
 @Component({
 	selector: 'app-product-detail',
 	standalone: true,
-	imports: [CommonModule, ImagePipe],
+	imports: [CommonModule, FormsModule, ImagePipe],
 	templateUrl: './product-detail.component.html',
 	styleUrl: './product-detail.component.css'
 })
@@ -42,6 +43,11 @@ export class ProductDetailComponent extends BaseComponent implements OnInit {
 	item_info: ItemInfo | null = null;
 	mainImageId: number | null = null;
 	additionalImageIds: number[] = [];
+
+	// Size selection modal
+	showSizeModal: boolean = false;
+	availableSizes: string[] = [];
+	sizeQuantities: { [size: string]: number } = {};
 
 	rest_item: Rest<any,any> = new Rest<any,any>(this.rest.pos_rest, 'item_info.php');
 	rest_ecommerce_item: Rest<Ecommerce_Item,Ecommerce_Item> = new Rest<Ecommerce_Item,Ecommerce_Item>(this.rest, 'ecommerce_item.php');
@@ -95,6 +101,14 @@ export class ProductDetailComponent extends BaseComponent implements OnInit {
 			}
 
 			this.additionalImageIds = imageIds;
+
+			// Parse available sizes from ecommerce_item.sizes
+			if (this.ecommerce_item?.sizes) {
+				this.availableSizes = this.ecommerce_item.sizes
+					.split(',')
+					.map(s => s.trim())
+					.filter(s => s.length > 0);
+			}
 		})
 		.catch((error: any) => {
 			this.rest.showError(error);
@@ -106,8 +120,35 @@ export class ProductDetailComponent extends BaseComponent implements OnInit {
 	}
 
 	addToCart(ecommerce_item_id: number): void {
-		// TODO: Implement add to cart logic
-		console.log('Adding item to cart:', ecommerce_item_id);
-		this.rest.showSuccess('Producto agregado al carrito');
+		// Initialize size quantities to 0
+		this.sizeQuantities = {};
+		this.availableSizes.forEach(size => {
+			this.sizeQuantities[size] = 0;
+		});
+
+		// Show modal for size selection
+		this.showSizeModal = true;
+	}
+
+	closeSizeModal(): void {
+		this.showSizeModal = false;
+		this.sizeQuantities = {};
+	}
+
+	confirmAddToCart(): void {
+		// Get sizes with quantities > 0
+		const selectedSizes = Object.entries(this.sizeQuantities)
+			.filter(([size, qty]) => qty > 0)
+			.map(([size, qty]) => ({ size, quantity: qty }));
+
+		if (selectedSizes.length === 0) {
+			this.rest.showError('Por favor seleccione al menos una talla');
+			return;
+		}
+
+		// TODO: Implement actual cart logic
+		console.log('Adding to cart:', selectedSizes);
+		this.rest.showSuccess(`Producto agregado al carrito: ${selectedSizes.length} talla(s)`);
+		this.closeSizeModal();
 	}
 }

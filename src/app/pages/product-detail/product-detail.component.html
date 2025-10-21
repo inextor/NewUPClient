@@ -29,3 +29,30 @@
 		</div>
 	}
 </div>
+
+<!-- Size Selection Modal -->
+@if (showSizeModal) {
+	<div class="modal-overlay" (click)="closeSizeModal()">
+		<div class="modal-content" (click)="$event.stopPropagation()">
+			<h3>Seleccionar Tallas</h3>
+			<div class="size-grid">
+				@for (size of availableSizes; track size) {
+					<div class="size-row">
+						<label class="size-label">{{ size }}</label>
+						<input
+							type="number"
+							class="form-control size-input"
+							[(ngModel)]="sizeQuantities[size]"
+							min="0"
+							placeholder="0"
+						/>
+					</div>
+				}
+			</div>
+			<div class="modal-actions">
+				<button class="btn btn-secondary" (click)="closeSizeModal()">Cancelar</button>
+				<button class="btn btn-primary" (click)="confirmAddToCart()">Confirmar</button>
+			</div>
+		</div>
+	</div>
+}
