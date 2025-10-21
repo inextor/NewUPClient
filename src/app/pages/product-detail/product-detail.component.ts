@@ -7,21 +7,26 @@ import { RestResponse } from '../../classes/RestResponse';
 import { ImagePipe } from '../../pipes/image.pipe';
 
 interface ItemInfo {
-	id: number;
-	name: string;
-	description: string | null;
-	image_id: number | null;
-	images: Array<{
-		attachment_id: number;
-		file_id: number;
+	item: {
+		id: number;
+		name: string;
+		description: string | null;
+		image_id: number | null;
+	};
+	category: {
+		id: number;
+		name: string;
+	} | null;
+	prices: Array<{
+		id: number;
+		price: number;
+		currency_id: string;
 	}>;
-}
-
-interface ProductAttachment {
-	attachment_id: number;
-	title: string;
-	description: string;
-	url: string;
+	attributes: any[];
+	records: any[];
+	options: any[];
+	exceptions: any[];
+	serials: any[];
 }
 
 @Component({
@@ -37,11 +42,10 @@ export class ProductDetailComponent extends BaseComponent implements OnInit {
 	item_info: ItemInfo | null = null;
 	mainImageId: number | null = null;
 	additionalImageIds: number[] = [];
-	attachments: ProductAttachment[] = [];
 
 	rest_item: Rest<any,any> = new Rest<any,any>(this.rest.pos_rest, 'item_info.php');
 	rest_ecommerce_item: Rest<Ecommerce_Item,Ecommerce_Item> = new Rest<Ecommerce_Item,Ecommerce_Item>(this.rest, 'ecommerce_item.php');
-	rest_attachment: Rest<any,any> = new Rest<any,any>(this.rest.pos_rest, 'attachment.php');
+	rest_item_image: Rest<any,any> = new Rest<any,any>(this.rest.pos_rest, 'item_image.php');
 
 	ngOnInit(): void {
 		this.route.paramMap.subscribe(params => {
@@ -68,33 +72,19 @@ export class ProductDetailComponent extends BaseComponent implements OnInit {
 		.then((item_info: ItemInfo) => {
 			this.item_info = item_info;
 
-			// Set main image
-			if (this.item_info.image_id) {
-				this.mainImageId = this.item_info.image_id;
+			// Set main image from item.image_id
+			if (this.item_info.item.image_id) {
+				this.mainImageId = this.item_info.item.image_id;
 			}
 
-			// Set additional images from item_info.images
-			if (this.item_info.images && this.item_info.images.length > 0) {
-				this.additionalImageIds = this.item_info.images.map(img => img.file_id);
-			}
-
-			// Fetch attachments for this item
-			this.fetchAttachments();
+			// Fetch additional images for this item
+			return this.rest_item_image.search({ 'item_id': this.item_info.item.id });
 		})
-		.catch((error: any) => {
-			this.rest.showError(error);
-		});
-	}
-
-	fetchAttachments(): void {
-		if (!this.ecommerce_item) {
-			return;
-		}
-
-		// Search for attachments related to this item using ecommerce_item.item_id
-		this.rest_attachment.search({ 'item_id': this.ecommerce_item.item_id })
-		.then((response: RestResponse<ProductAttachment>) => {
-			this.attachments = response.data;
+		.then((item_image_response: RestResponse<any>) => {
+			// Extract image_id from each item_image
+			if (item_image_response.data && item_image_response.data.length > 0) {
+				this.additionalImageIds = item_image_response.data.map((img: any) => img.image_id);
+			}
 		})
 		.catch((error: any) => {
 			this.rest.showError(error);
