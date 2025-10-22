@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { BaseComponent } from '../base/base.component';
 import { Cart } from '../../models/RestModels/Cart';
 import { Ecommerce_Item } from '../../models/RestModels/Ecommerce_Item';
@@ -15,7 +16,7 @@ interface CartItemWithDetails extends Cart {
 @Component({
 	selector: 'app-cart',
 	standalone: true,
-	imports: [CommonModule, ImagePipe],
+	imports: [CommonModule, RouterLink, ImagePipe],
 	templateUrl: './cart.component.html',
 	styleUrl: './cart.component.css'
 })
