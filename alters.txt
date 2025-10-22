@@ -1,0 +1,21 @@
+-- Database ALTER statements for Checkout feature
+-- Date: 2025-10-21
+-- Description: Add variation field to order_item table and update unique constraint
+
+-- Step 1: Drop the old unique constraint
+ALTER TABLE `order_item`
+DROP INDEX `unique_order_item`;
+
+-- Step 2: Add variation column to order_item table
+ALTER TABLE `order_item`
+ADD COLUMN `variation` VARCHAR(50) NULL AFTER `ecommerce_item_id`;
+
+-- Step 3: Create new unique constraint including variation
+-- This allows the same product in different sizes in the same order
+ALTER TABLE `order_item`
+ADD UNIQUE KEY `unique_order_item` (`order_id`, `ecommerce_item_id`, `variation`);
+
+-- Note: The order table already has all the required shipping fields:
+-- user_id, customer_name, customer_email, customer_phone,
+-- shipping_address, shipping_city, shipping_state, shipping_postal_code, shipping_country,
+-- subtotal, tax_amount, shipping_cost, total_amount, items_count

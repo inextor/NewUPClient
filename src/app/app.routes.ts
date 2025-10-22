@@ -25,6 +25,8 @@ import { ListCategoryComponent } from './pages/list-category/list-category.compo
 import { SaveCategoryComponent } from './pages/save-category/save-category.component';
 import { DeliverItemsByUserComponent } from './pages/deliver-items-by-user/deliver-items-by-user.component';
 import { DeliverItemsByOrderComponent } from './pages/deliver-items-by-order/deliver-items-by-order.component';
+import { CheckoutComponent } from './pages/checkout/checkout.component';
+import { OrderConfirmationComponent } from './pages/order-confirmation/order-confirmation.component';
 
 import { authGuard } from './guards/auth.guard';
 
@@ -48,6 +50,8 @@ export const routes: Routes = [
             { path: 'list-ecommerce-item-role', component: ListEcommerceItemRoleComponent },
             { path: 'list-role-user', component: ListRoleUserComponent },
             { path: 'cart', component: CartComponent },
+            { path: 'checkout', component: CheckoutComponent },
+            { path: 'order-confirmation/:id', component: OrderConfirmationComponent },
             { path: 'add-quote', component: SaveQuoteComponent },
             { path: 'edit-quote', component: SaveQuoteComponent },
             { path: 'add-user', component: SaveUserComponent },

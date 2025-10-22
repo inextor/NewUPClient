@@ -1,0 +1,27 @@
+.cart-item-image {
+	width: 60px;
+	height: 60px;
+	object-fit: cover;
+	border-radius: 4px;
+}
+
+.order-items {
+	max-height: 400px;
+	overflow-y: auto;
+}
+
+.form-label {
+	font-weight: 500;
+}
+
+.text-danger {
+	color: #dc3545;
+}
+
+.order-totals {
+	font-size: 15px;
+}
+
+.border-top {
+	border-top: 1px solid #dee2e6 !important;
+}

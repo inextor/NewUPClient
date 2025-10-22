@@ -1,0 +1,116 @@
+<div class="container mt-5">
+	<div *ngIf="is_loading" class="text-center py-5">
+		<div class="spinner-border text-primary" role="status">
+			<span class="visually-hidden">Cargando...</span>
+		</div>
+	</div>
+
+	<div *ngIf="!is_loading && order" class="confirmation-container">
+		<div class="text-center mb-4">
+			<div class="success-icon mb-3">
+				<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="currentColor" class="bi bi-check-circle-fill text-success" viewBox="0 0 16 16">
+					<path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+				</svg>
+			</div>
+			<h2 class="text-success">¡Pedido Creado Exitosamente!</h2>
+			<p class="text-muted">Tu pedido ha sido registrado y está siendo procesado</p>
+		</div>
+
+		<div class="row">
+			<div class="col-md-8 mx-auto">
+				<div class="card bg-white p-4 mb-4">
+					<h4 class="mb-3">Detalles del Pedido</h4>
+
+					<div class="row mb-3">
+						<div class="col-sm-6">
+							<p class="mb-1"><strong>Número de Pedido:</strong></p>
+							<p class="text-primary">{{ order.order_number || '#' + order.id }}</p>
+						</div>
+						<div class="col-sm-6">
+							<p class="mb-1"><strong>Fecha:</strong></p>
+							<p>{{ order.order_date | date:'medium' }}</p>
+						</div>
+					</div>
+
+					<div class="row mb-3">
+						<div class="col-sm-6">
+							<p class="mb-1"><strong>Estado:</strong></p>
+							<span class="badge bg-warning">{{ order.status }}</span>
+						</div>
+						<div class="col-sm-6">
+							<p class="mb-1"><strong>Total:</strong></p>
+							<p class="h5 text-primary mb-0">{{ order.total_amount | currency }}</p>
+						</div>
+					</div>
+
+					<hr />
+
+					<h5 class="mb-3">Información de Envío</h5>
+					<p class="mb-1"><strong>{{ order.customer_name }}</strong></p>
+					<p class="mb-1">{{ order.customer_email }}</p>
+					<p class="mb-1">{{ order.customer_phone }}</p>
+					<p class="mb-1">{{ order.shipping_address }}</p>
+					<p class="mb-1">{{ order.shipping_city }}, {{ order.shipping_state }}</p>
+					<p class="mb-3">CP: {{ order.shipping_postal_code }}</p>
+
+					<div *ngIf="order.notes">
+						<strong>Notas:</strong>
+						<p class="text-muted">{{ order.notes }}</p>
+					</div>
+
+					<hr />
+
+					<h5 class="mb-3">Artículos del Pedido</h5>
+					<div class="order-items">
+						<div *ngFor="let item of order_items" class="order-item mb-3 pb-3 border-bottom">
+							<div class="d-flex">
+								<img
+									*ngIf="item.item_info?.item?.image_id"
+									[src]="item.item_info.item.image_id | image"
+									alt="{{ item.ecommerce_item?.name }}"
+									class="order-item-image"
+								/>
+								<div class="flex-grow-1 ms-3">
+									<h6 class="mb-1">{{ item.ecommerce_item?.name }}</h6>
+									<p class="text-muted mb-1 small">
+										Talla: {{ item.variation === 'unico' ? 'Único' : item.variation }}
+									</p>
+									<p class="text-muted mb-0 small">
+										Cantidad: {{ item.qty }} × {{ item.unit_price | currency }}
+									</p>
+								</div>
+								<div class="text-end">
+									<strong>{{ (item.unit_price || 0) * item.qty | currency }}</strong>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="order-totals mt-3 pt-3 border-top">
+						<div class="d-flex justify-content-between mb-2">
+							<span>Subtotal:</span>
+							<span>{{ order.subtotal | currency }}</span>
+						</div>
+						<div class="d-flex justify-content-between mb-2" *ngIf="order.tax_amount > 0">
+							<span>Impuestos:</span>
+							<span>{{ order.tax_amount | currency }}</span>
+						</div>
+						<div class="d-flex justify-content-between mb-2" *ngIf="order.shipping_cost > 0">
+							<span>Envío:</span>
+							<span>{{ order.shipping_cost | currency }}</span>
+						</div>
+						<div class="d-flex justify-content-between border-top pt-2 mt-2">
+							<strong>Total:</strong>
+							<strong class="text-primary h5 mb-0">{{ order.total_amount | currency }}</strong>
+						</div>
+					</div>
+				</div>
+
+				<div class="d-flex justify-content-center gap-3 mb-5">
+					<a routerLink="/list-order" class="btn btn-primary">Ver Mis Pedidos</a>
+					<a routerLink="/" class="btn btn-outline-secondary">Continuar Comprando</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

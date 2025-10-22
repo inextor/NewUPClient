@@ -1,0 +1,190 @@
+<div class="container mt-5">
+	<h2 class="app-page-title">Checkout</h2>
+
+	<div *ngIf="is_loading" class="text-center py-5">
+		<div class="spinner-border text-primary" role="status">
+			<span class="visually-hidden">Cargando...</span>
+		</div>
+	</div>
+
+	<div *ngIf="!is_loading" class="row">
+		<!-- Shipping Information Form -->
+		<div class="col-md-7">
+			<div class="card bg-white p-4 mb-4">
+				<h4 class="mb-3">Información de Envío</h4>
+
+				<form>
+					<div class="mb-3">
+						<label for="customer_name" class="form-label">Nombre Completo del Destinatario <span class="text-danger">*</span></label>
+						<input
+							type="text"
+							class="form-control"
+							id="customer_name"
+							[(ngModel)]="order.customer_name"
+							name="customer_name"
+							required
+						/>
+					</div>
+
+					<div class="row">
+						<div class="col-md-6 mb-3">
+							<label for="customer_email" class="form-label">Email <span class="text-danger">*</span></label>
+							<input
+								type="email"
+								class="form-control"
+								id="customer_email"
+								[(ngModel)]="order.customer_email"
+								name="customer_email"
+								required
+							/>
+						</div>
+
+						<div class="col-md-6 mb-3">
+							<label for="customer_phone" class="form-label">Teléfono <span class="text-danger">*</span></label>
+							<input
+								type="tel"
+								class="form-control"
+								id="customer_phone"
+								[(ngModel)]="order.customer_phone"
+								name="customer_phone"
+								required
+							/>
+						</div>
+					</div>
+
+					<div class="mb-3">
+						<label for="shipping_address" class="form-label">Dirección <span class="text-danger">*</span></label>
+						<input
+							type="text"
+							class="form-control"
+							id="shipping_address"
+							[(ngModel)]="order.shipping_address"
+							name="shipping_address"
+							placeholder="Calle y número"
+							required
+						/>
+					</div>
+
+					<div class="row">
+						<div class="col-md-6 mb-3">
+							<label for="shipping_city" class="form-label">Ciudad <span class="text-danger">*</span></label>
+							<input
+								type="text"
+								class="form-control"
+								id="shipping_city"
+								[(ngModel)]="order.shipping_city"
+								name="shipping_city"
+								required
+							/>
+						</div>
+
+						<div class="col-md-6 mb-3">
+							<label for="shipping_state" class="form-label">Estado <span class="text-danger">*</span></label>
+							<input
+								type="text"
+								class="form-control"
+								id="shipping_state"
+								[(ngModel)]="order.shipping_state"
+								name="shipping_state"
+								required
+							/>
+						</div>
+					</div>
+
+					<div class="mb-3">
+						<label for="shipping_postal_code" class="form-label">Código Postal <span class="text-danger">*</span></label>
+						<input
+							type="text"
+							class="form-control"
+							id="shipping_postal_code"
+							[(ngModel)]="order.shipping_postal_code"
+							name="shipping_postal_code"
+							required
+						/>
+					</div>
+
+					<div class="mb-3">
+						<label for="notes" class="form-label">Notas de Entrega (Opcional)</label>
+						<textarea
+							class="form-control"
+							id="notes"
+							[(ngModel)]="order.notes"
+							name="notes"
+							rows="3"
+							placeholder="Instrucciones especiales para la entrega..."
+						></textarea>
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<!-- Order Summary -->
+		<div class="col-md-5">
+			<div class="card bg-white p-4 mb-4">
+				<h4 class="mb-3">Resumen del Pedido</h4>
+
+				<div class="order-items mb-3">
+					<div *ngFor="let item of cart_items" class="cart-item mb-3 pb-3 border-bottom">
+						<div class="d-flex">
+							<img
+								*ngIf="item.item_info?.item?.image_id"
+								[src]="item.item_info.item.image_id | image"
+								alt="{{ item.ecommerce_item?.name }}"
+								class="cart-item-image"
+							/>
+							<div class="flex-grow-1 ms-3">
+								<h6 class="mb-1">{{ item.ecommerce_item?.name }}</h6>
+								<p class="text-muted mb-1 small">
+									Talla: {{ item.variation === 'unico' ? 'Único' : item.variation }}
+								</p>
+								<p class="text-muted mb-0 small">
+									Cantidad: {{ item.qty }}
+								</p>
+							</div>
+							<div class="text-end">
+								<strong>{{ (item.ecommerce_item?.price || 0) * item.qty | currency }}</strong>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="order-totals">
+					<div class="d-flex justify-content-between mb-2">
+						<span>Subtotal:</span>
+						<span>{{ order.subtotal | currency }}</span>
+					</div>
+					<div class="d-flex justify-content-between mb-2" *ngIf="order.tax_amount > 0">
+						<span>Impuestos:</span>
+						<span>{{ order.tax_amount | currency }}</span>
+					</div>
+					<div class="d-flex justify-content-between mb-2" *ngIf="order.shipping_cost > 0">
+						<span>Envío:</span>
+						<span>{{ order.shipping_cost | currency }}</span>
+					</div>
+					<div class="d-flex justify-content-between border-top pt-2 mt-2">
+						<strong>Total:</strong>
+						<strong class="text-primary">{{ order.total_amount | currency }}</strong>
+					</div>
+					<div class="text-muted small mt-1">
+						Total de artículos: {{ order.items_count }}
+					</div>
+				</div>
+
+				<div class="mt-4 d-grid gap-2">
+					<button
+						class="btn btn-primary btn-lg"
+						(click)="processCheckout()"
+						[disabled]="is_processing"
+					>
+						<span *ngIf="!is_processing">Confirmar Pedido</span>
+						<span *ngIf="is_processing">
+							<span class="spinner-border spinner-border-sm me-2"></span>
+							Procesando...
+						</span>
+					</button>
+					<a routerLink="/cart" class="btn btn-outline-secondary">Volver al Carrito</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
