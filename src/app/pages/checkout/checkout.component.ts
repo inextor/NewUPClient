@@ -125,10 +125,16 @@ export class CheckoutComponent extends BaseComponent implements OnInit {
 
 				// Create order items from cart items
 				const order_item_promises = this.cart_items.map(cart_item => {
+					// Handle both ecommerce_item_id and ecommerce_item field names
+					const ecommerce_item_id = (cart_item as any).ecommerce_item_id || (cart_item as any).ecommerce_item;
+
+					console.log('Cart item:', cart_item);
+					console.log('Ecommerce item id:', ecommerce_item_id);
+
 					const order_item: Order_Item = {
 						id: 0,
 						order_id: created_order.id,
-						ecommerce_item_id: cart_item.ecommerce_item_id,
+						ecommerce_item_id: ecommerce_item_id,
 						variation: cart_item.variation,
 						qty: cart_item.qty,
 						unit_price: cart_item.ecommerce_item?.price || 0,

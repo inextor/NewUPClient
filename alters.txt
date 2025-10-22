@@ -2,7 +2,7 @@
 -- Date: 2025-10-21
 -- Description: Add variation field to order_item table and update unique constraint
 
--- Step 1: Drop the old unique constraint
+-- Step 1: Drop the old unique constraint on order_item
 ALTER TABLE `order_item`
 DROP INDEX `unique_order_item`;
 
@@ -14,6 +14,10 @@ ADD COLUMN `variation` VARCHAR(50) NULL AFTER `ecommerce_item_id`;
 -- This allows the same product in different sizes in the same order
 ALTER TABLE `order_item`
 ADD UNIQUE KEY `unique_order_item` (`order_id`, `ecommerce_item_id`, `variation`);
+
+-- Step 4: Rename cart.ecommerce_item to cart.ecommerce_item_id to match the code
+ALTER TABLE `cart`
+CHANGE COLUMN `ecommerce_item` `ecommerce_item_id` INT(11) NOT NULL;
 
 -- Note: The order table already has all the required shipping fields:
 -- user_id, customer_name, customer_email, customer_phone,
