@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { HeaderComponent } from '../../components/header/header.component';
-import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 @Component({
   selector: 'app-panel-informativo',
   templateUrl: './panel-informativo.component.html',
   styleUrls: ['./panel-informativo.component.css'],
   standalone: true,
-  imports: [NgxChartsModule, HeaderComponent, RouterModule]
+  imports: [CommonModule, RouterModule, NgxChartsModule]
 })
 export class PanelInformativoComponent implements OnInit {
 

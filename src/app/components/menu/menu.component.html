@@ -60,7 +60,7 @@
             </div>
             <div *ngIf="isSectionOpen('other')" class="menu-section-items">
                 <div class="menu-item"><a href="#">Ayuda</a></div>
-                <div class="menu-item"><a href="#">Panel Informativo</a></div>
+                <div class="menu-item"><a [routerLink]="['/panel-informativo']">Panel Informativo</a></div>
                 <div class="menu-item"><a [routerLink]="['/logout']">Cerrar Sesión</a></div>
             </div>
         </div>
