@@ -5,6 +5,7 @@ export function role(): Role {
 		id: 0,
 		ecommerce_id: 0,
 		name: '',
+		image_id: null,
 		created: new Date(),
 		updated: new Date(),
 	};
