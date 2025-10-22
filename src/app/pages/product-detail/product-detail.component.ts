@@ -158,6 +158,7 @@ export class ProductDetailComponent extends BaseComponent implements OnInit {
 			this.rest_cart.create(cart_item)
 				.then(() => {
 					this.rest.showSuccess('Producto agregado al carrito');
+					this.rest.loadCartCount();
 				})
 				.catch((error: any) => {
 					this.rest.showError(error);
@@ -205,6 +206,7 @@ export class ProductDetailComponent extends BaseComponent implements OnInit {
 		Promise.all(promises)
 			.then(() => {
 				this.rest.showSuccess(`Producto agregado al carrito: ${selectedSizes.length} talla(s)`);
+				this.rest.loadCartCount();
 
 				// Reset quantities after adding to cart
 				this.availableSizes.forEach(size => {

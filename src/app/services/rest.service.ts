@@ -28,6 +28,7 @@ export class RestService implements RestEndPoint{
 	public pos_rest:RestEndPoint = { base_url: 'https://uniformesprofesionales.integranet.xyz/api', bearer: '' };
 	public roles_info: Role_Info[] = [];
 	public admin_roles: Role_Info[] = [];
+	public cart_count: number = 0;
 
 	public set bearer(bearer:string)
 	{
@@ -57,14 +58,17 @@ export class RestService implements RestEndPoint{
 		route.params.subscribe((_params:any) =>
 		{
 			document.body.style.backgroundColor = '#ffffff';
+			this.loadCartCount();
 		});
 
 		route.queryParams.subscribe((_params:any) =>
 		{
 			document.body.style.backgroundColor = '#ffffff';
+			this.loadCartCount();
 		});
 
 		this.loadEcommerceData();
+		this.loadCartCount();
 	}
 
 	toggleMenu():boolean {
@@ -339,6 +343,39 @@ export class RestService implements RestEndPoint{
 				throw new Error('Network response was not ok');
 			}
 			return response.json();
+		});
+	}
+
+	loadCartCount(): void {
+		if (!this.user?.id) {
+			this.cart_count = 0;
+			return;
+		}
+
+		const url = `${this.base_url}/cart.php?user_id=${this.user.id}`;
+
+		fetch(url, {
+			method: 'GET',
+			headers: {
+				'Authorization': `Bearer ${this.bearer}`
+			}
+		})
+		.then(response => {
+			if (!response.ok) {
+				throw new Error('Network response was not ok');
+			}
+			return response.json();
+		})
+		.then((data: any) => {
+			// Sum up quantities of all cart items
+			if (data && data.data && Array.isArray(data.data)) {
+				this.cart_count = data.data.reduce((total: number, item: any) => total + item.qty, 0);
+			} else {
+				this.cart_count = 0;
+			}
+		})
+		.catch(() => {
+			this.cart_count = 0;
 		});
 	}
 }
