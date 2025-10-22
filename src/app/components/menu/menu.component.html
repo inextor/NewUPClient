@@ -1,4 +1,4 @@
-<nav *ngIf="rest.is_menu_open" class="sidebar-menu">
+<nav class="sidebar-menu" [class.open]="rest.is_menu_open">
     <div class="menu-content">
         <!-- Home & Shopping -->
         <div class="menu-section">
@@ -9,7 +9,6 @@
             <div *ngIf="isSectionOpen('home')" class="menu-section-items">
                 <div class="menu-item"><a [routerLink]="['/']">Inicio</a></div>
                 <div class="menu-item"><a [routerLink]="['/cart']" [queryParams]="{t: getTimestamp()}">Carrito</a></div>
-                <div class="menu-item"><a [routerLink]="['/edit-quote']">Solicitar Cotización</a></div>
             </div>
         </div>
 

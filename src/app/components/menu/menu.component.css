@@ -1,13 +1,18 @@
 .sidebar-menu {
   position: fixed;
-  top: 60px;
-  left: 0;
+  top: 0;
+  left: -250px;
   bottom: 0;
   width: 250px;
   background-color: #f2f2f2;
   color: #333;
   z-index: 999;
   overflow-y: auto;
+  transition: left 0.3s ease-in-out;
+}
+
+.sidebar-menu.open {
+  left: 0;
 }
 
 .menu-content {

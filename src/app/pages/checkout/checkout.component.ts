@@ -156,6 +156,7 @@ export class CheckoutComponent extends BaseComponent implements OnInit {
 			})
 			.then(() => {
 				this.is_processing = false;
+				this.rest.loadCartCount();
 				this.rest.showSuccess('¡Pedido creado exitosamente!');
 				this.router.navigate(['/order-confirmation', created_order_id]);
 			})

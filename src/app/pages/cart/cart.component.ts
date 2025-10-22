@@ -75,6 +75,7 @@ export class CartComponent extends BaseComponent implements OnInit {
 		this.rest_cart.delete(cart_item_id)
 			.then(() => {
 				this.rest.showSuccess('Producto eliminado del carrito');
+				this.rest.loadCartCount();
 				this.loadCart();
 			})
 			.catch((error: any) => {
