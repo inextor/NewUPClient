@@ -1,0 +1,25 @@
+label {
+	cursor: pointer;
+}
+
+.logo_container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: 2px dashed #ccc;
+	border-radius: 8px;
+	background-color: #f8f9fa;
+}
+
+.logo_container svg {
+	color: #6c757d;
+}
+
+.logo_container:hover {
+	border-color: #007bff;
+	background-color: #e7f1ff;
+}
+
+.logo_container:hover svg {
+	color: #007bff;
+}
