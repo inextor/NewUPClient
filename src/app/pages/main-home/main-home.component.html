@@ -20,6 +20,13 @@
   @if (role_list.length > 0 && cecommerce_item_list.length > 0) {
     <!-- Show selected role and its items -->
     <app-item-catalog [items]="cecommerce_item_list" [title]="role_list[0].name"></app-item-catalog>
+
+    <app-pagination
+      [current_page]="current_page"
+      [total_pages]="total_pages"
+      [pages]="pages"
+      [path]="path">
+    </app-pagination>
   }
 
   @if (role_list.length === 0 && cecommerce_item_list.length === 0) {

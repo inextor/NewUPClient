@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { RouterLink, ParamMap } from '@angular/router';
 import { BaseComponent } from '../base/base.component';
 import { Rest } from '../../classes/Rest';
 import { Role } from '../../models/RestModels/Role';
 import { RestResponse } from '../../classes/RestResponse';
 import { Ecommerce_Item } from '../../models/RestModels/Ecommerce_Item';
 import { ItemCatalogComponent } from '../../components/item-catalog/item-catalog.component';
+import { PaginationComponent } from '../../components/pagination/pagination.component';
 
 interface CEcommerceItemInfo {
 	ecommerce_item: Ecommerce_Item;
@@ -17,7 +18,7 @@ interface CEcommerceItemInfo {
 @Component({
 	selector: 'app-main-home',
 	standalone: true,
-	imports: [CommonModule, RouterLink, ItemCatalogComponent],
+	imports: [CommonModule, RouterLink, ItemCatalogComponent, PaginationComponent],
 	templateUrl: './main-home.component.html',
 	styleUrls: ['./main-home.component.css']
 })
@@ -33,7 +34,14 @@ export class MainHomeComponent extends BaseComponent implements OnInit {
 	cecommerce_item_list: CEcommerceItemInfo[] = [];
 
 	ngOnInit(): void {
+		this.path = '/';
+
 		this.getParamsAndQueriesObservable().subscribe((params: any) => {
+			const page = params.query.has('page') ? parseInt(params.query.get('page')!) : 0;
+			const limit = params.query.has('limit') ? parseInt(params.query.get('limit')!) : 100;
+
+			this.current_page = page;
+			this.page_size = limit;
 
 			if (params.query.has('role_id')) {
 				// Fetch single role and its items
@@ -43,8 +51,12 @@ export class MainHomeComponent extends BaseComponent implements OnInit {
 					.then((role: Role) => {
 						this.role_list = [role];
 
-						// Fetch items for this role using role_item relationship
-						return this.rest_role_ecommerce_item.search({ role_id: role_id, limit: 999999 });
+						// Fetch items for this role using role_item relationship with pagination
+						return this.rest_role_ecommerce_item.search({
+							role_id: role_id,
+							limit: limit,
+							page: page
+						});
 					})
 					.then((role_ecommerce_item_response: any) => {
 						// Get ecommerce_item IDs from role_ecommerce_item
@@ -52,17 +64,26 @@ export class MainHomeComponent extends BaseComponent implements OnInit {
 
 						if (ecommerce_item_ids.length === 0) {
 							this.cecommerce_item_list = [];
+							this.setPages(this.current_page, 0);
 							return;
 						}
 
 						// Fetch ecommerce_items for these ecommerce_item_ids
-						return this.rest_ecommerce_item.search({ 'id,': ecommerce_item_ids, limit: 999999 });
+						return Promise.all([
+							role_ecommerce_item_response,
+							this.rest_ecommerce_item.search({ 'id,': ecommerce_item_ids, limit: 999999 })
+						]);
 					})
-					.then((ecommerce_item_response: any) => {
-						if (!ecommerce_item_response) return;
+					.then((result: any) => {
+						if (!result) return;
+
+						const [role_ecommerce_item_response, ecommerce_item_response] = result;
 
 						this.ecommerce_item_list = ecommerce_item_response.data;
 						const item_ids = ecommerce_item_response.data.map((i: any) => i.item_id);
+
+						// Set pagination
+						this.setPages(this.current_page, role_ecommerce_item_response.total);
 
 						// Fetch full item info
 						return Promise.all([ecommerce_item_response, this.rest_item.search({ 'id,': item_ids })]);
@@ -96,8 +117,9 @@ export class MainHomeComponent extends BaseComponent implements OnInit {
 						this.rest.showError(error);
 					});
 
-				// Clear items list
+				// Clear items list and pagination
 				this.cecommerce_item_list = [];
+				this.setPages(0, 0);
 			}
 		});
 	}
