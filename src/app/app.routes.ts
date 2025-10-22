@@ -27,6 +27,7 @@ import { DeliverItemsByUserComponent } from './pages/deliver-items-by-user/deliv
 import { DeliverItemsByOrderComponent } from './pages/deliver-items-by-order/deliver-items-by-order.component';
 import { CheckoutComponent } from './pages/checkout/checkout.component';
 import { OrderConfirmationComponent } from './pages/order-confirmation/order-confirmation.component';
+import { PanelInformativoComponent } from './pages/panel-informativo/panel-informativo.component';
 
 import { authGuard } from './guards/auth.guard';
 
@@ -66,6 +67,7 @@ export const routes: Routes = [
             { path: 'edit-category/:id', component: SaveCategoryComponent },
             { path: 'deliver-items-by-user', component: DeliverItemsByUserComponent },
             { path: 'deliver-items-by-order', component: DeliverItemsByOrderComponent },
+            { path: 'panel-informativo', component: PanelInformativoComponent },
         ]
     },
     {

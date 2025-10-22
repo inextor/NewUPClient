@@ -1,0 +1,154 @@
+<app-header></app-header>
+<div class="container-fluid mt-2">
+    <div class="row mb-3">
+        <div class="col-12">
+            <button class="btn btn-primary" [routerLink]="['/solicitar-cotizacion']">Solicitar Cotización</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-md-6 col-lg-4">
+            <h3 class="my-3">Inversión por Departamento</h3>
+            <div class="card p-3">
+                <div style="height:300px;">
+                    <ngx-charts-bar-horizontal
+                            [scheme]="inversionPorDepartamento.scheme"
+                            [results]="inversionPorDepartamento.results"
+                            [gradient]="inversionPorDepartamento.gradient"
+                            [xAxis]="inversionPorDepartamento.xAxis"
+                            [yAxis]="inversionPorDepartamento.yAxis"
+                            [legend]="inversionPorDepartamento.legend"
+                            [showXAxisLabel]="inversionPorDepartamento.showXAxisLabel"
+                            [showYAxisLabel]="inversionPorDepartamento.showYAxisLabel"
+                            [xAxisLabel]="inversionPorDepartamento.xAxisLabel"
+                            [yAxisLabel]="inversionPorDepartamento.yAxisLabel">
+                    </ngx-charts-bar-horizontal>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4">
+            <h3 class="my-3">Dotación de Personal Uniformado</h3>
+            <div class="card p-3">
+                <div style="height:300px;">
+                    <ngx-charts-bar-horizontal
+                            [scheme]="dotacionPersonalUniformado.scheme"
+                            [results]="dotacionPersonalUniformado.results"
+                            [gradient]="dotacionPersonalUniformado.gradient"
+                            [xAxis]="dotacionPersonalUniformado.xAxis"
+                            [yAxis]="dotacionPersonalUniformado.yAxis"
+                            [legend]="dotacionPersonalUniformado.legend"
+                            [showXAxisLabel]="dotacionPersonalUniformado.showXAxisLabel"
+                            [showYAxisLabel]="dotacionPersonalUniformado.showYAxisLabel"
+                            [xAxisLabel]="dotacionPersonalUniformado.xAxisLabel"
+                            [yAxisLabel]="dotacionPersonalUniformado.yAxisLabel">
+                    </ngx-charts-bar-horizontal>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4">
+            <h3 class="my-3">Costo por Colaborador</h3>
+            <div class="card p-3">
+                <div style="height:300px;">
+                    <ngx-charts-bar-vertical
+                            [scheme]="costoPorColaborador.scheme"
+                            [results]="costoPorColaborador.results"
+                            [gradient]="costoPorColaborador.gradient"
+                            [xAxis]="costoPorColaborador.xAxis"
+                            [yAxis]="costoPorColaborador.yAxis"
+                            [legend]="costoPorColaborador.legend"
+                            [showXAxisLabel]="costoPorColaborador.showXAxisLabel"
+                            [showYAxisLabel]="costoPorColaborador.showYAxisLabel"
+                            [xAxisLabel]="costoPorColaborador.xAxisLabel"
+                            [yAxisLabel]="costoPorColaborador.yAxisLabel">
+                    </ngx-charts-bar-vertical>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4">
+            <h3 class="my-3">% de Uniformidad por Departamento</h3>
+            <div class="card p-3">
+                <div style="height:300px;">
+                    <ngx-charts-pie-chart
+                            [scheme]="uniformidadPorDepartamento.scheme"
+                            [results]="uniformidadPorDepartamento.results"
+                            [gradient]="uniformidadPorDepartamento.gradient"
+                            [legend]="uniformidadPorDepartamento.legend"
+                            [labels]="uniformidadPorDepartamento.labels"
+                            [doughnut]="uniformidadPorDepartamento.doughnut">
+                    </ngx-charts-pie-chart>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4">
+            <h3 class="my-3">Monthly Data</h3>
+            <div class="card p-3">
+                <div style="height:300px;">
+                    <ngx-charts-line-chart
+                            [scheme]="monthlyData.scheme"
+                            [results]="monthlyData.results"
+                            [gradient]="monthlyData.gradient"
+                            [xAxis]="monthlyData.xAxis"
+                            [yAxis]="monthlyData.yAxis"
+                            [legend]="monthlyData.legend"
+                            [showXAxisLabel]="monthlyData.showXAxisLabel"
+                            [showYAxisLabel]="monthlyData.showYAxisLabel"
+                            [xAxisLabel]="monthlyData.xAxisLabel"
+                            [yAxisLabel]="monthlyData.yAxisLabel">
+                    </ngx-charts-line-chart>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4">
+            <h3 class="my-3">Prendas con Mayor Rotación</h3>
+            <div class="card p-3">
+                <div style="height:300px;">
+                    <ngx-charts-bar-horizontal
+                            [scheme]="prendasMayorRotacion.scheme"
+                            [results]="prendasMayorRotacion.results"
+                            [gradient]="prendasMayorRotacion.gradient"
+                            [xAxis]="prendasMayorRotacion.xAxis"
+                            [yAxis]="prendasMayorRotacion.yAxis"
+                            [legend]="prendasMayorRotacion.legend"
+                            [showXAxisLabel]="prendasMayorRotacion.showXAxisLabel"
+                            [showYAxisLabel]="prendasMayorRotacion.showYAxisLabel"
+                            [xAxisLabel]="prendasMayorRotacion.xAxisLabel"
+                            [yAxisLabel]="prendasMayorRotacion.yAxisLabel">
+                    </ngx-charts-bar-horizontal>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4">
+            <h3 class="my-3">Índice de Reposición</h3>
+            <div class="card p-3">
+                <div style="height:300px;">
+                    <ngx-charts-pie-chart
+                            [scheme]="indiceReposicion.scheme"
+                            [results]="indiceReposicion.results"
+                            [gradient]="indiceReposicion.gradient"
+                            [legend]="indiceReposicion.legend"
+                            [labels]="indiceReposicion.labels"
+                            [doughnut]="indiceReposicion.doughnut">
+                    </ngx-charts-pie-chart>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4">
+            <h3 class="my-3">Variación de Personal Uniformado</h3>
+            <div class="card p-3">
+                <div style="height:300px;">
+                    <ngx-charts-bar-vertical
+                            [scheme]="variacionPersonalUniformado.scheme"
+                            [results]="variacionPersonalUniformado.results"
+                            [gradient]="variacionPersonalUniformado.gradient"
+                            [xAxis]="variacionPersonalUniformado.xAxis"
+                            [yAxis]="variacionPersonalUniformado.yAxis"
+                            [legend]="variacionPersonalUniformado.legend"
+                            [showXAxisLabel]="variacionPersonalUniformado.showXAxisLabel"
+                            [showYAxisLabel]="variacionPersonalUniformado.showYAxisLabel"
+                            [xAxisLabel]="variacionPersonalUniformado.xAxisLabel"
+                            [yAxisLabel]="variacionPersonalUniformado.yAxisLabel">
+                    </ngx-charts-bar-vertical>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
