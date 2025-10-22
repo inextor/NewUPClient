@@ -9,7 +9,9 @@
         <span class="hamburger-inner"></span>
       </span>
     </button>
-    <img [src]="213 | image" alt="Logo" class="header-logo">
+    <a [routerLink]="['/']">
+      <img [src]="213 | image" alt="Logo" class="header-logo">
+    </a>
   </div>
   <div class="header-center">
     <h1>{{ rest.ecommerce.name }}</h1>

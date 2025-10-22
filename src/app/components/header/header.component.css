@@ -28,6 +28,17 @@
   gap: 0.5rem;
 }
 
+.header-left a {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.header-left a:hover .header-logo {
+  opacity: 0.8;
+}
+
 .header-center {
   display: flex;
   align-items: center;
@@ -39,6 +50,7 @@
   height: 40px;
   width: auto;
   object-fit: contain;
+  transition: opacity 0.2s;
 }
 
 h1 {
