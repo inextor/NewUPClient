@@ -5,11 +5,12 @@ import { CommonModule } from '@angular/common';
 import { Rest } from '../../classes/Rest';
 import { Cart } from '../../models/RestModels/Cart';
 import { RestResponse } from '../../classes/RestResponse';
+import { ImagePipe } from '../../pipes/image.pipe';
 
 @Component({
 	selector: 'app-header',
 	standalone: true,
-	imports: [CommonModule, RouterLink],
+	imports: [CommonModule, RouterLink, ImagePipe],
 	templateUrl: './header.component.html',
 	styleUrl: './header.component.css'
 })

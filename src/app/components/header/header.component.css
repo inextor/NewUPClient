@@ -10,11 +10,23 @@
   z-index: 1000;
 }
 
+.header-center {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-grow: 1;
+  justify-content: center;
+}
+
+.header-logo {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+}
+
 h1 {
   margin: 0;
   font-size: 1.5rem;
-  flex-grow: 1;
-  text-align: center;
 }
 
 .menu-button {
