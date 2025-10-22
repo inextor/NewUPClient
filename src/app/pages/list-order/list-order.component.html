@@ -43,7 +43,7 @@
               </td>
               <td>{{ order.notes || '-' }}</td>
               <td class="text-end">
-                <a class="btn btn-primary btn-sm" [routerLink]="['/view-order', order.id]">Ver/Editar</a>
+                <a class="btn btn-primary btn-sm" [routerLink]="['/view-order', order.id]">Ver</a>
                 @if (order.status !== 'COMPLETED' && order.status !== 'CANCELLED') {
                   <button class="btn btn-success btn-sm ms-2" (click)="markAsReceived(order)">Marcar como recibida</button>
                 }

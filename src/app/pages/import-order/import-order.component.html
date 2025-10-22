@@ -11,7 +11,9 @@
 		<div class="mb-3">
 			<input type="file" class="form-control" accept=".xlsx,.xls" (change)="onFileSelected($event)">
 			<div class="form-text">
-				Formato: Primera columna "Codigo Empleado", segunda columna "Nombre", y del tercero en adelante los códigos de productos como encabezados
+				Formato: Primera columna "Codigo Empleado", segunda columna "Nombre", y del tercero en adelante los códigos de productos con sus variaciones.<br>
+				<strong>Variaciones:</strong> Use el formato "CODIGO:VARIACION" (ej: "CAMISA:M", "CAM-001:L", "#45:unico")<br>
+				<em>Nota: Las plantillas generadas ya incluyen las variaciones automáticamente según la clase de talla del producto.</em>
 			</div>
 		</div>
 		@if (selectedFile) {
@@ -44,6 +46,7 @@
 				<thead>
 					<tr>
 						<th>Código de Producto</th>
+						<th>Variación</th>
 						<th>Cantidad Total</th>
 						<th>Estado</th>
 					</tr>
@@ -51,7 +54,14 @@
 				<tbody>
 					@for (product of productSummary; track product.code) {
 						<tr>
-							<td>{{ product.code }}</td>
+							<td>{{ product.base_code }}</td>
+							<td>
+								@if (product.variation) {
+									<span class="badge bg-info">{{ product.variation }}</span>
+								} @else {
+									<span class="text-muted">-</span>
+								}
+							</td>
 							<td>{{ product.totalQty }}</td>
 							<td>
 								@if (product.ecommerce_item_id) {
@@ -161,17 +171,18 @@
 					<thead>
 						<tr>
 							<th>Código</th>
+							<th>Variación</th>
 							<th>Nombre</th>
 							<th class="d-none d-md-table-cell">Notas</th>
 							<th class="text-end">Cantidad</th>
 						</tr>
 					</thead>
 					<tbody>
-						@for (item of orderItems; track item.ecommerce_item_id) {
+						@for (item of orderItems; track item.ecommerce_item_id + '-' + (item.variation || '')) {
 							<tr>
 								<td>
 									@for (product of productSummary; track product.code) {
-										@if (product.ecommerce_item_id === item.ecommerce_item_id) {
+										@if (product.ecommerce_item_id === item.ecommerce_item_id && product.variation === item.variation) {
 											{{ product.ecommerce_item?.code || '#' + product.ecommerce_item_id }}
 										}
 									}
@@ -181,8 +192,15 @@
 									}
 								</td>
 								<td>
+									@if (item.variation) {
+										<span class="badge bg-info">{{ item.variation }}</span>
+									} @else {
+										<span class="text-muted">-</span>
+									}
+								</td>
+								<td>
 									@for (product of productSummary; track product.code) {
-										@if (product.ecommerce_item_id === item.ecommerce_item_id) {
+										@if (product.ecommerce_item_id === item.ecommerce_item_id && product.variation === item.variation) {
 											{{ product.ecommerce_item?.name || 'N/A' }}
 										}
 									}
@@ -195,17 +213,17 @@
 				</table>
 			</div>
 
-			<!-- Save Button -->
+			<!-- Add to Cart Button -->
 			<div class="card bg-white p-3 mb-3">
-				<h5>6. Guardar Orden</h5>
+				<h5>6. Agregar al Carrito</h5>
 				<button
 					class="btn btn-success btn-lg"
 					[disabled]="!canSave"
-					(click)="saveOrder()">
-					Guardar Orden
+					(click)="addToCart()">
+					Agregar al Carrito
 				</button>
 				<div class="form-text mt-2">
-					Esta acción creará la orden con todos sus items y asignaciones de usuarios en una transacción atómica.
+					Esta acción agregará todos los items al carrito. Luego podrá proceder al checkout para completar la orden.
 				</div>
 			</div>
 		}
@@ -235,7 +253,8 @@
 						}
 					</select>
 					<div class="form-text">
-						Se cargarán los usuarios e items asignados a este rol
+						Se cargarán los usuarios e items asignados a este rol.<br>
+						<strong>Nota:</strong> La plantilla incluirá automáticamente todas las variaciones de talla disponibles para cada producto.
 					</div>
 				</div>
 

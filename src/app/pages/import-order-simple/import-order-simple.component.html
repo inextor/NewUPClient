@@ -1,0 +1,204 @@
+<div class="container mt-5">
+	<h2 class="app-page-title">Importar Orden Simple
+		<button class="btn btn-info" style="float: right;" (click)="openTemplateModal()">
+			Generar Plantilla de Excel
+		</button>
+	</h2>
+
+	<!-- File Upload -->
+	<div class="card bg-white p-3 mb-3">
+		<h5>1. Seleccionar Archivo Excel</h5>
+		<div class="mb-3">
+			<input type="file" class="form-control" accept=".xlsx,.xls" (change)="onFileSelected($event)">
+			<div class="form-text">
+				Formato: Tres columnas: <strong>Nombre</strong>, <strong>Código</strong>, <strong>Cantidad</strong><br>
+				<strong>Código:</strong> Use el formato "CODIGO:VARIACION" (ej: "CAMISA:M", "CAM-001:L", "#45:unico")<br>
+				<em>Nota: Las plantillas generadas ya incluyen las variaciones automáticamente según la clase de talla del producto.</em>
+			</div>
+		</div>
+		@if (selectedFile) {
+			<div class="alert alert-info">
+				Archivo seleccionado: <strong>{{ selectedFile.name }}</strong>
+			</div>
+		}
+	</div>
+
+	<!-- Summary Section -->
+	@if (importedRows.length > 0) {
+		<div class="card bg-white p-3 mb-3">
+			<h5>2. Resumen de Importación</h5>
+			<div class="alert alert-success">
+				<strong>Total de Items:</strong> {{ importedRows.length }}
+			</div>
+
+			<!-- Product Summary -->
+			<h6 class="mt-3">Items Importados</h6>
+			<table class="table table-sm table-striped">
+				<thead>
+					<tr>
+						<th>Nombre</th>
+						<th>Código Base</th>
+						<th>Variación</th>
+						<th class="text-end">Cantidad</th>
+						<th>Estado</th>
+					</tr>
+				</thead>
+				<tbody>
+					@for (row of importedRows; track row.codigo) {
+						<tr>
+							<td>{{ row.nombre }}</td>
+							<td>{{ row.base_code }}</td>
+							<td>
+								@if (row.variation) {
+									<span class="badge bg-info">{{ row.variation }}</span>
+								} @else {
+									<span class="text-muted">-</span>
+								}
+							</td>
+							<td class="text-end">{{ row.cantidad }}</td>
+							<td>
+								@if (row.ecommerce_item_id) {
+									<span class="badge bg-success">Encontrado</span>
+								} @else {
+									<span class="badge bg-warning">No encontrado</span>
+								}
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+
+		<!-- Validation Section -->
+		<div class="card bg-white p-3 mb-3">
+			<h5>3. Validación</h5>
+
+			<button class="btn btn-primary mb-3" (click)="validateData()">
+				Validar Datos
+			</button>
+
+			<!-- Validation Errors -->
+			@if (validationErrors.length > 0) {
+				<div class="alert alert-warning">
+					<h6>Errores de Validación:</h6>
+					<ul>
+						@for (error of validationErrors; track $index) {
+							<li>
+								Producto no encontrado: <strong>{{ error.code }}</strong> ({{ error.name }})
+							</li>
+						}
+					</ul>
+				</div>
+			}
+
+			@if (isValidated && validationErrors.length === 0) {
+				<div class="alert alert-success">
+					✓ Todos los datos han sido validados correctamente
+				</div>
+			}
+		</div>
+
+		<!-- Add to Cart Button -->
+		@if (canSave) {
+			<div class="card bg-white p-3 mb-3">
+				<h5>4. Agregar al Carrito</h5>
+				<button
+					class="btn btn-success btn-lg"
+					[disabled]="!canSave"
+					(click)="addToCart()">
+					Agregar al Carrito
+				</button>
+				<div class="form-text mt-2">
+					Esta acción agregará todos los items al carrito. Luego podrá proceder al checkout para completar la orden.
+				</div>
+			</div>
+		}
+	}
+</div>
+
+<!-- Template Generation Modal -->
+@if (showTemplateModal) {
+	<div class="modal-backdrop" (click)="closeTemplateModal()"></div>
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Generar Plantilla de Excel</h5>
+				<button type="button" class="btn-close" (click)="closeTemplateModal()"></button>
+			</div>
+			<div class="modal-body">
+				<div class="mb-3">
+					<label for="roleSelect" class="form-label">Seleccionar Rol</label>
+					<select
+						class="form-control"
+						id="roleSelect"
+						[(ngModel)]="selectedRoleId"
+						(change)="onRoleSelected()">
+						<option [value]="null">-- Seleccione un rol --</option>
+						@for (role of roleList; track role.id) {
+							<option [value]="role.id">{{ role.name }}</option>
+						}
+					</select>
+					<div class="form-text">
+						Se cargarán los items asignados a este rol.<br>
+						<strong>Nota:</strong> La plantilla incluirá automáticamente todas las variaciones de talla disponibles para cada producto.
+					</div>
+				</div>
+
+				@if (isLoadingTemplate) {
+					<div class="alert alert-info">
+						Cargando datos del rol...
+					</div>
+				}
+
+				@if (selectedRoleId && !isLoadingTemplate) {
+					<!-- Items Preview -->
+					<div class="mb-3">
+						<h6>Items ({{ templateEcommerceItems.length }})</h6>
+						@if (templateEcommerceItems.length > 0) {
+							<div class="table-responsive" style="max-height: 200px; overflow-y: auto;">
+								<table class="table table-sm table-striped">
+									<thead>
+										<tr>
+											<th>Código</th>
+											<th>Nombre</th>
+										</tr>
+									</thead>
+									<tbody>
+										@for (ecommerceItem of templateEcommerceItems; track ecommerceItem.id) {
+											<tr>
+												<td>{{ ecommerceItem.code }}</td>
+												<td>{{ ecommerceItem.name }}</td>
+											</tr>
+										}
+									</tbody>
+								</table>
+							</div>
+						} @else {
+							<div class="alert alert-warning">
+								No hay items asignados a este rol
+							</div>
+						}
+					</div>
+
+					<!-- Template Preview -->
+					@if (templateEcommerceItems.length > 0) {
+						<div class="alert alert-success">
+							La plantilla contendrá una fila por cada variación de cada producto.<br>
+							Formato: <strong>Nombre | Código:Variación | Cantidad</strong>
+						</div>
+					}
+				}
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" (click)="closeTemplateModal()">Cancelar</button>
+				<button
+					type="button"
+					class="btn btn-primary"
+					[disabled]="!selectedRoleId || templateEcommerceItems.length === 0 || isLoadingTemplate"
+					(click)="generateTemplate()">
+					Generar Excel
+				</button>
+			</div>
+		</div>
+	</div>
+}
