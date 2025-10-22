@@ -1,7 +1,17 @@
-<div class="header-container" [ngStyle]="{ 'background-color': rest.ecommerce.color, 'color': rest.ecommerce.font_color }">
-  <button class="menu-button" (click)="rest.toggleMenu()" [ngStyle]="{'color': rest.ecommerce.font_color}">☰</button>
-  <div class="header-center">
+<div class="header-container" [class.menu-open]="rest.is_menu_open" [ngStyle]="{ 'background-color': rest.ecommerce.color, 'color': rest.ecommerce.font_color }">
+  <div class="header-left">
+    <button class="hamburger hamburger--spin"
+            [class.is-active]="rest.is_menu_open"
+            type="button"
+            (click)="toggleMenu()"
+            [style.color]="rest.ecommerce.font_color">
+      <span class="hamburger-box">
+        <span class="hamburger-inner"></span>
+      </span>
+    </button>
     <img [src]="213 | image" alt="Logo" class="header-logo">
+  </div>
+  <div class="header-center">
     <h1>{{ rest.ecommerce.name }}</h1>
   </div>
   <a routerLink="/cart" class="cart-link" [ngStyle]="{'color': rest.ecommerce.font_color}">

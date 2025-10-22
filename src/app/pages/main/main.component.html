@@ -4,8 +4,11 @@
 <!-- Menu -->
 <app-menu></app-menu>
 
+<!-- Overlay -->
+<div class="menu-overlay" [class.active]="rest.is_menu_open" (click)="toggleMenu()"></div>
+
 <!-- Main Content -->
-<div class="container-fluid">
+<div class="container-fluid page-wrapper" [class.menu-open]="rest.is_menu_open">
 	<main class="main-content">
 		<router-outlet></router-outlet>
 	</main>
