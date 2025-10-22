@@ -7,6 +7,17 @@
         <label for="name" class="form-label">Nombre</label>
         <input type="text" class="form-control" id="name" [(ngModel)]="role.name" name="name" required>
       </div>
+
+      <div class="mb-3">
+        <label class="form-label">Imagen del Rol</label>
+        <app-image-uploader
+          [(image)]="role.image_id"
+          [max_width]="800"
+          [max_height]="600"
+          [can_be_deleted]="true">
+        </app-image-uploader>
+      </div>
+
       <button type="submit" class="btn btn-primary">Guardar</button>
     </form>
   </div>

@@ -6,11 +6,12 @@ import { Role } from '../../models/RestModels/Role';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { GetEmpty } from '../../models/GetEmpty';
+import { ImageUploaderComponent } from '../../components/image-uploader/image-uploader.component';
 
 @Component({
 	selector: 'app-save-role',
 	standalone: true,
-	imports: [CommonModule, FormsModule],
+	imports: [CommonModule, FormsModule, ImageUploaderComponent],
 	templateUrl: './save-role.component.html',
 	styleUrls: ['./save-role.component.css']
 })

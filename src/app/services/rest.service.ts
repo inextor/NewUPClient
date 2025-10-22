@@ -310,4 +310,35 @@ export class RestService implements RestEndPoint{
 
 		return false;
 	}
+
+	/**
+	 * Upload an image file to the server
+	 * @param file The image file to upload
+	 * @param is_private Whether the image should be private
+	 * @param max_width Maximum width for the image (0 for no limit)
+	 * @param max_height Maximum height for the image (0 for no limit)
+	 * @returns Promise with the uploaded image data
+	 */
+	uploadImage(file: File, is_private: boolean = false, max_width: number = 0, max_height: number = 0): Promise<any> {
+		const url = `${this.base_url}/image.php`;
+		const form_data = new FormData();
+		form_data.append('is_private', is_private ? '1' : '0');
+		form_data.append('max_height', '' + max_height);
+		form_data.append('max_width', '' + max_width);
+		form_data.append('image', file, file.name);
+
+		return fetch(url, {
+			method: 'POST',
+			headers: {
+				'Authorization': `Bearer ${this.bearer}`
+			},
+			body: form_data
+		})
+		.then(response => {
+			if (!response.ok) {
+				throw new Error('Network response was not ok');
+			}
+			return response.json();
+		});
+	}
 }
