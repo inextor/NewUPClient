@@ -6,10 +6,14 @@
       @for (role of role_list; track role.id) {
         <div class="role-card" [routerLink]="['/']" [queryParams]="{role_id: role.id}">
           <div class="role-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="8" r="4"/>
-              <path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/>
-            </svg>
+            @if (role.image_id) {
+              <img [src]="role.image_id | image" [alt]="role.name" class="role-image">
+            } @else {
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="8" r="4"/>
+                <path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/>
+              </svg>
+            }
           </div>
           <div class="role-name">{{ role.name }}</div>
         </div>
