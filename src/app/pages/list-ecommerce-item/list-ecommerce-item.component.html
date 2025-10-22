@@ -1,5 +1,15 @@
 <div class="container">
   <h2 class="my-3"> Listado de Artículos</h2>
+
+  <div class="mb-3">
+    <input
+      type="text"
+      class="form-control"
+      placeholder="Buscar artículos por nombre..."
+      [(ngModel)]="searchTerm"
+      (input)="onSearch()">
+  </div>
+
   @if (ecommerce_item_list.length === 0) {
     <div class="alert alert-info">
       No items found.
