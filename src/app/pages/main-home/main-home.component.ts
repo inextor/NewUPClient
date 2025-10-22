@@ -8,6 +8,7 @@ import { RestResponse } from '../../classes/RestResponse';
 import { Ecommerce_Item } from '../../models/RestModels/Ecommerce_Item';
 import { ItemCatalogComponent } from '../../components/item-catalog/item-catalog.component';
 import { PaginationComponent } from '../../components/pagination/pagination.component';
+import { ImagePipe } from '../../pipes/image.pipe';
 
 interface CEcommerceItemInfo {
 	ecommerce_item: Ecommerce_Item;
@@ -18,7 +19,7 @@ interface CEcommerceItemInfo {
 @Component({
 	selector: 'app-main-home',
 	standalone: true,
-	imports: [CommonModule, RouterLink, ItemCatalogComponent, PaginationComponent],
+	imports: [CommonModule, RouterLink, ItemCatalogComponent, PaginationComponent, ImagePipe],
 	templateUrl: './main-home.component.html',
 	styleUrls: ['./main-home.component.css']
 })
