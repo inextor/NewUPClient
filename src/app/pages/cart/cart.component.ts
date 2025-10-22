@@ -28,8 +28,11 @@ export class CartComponent extends BaseComponent implements OnInit {
 	rest_item: Rest<any,any> = new Rest<any,any>(this.rest.pos_rest, 'item_info.php');
 
 	ngOnInit(): void {
-		// Reload cart whenever we navigate to this page
-		this.route.url.subscribe(() => {
+		// Load cart initially
+		this.loadCart();
+
+		// Also reload when query params change (e.g., when navigating back to cart)
+		this.route.queryParams.subscribe(() => {
 			this.loadCart();
 		});
 	}

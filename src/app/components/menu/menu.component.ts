@@ -40,4 +40,8 @@ export class MenuComponent implements OnInit, OnDestroy {
   isSectionOpen(section: string): boolean {
     return this.openSection === section;
   }
+
+  getTimestamp(): number {
+    return Date.now();
+  }
 }
