@@ -86,7 +86,7 @@ export class MainHomeComponent extends BaseComponent implements OnInit {
 						this.setPages(this.current_page, role_ecommerce_item_response.total);
 
 						// Fetch full item info
-						return Promise.all([ecommerce_item_response, this.rest_item.search({ 'id,': item_ids })]);
+						return Promise.all([ecommerce_item_response, this.rest_item.search({ 'id,': item_ids, limit: 999999 })]);
 					})
 					.then((result: any) => {
 						if (!result) return;
