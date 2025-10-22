@@ -240,15 +240,13 @@ export class Rest<T,U>
 
 	delete(id:any):Promise<any>
 	{
-		const url = `${this.rest.base_url}/${this.path}/${id}`;
+		const url = `${this.rest.base_url}/${this.path}?id=${id}`;
 		let headers = {
-			'Authorization': `Bearer ${this.rest.bearer}`,
-			'Content-Type': 'application/json'
+			'Authorization': `Bearer ${this.rest.bearer}`
 		};
 
 		let method = 'DELETE';
-		let body = JSON.stringify({id:''+id});
-		let options = { method, headers , body };
+		let options = { method, headers };
 
 		return fetch(url, options ).then(this.getJsonLambda())
 	}
