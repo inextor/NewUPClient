@@ -18,6 +18,7 @@ import { ListEcommerceItemRoleComponent } from './pages/list-ecommerce-item-role
 import { ProductDetailComponent } from './pages/product-detail/product-detail.component';
 import { SaveEcommerceItemComponent } from './pages/save-ecommerce-item/save-ecommerce-item.component';
 import { ImportOrderComponent } from './pages/import-order/import-order.component';
+import { ImportOrderSimpleComponent } from './pages/import-order-simple/import-order-simple.component';
 import { CreateMultiUserOrderComponent } from './pages/create-multi-user-order/create-multi-user-order.component';
 import { ListOrderComponent } from './pages/list-order/list-order.component';
 import { ViewOrderComponent } from './pages/view-order/view-order.component';
@@ -59,6 +60,7 @@ export const routes: Routes = [
             { path: 'edit-user', component: SaveUserComponent },
             { path: 'import-users', component: ImportUsersComponent },
             { path: 'import-order', component: ImportOrderComponent },
+            { path: 'import-order-simple', component: ImportOrderSimpleComponent },
             { path: 'create-multi-user-order', component: CreateMultiUserOrderComponent },
             { path: 'view-order/:id', component: ViewOrderComponent },
             { path: 'list-order', component: ListOrderComponent },

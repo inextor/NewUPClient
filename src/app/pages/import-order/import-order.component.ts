@@ -1,10 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, Injector } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { BaseComponent } from '../base/base.component';
 import { ExcelUtils } from '../../classes/ExcelUtils';
+import { ProductSizeRanges } from '../../classes/ProductSizeRanges';
 import { Rest } from '../../classes/Rest';
+import { RestResponse } from '../../classes/RestResponse';
 import { User } from '../../models/RestModels/User';
+import { Cart } from '../../models/RestModels/Cart';
 import { Order } from '../../models/RestModels/Order';
 import { Order_Item } from '../../models/RestModels/Order_Item';
 import { Role } from '../../models/RestModels/Role';
@@ -21,6 +25,8 @@ interface ImportedRow {
 
 interface ProductSummary {
 	code: string;
+	base_code: string; // Product code without variation
+	variation: string | null; // Variation (size, color, etc.)
 	totalQty: number;
 	ecommerce_item_id?: number;
 	ecommerce_item?: any;
@@ -41,8 +47,13 @@ interface ValidationError {
 })
 export class ImportOrderComponent extends BaseComponent {
 
+	constructor(injector: Injector) {
+		super(injector);
+	}
+
 	rest_user: Rest<User, User> = new Rest<User, User>(this.rest, 'user.php');
 	rest_ecommerce_item: Rest<any, any> = new Rest<any, any>(this.rest, 'ecommerce_item.php');
+	rest_cart: Rest<Cart, Cart> = new Rest<Cart, Cart>(this.rest, 'cart.php');
 	rest_order: Rest<Order, Order> = new Rest<Order, Order>(this.rest, 'order.php');
 	rest_order_item: Rest<Order_Item, Order_Item> = new Rest<Order_Item, Order_Item>(this.rest, 'order_item.php');
 	rest_role: Rest<Role, Role> = new Rest<Role, Role>(this.rest, 'role.php');
@@ -156,10 +167,42 @@ export class ImportOrderComponent extends BaseComponent {
 			}
 		}
 
-		this.productSummary = Object.entries(summary).map(([code, totalQty]) => ({
-			code,
-			totalQty
-		}));
+		this.productSummary = Object.entries(summary).map(([code, totalQty]) => {
+			const parsed = this.parseProductCode(code);
+			return {
+				code,
+				base_code: parsed.base_code,
+				variation: parsed.variation,
+				totalQty
+			};
+		});
+	}
+
+	/**
+	 * Parse product code to extract base code and variation
+	 * Supports formats:
+	 * - "PRODUCTO:M" → base: "PRODUCTO", variation: "M"
+	 * - "#45:XL" → base: "#45", variation: "XL"
+	 * - "CAM-001:L" → base: "CAM-001", variation: "L"
+	 * - "PRODUCTO" → base: "PRODUCTO", variation: null
+	 */
+	parseProductCode(code: string): { base_code: string, variation: string | null } {
+		const codeStr = String(code).trim();
+		const colonIndex = codeStr.lastIndexOf(':');
+
+		if (colonIndex > 0) {
+			// Has variation
+			return {
+				base_code: codeStr.substring(0, colonIndex),
+				variation: codeStr.substring(colonIndex + 1)
+			};
+		}
+
+		// No variation
+		return {
+			base_code: codeStr,
+			variation: null
+		};
 	}
 
 	async validateData(): Promise<void> {
@@ -219,20 +262,24 @@ export class ImportOrderComponent extends BaseComponent {
 			}
 
 			// Validate products via ecommerce_item
-			// Separate product codes and IDs
+			// Separate product codes and IDs (use base codes, ignoring variations)
 			const itemCodes: string[] = [];
 			const ecommerceItemIds: number[] = [];
 
-			for (const code of this.productCodes) {
-				// Ensure code is a string
-				const codeStr = String(code).trim();
-				if (codeStr.startsWith('#')) {
-					const id = parseInt(codeStr.substring(1));
+			// Get unique base codes from productSummary
+			const uniqueBaseCodes = new Set<string>();
+			for (const product of this.productSummary) {
+				uniqueBaseCodes.add(product.base_code);
+			}
+
+			for (const baseCode of uniqueBaseCodes) {
+				if (baseCode.startsWith('#')) {
+					const id = parseInt(baseCode.substring(1));
 					if (!isNaN(id)) {
 						ecommerceItemIds.push(id);
 					}
-				} else if (codeStr) {
-					itemCodes.push(codeStr);
+				} else if (baseCode) {
+					itemCodes.push(baseCode);
 				}
 			}
 
@@ -262,7 +309,7 @@ export class ImportOrderComponent extends BaseComponent {
 				ecommerceItems = [...ecommerceItems, ...ecommerceItemsResponse.data];
 			}
 
-			// Create lookup map for items
+			// Create lookup map for items (by base code)
 			const existingItemMap = new Map<string, any>();
 			for (const ecomItem of ecommerceItems) {
 				console.log('Processing ecommerce_item:', ecomItem);
@@ -278,21 +325,21 @@ export class ImportOrderComponent extends BaseComponent {
 
 			console.log('Item map keys:', Array.from(existingItemMap.keys()));
 
-			// Map items to product summary
+			// Map items to product summary (use base_code for lookup)
 			for (const summary of this.productSummary) {
-				const ecomItem = existingItemMap.get(summary.code);
+				const ecomItem = existingItemMap.get(summary.base_code);
 				if (ecomItem) {
 					summary.ecommerce_item_id = ecomItem.id; // Store ecommerce_item.id
 					summary.ecommerce_item = ecomItem;
 				}
 			}
 
-			// Validate each product
-			for (const code of this.productCodes) {
-				if (!existingItemMap.has(code)) {
+			// Validate each product (check if base code exists)
+			for (const summary of this.productSummary) {
+				if (!existingItemMap.has(summary.base_code)) {
 					this.validationErrors.push({
 						type: 'missing_product',
-						code: code
+						code: summary.code // Show full code with variation in error
 					});
 				}
 			}
@@ -348,6 +395,7 @@ export class ImportOrderComponent extends BaseComponent {
 			.map(p => {
 				const orderItem = GetEmpty.order_item();
 				orderItem.ecommerce_item_id = p.ecommerce_item_id!;
+				orderItem.variation = p.variation; // Use variation from parsed code
 				orderItem.qty = p.totalQty;
 				orderItem.unit_price = null; // Will be set later if needed
 				orderItem.notes = `Code: ${p.code}`;
@@ -355,130 +403,61 @@ export class ImportOrderComponent extends BaseComponent {
 			});
 	}
 
-	async saveOrder(): Promise<void> {
-		if (!this.canSave || !this.order) {
-			this.rest.showError('No se puede guardar. Valide los datos primero.');
+	async addToCart(): Promise<void> {
+		if (!this.canSave || !this.orderItems || this.orderItems.length === 0) {
+			this.rest.showError('No hay items para agregar al carrito. Valide los datos primero.');
+			return;
+		}
+
+		if (!this.rest.user?.id) {
+			this.rest.showError('Debe iniciar sesión para agregar items al carrito.');
 			return;
 		}
 
 		try {
-			// Step 1: Create missing users first
-			const userMap = new Map<string, number>(); // Maps user_code -> user_id
+			// Get existing cart items for the current user
+			const cartResponse: RestResponse<Cart> = await this.rest_cart.search({
+				user_id: this.rest.user.id
+			});
+			const existingCartItems = cartResponse.data || [];
 
-			if (this.createMissingUsers) {
-				const missingUsers = this.validationErrors.filter(e => e.type === 'missing_user');
-
-				for (const error of missingUsers) {
-					// Create the user
-					const newUser = GetEmpty.user();
-					newUser.code = error.code.startsWith('#') ? null : error.code;
-					newUser.name = error.name || error.code;
-					newUser.ecommerce_id = this.rest.ecommerce.id;
-
-					const createdUser = await this.rest_user.create(newUser);
-					userMap.set(error.code, createdUser.id);
-
-					this.rest.showSuccess(`Usuario creado: ${error.name}`);
-				}
-			}
-
-			// Step 2: Get existing user IDs
-			const userCodes: string[] = [];
-			const userIds: number[] = [];
-
-			for (const row of this.importedRows) {
-				const code = row.codigo_empleado;
-				if (!userMap.has(code)) { // Only if not already created
-					if (code.startsWith('#')) {
-						const id = parseInt(code.substring(1));
-						if (!isNaN(id)) {
-							userIds.push(id);
-						}
-					} else {
-						userCodes.push(code);
-					}
-				}
-			}
-
-			// Fetch existing users
-			let existingUsers: User[] = [];
-			if (userCodes.length > 0) {
-				const usersResponse = await this.rest_user.search({ 'code,': userCodes, limit: 99999 });
-				existingUsers = [...existingUsers, ...usersResponse.data];
-			}
-			if (userIds.length > 0) {
-				const usersResponse = await this.rest_user.search({ 'id,': userIds, limit: 99999 });
-				existingUsers = [...existingUsers, ...usersResponse.data];
-			}
-
-			// Add existing users to map
-			for (const user of existingUsers) {
-				if (user.code) {
-					userMap.set(user.code, user.id);
-				}
-				userMap.set(`#${user.id}`, user.id);
-			}
-
-			// Step 3: Build the payload for the backend following compound object convention
-			const order_items_info = this.orderItems.map(orderItem => {
-				// Find which users get this item
-				const productCode = this.productSummary.find(
-					p => p.ecommerce_item_id === orderItem.ecommerce_item_id
-				)?.code;
-
-				const user_order_items = this.importedRows
-					.filter(row => productCode && row.quantities[productCode] > 0)
-					.map(row => {
-						const user_id = userMap.get(row.codigo_empleado);
-						if (!user_id) {
-							throw new Error(`User ID not found for code: ${row.codigo_empleado}`);
-						}
-						const user_order_item = GetEmpty.user_order_item();
-						user_order_item.user_id = user_id;
-						user_order_item.order_item_id = 0; // Will be set by backend
-						user_order_item.qty = row.quantities[productCode!];
-						user_order_item.notes = null;
-						return user_order_item;
-					});
-
-				const order_item = GetEmpty.order_item();
-				order_item.order_id = 0; // Will be set by backend
-				order_item.ecommerce_item_id = orderItem.ecommerce_item_id;
-				order_item.qty = orderItem.qty;
-				order_item.unit_price = orderItem.unit_price;
-				order_item.notes = orderItem.notes;
-
-				return {
-					order_item: order_item,
-					user_order_items: user_order_items
-				};
+			// Create a map of existing cart items by (ecommerce_item_id, variation)
+			const cartMap = new Map<string, Cart>();
+			existingCartItems.forEach(item => {
+				const key = `${item.ecommerce_item_id}-${item.variation || ''}`;
+				cartMap.set(key, item);
 			});
 
-			const order = GetEmpty.order();
-			order.id = 0;
-			order.ecommerce_id = this.order.ecommerce_id;
-			order.order_number = null;
-			order.status = this.order.status;
-			order.pos_order_id = null;
-			order.pos_order_json = null;
-			order.order_date = this.order.order_date;
-			order.notes = this.order.notes;
-			order.created_by_user_id = this.order.created_by_user_id;
+			// Add or update cart items
+			const promises: Promise<any>[] = [];
 
-			const payload: Order_Info = {
-				order: order,
-				order_items_info: order_items_info
-			};
+			for (const orderItem of this.orderItems) {
+				const key = `${orderItem.ecommerce_item_id}-${orderItem.variation || ''}`;
+				const existingItem = cartMap.get(key);
 
-			// Call backend endpoint order_info.php
-			// Searches by Order fields, returns Order_Info with full structure
-			const rest_order_info = new Rest<Order, Order_Info>(this.rest, 'order_info.php');
-			const result = await rest_order_info.create(payload);
+				if (existingItem) {
+					// Update existing cart item
+					existingItem.qty += orderItem.qty;
+					promises.push(this.rest_cart.update(existingItem));
+				} else {
+					// Create new cart item
+					const newCartItem: Cart = {
+						id: 0,
+						user_id: this.rest.user.id,
+						ecommerce_item_id: orderItem.ecommerce_item_id,
+						variation: orderItem.variation || 'unico',
+						qty: orderItem.qty
+					};
+					promises.push(this.rest_cart.create(newCartItem));
+				}
+			}
 
-			this.rest.showSuccess(`Orden #${result.order.id} creada exitosamente con ${this.orderItems.length} items`);
+			await Promise.all(promises);
 
-			// Optionally: reset form or navigate away
-			// this.router.navigate(['/list-order']);
+			this.rest.showSuccess(`${this.orderItems.length} items agregados al carrito exitosamente`);
+
+			// Navigate to cart
+			this.router.navigate(['/cart']);
 
 		} catch (error) {
 			this.rest.showError(error);
@@ -575,12 +554,44 @@ export class ImportOrderComponent extends BaseComponent {
 			return;
 		}
 
-		// Create Excel data with item codes (or #ecommerce_item.id if no code)
-		const headers = [
-			'Codigo Empleado',
-			'Nombre',
-			...this.templateEcommerceItems.map(ecommerceItem => ecommerceItem.code || `#${ecommerceItem.id}`)
-		];
+		// Build headers with variations based on size class
+		const headers: string[] = ['Codigo Empleado', 'Nombre'];
+		const productColumns: string[] = []; // Track all product columns for data generation
+
+		this.templateEcommerceItems.forEach(ecommerceItem => {
+			const baseCode = ecommerceItem.code || `#${ecommerceItem.id}`;
+			const sizeClass = ecommerceItem.sizes;
+
+			// Get variations based on size class
+			let variations: string[] = [];
+			switch (sizeClass) {
+				case 'pantalon dama':
+					variations = ProductSizeRanges.PANTALON_DAMA;
+					break;
+				case 'pantalon caballero':
+					variations = ProductSizeRanges.PANTALON_CABALLERO;
+					break;
+				case 'camisa':
+					variations = ProductSizeRanges.CAMISAS_CHALECOS_SUDADERAS_CHAMARRAS;
+					break;
+				case 'calzado':
+					variations = ProductSizeRanges.CALZADO;
+					break;
+				case 'unico':
+					variations = ['unico'];
+					break;
+				default:
+					variations = ['unico'];
+					break;
+			}
+
+			// Add column for each variation
+			variations.forEach(variation => {
+				const columnName = `${baseCode}:${variation}`;
+				headers.push(columnName);
+				productColumns.push(columnName);
+			});
+		});
 
 		// Create array of objects (not 2D array)
 		let excelData: any[] = [];
@@ -590,10 +601,9 @@ export class ImportOrderComponent extends BaseComponent {
 					'Codigo Empleado': user.code || `#${user.id}`,
 					'Nombre': user.name
 				};
-				// Add empty quantities for each item
-				this.templateEcommerceItems.forEach(ecommerceItem => {
-					const itemKey = ecommerceItem.code || `#${ecommerceItem.id}`;
-					row[itemKey] = '';
+				// Add empty quantities for each product column
+				productColumns.forEach(column => {
+					row[column] = '';
 				});
 				return row;
 			});
@@ -603,9 +613,8 @@ export class ImportOrderComponent extends BaseComponent {
 				'Codigo Empleado': '',
 				'Nombre': ''
 			};
-			this.templateEcommerceItems.forEach(ecommerceItem => {
-				const itemKey = ecommerceItem.code || `#${ecommerceItem.id}`;
-				row[itemKey] = '';
+			productColumns.forEach(column => {
+				row[column] = '';
 			});
 			excelData = [row];
 		}
