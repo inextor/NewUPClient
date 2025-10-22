@@ -152,7 +152,7 @@ export class ProductDetailComponent extends BaseComponent implements OnInit {
 				user_id: this.rest.user?.id || 0,
 				qty: 1,
 				ecommerce_item_id: ecommerce_item_id,
-				size: 'unico'
+				variation: 'unico'
 			};
 
 			this.rest_cart.create(cart_item)
@@ -197,7 +197,7 @@ export class ProductDetailComponent extends BaseComponent implements OnInit {
 				user_id: this.rest.user?.id || 0,
 				qty: quantity,
 				ecommerce_item_id: this.pendingEcommerceItemId!,
-				size: size
+				variation: size
 			};
 			return this.rest_cart.create(cart_item);
 		});

@@ -3,7 +3,7 @@ export interface Cart {
   user_id: number;
   qty: number;
   ecommerce_item_id: number;
-  size: string;
+  variation: string;
 }
 
 

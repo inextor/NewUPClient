@@ -38,7 +38,7 @@
 								>
 								<span *ngIf="!item.item_info?.item?.image_id" class="text-muted">Sin imagen</span>
 							</td>
-							<td>{{ item.size === 'unico' ? 'Único' : item.size }}</td>
+							<td>{{ item.variation === 'unico' ? 'Único' : item.variation }}</td>
 							<td>{{ item.qty }}</td>
 							<td>${{ item.ecommerce_item?.price || 0 }}</td>
 							<td>${{ (item.ecommerce_item?.price || 0) * item.qty }}</td>
