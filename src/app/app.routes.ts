@@ -67,9 +67,11 @@ export const routes: Routes = [
             { path: 'edit-category/:id', component: SaveCategoryComponent },
             { path: 'deliver-items-by-user', component: DeliverItemsByUserComponent },
             { path: 'deliver-items-by-order', component: DeliverItemsByOrderComponent },
-            { path: 'panel-informativo', component: PanelInformativoComponent },
+			{ path: 'panel-informativo', component: PanelInformativoComponent
+    },
         ]
     },
+
     {
         path: 'login',
         component: LoginComponent
@@ -77,6 +79,5 @@ export const routes: Routes = [
     {
         path: 'logout',
         component: LogoutComponent
-    },
-    { path: '**', redirectTo: '' }
+    }
 ];
