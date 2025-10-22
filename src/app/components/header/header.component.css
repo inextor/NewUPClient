@@ -8,20 +8,81 @@
   left: 0;
   right: 0;
   z-index: 1000;
+  transition: transform 0.3s ease-in-out;
+  transform: translateX(0);
+}
+
+.header-container.menu-open {
+  transform: translateX(250px);
+}
+
+@media (max-width: 768px) {
+  .header-container.menu-open {
+    transform: translateX(200px);
+  }
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.header-center {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  justify-content: center;
+}
+
+.header-logo {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
 }
 
 h1 {
   margin: 0;
   font-size: 1.5rem;
-  flex-grow: 1;
-  text-align: center;
 }
 
-.menu-button {
-  background: transparent;
-  border: none;
-  font-size: 1.5rem;
+/* Hamburger menu styling - Override Bootstrap */
+.hamburger {
+  padding: 15px !important;
+  display: inline-block !important;
   cursor: pointer;
+  transition-property: opacity, filter;
+  transition-duration: 0.15s;
+  transition-timing-function: linear;
+  font: inherit;
+  text-transform: none;
+  background-color: transparent !important;
+  border: 0 !important;
+  margin: 0;
+  overflow: visible;
+  box-shadow: none !important;
+  width: auto !important;
+  height: auto !important;
+}
+
+.hamburger:hover {
+  opacity: 0.7;
+  background-color: transparent !important;
+}
+
+.hamburger:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.hamburger:active {
+  background-color: transparent !important;
+}
+
+.hamburger .hamburger-inner,
+.hamburger .hamburger-inner::before,
+.hamburger .hamburger-inner::after {
+  background-color: currentColor !important;
 }
 
 .cart-link {

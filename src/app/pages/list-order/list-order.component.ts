@@ -62,4 +62,23 @@ export class ListOrderComponent extends BaseComponent implements OnInit {
 				return 'bg-secondary';
 		}
 	}
+
+	markAsReceived(order: Order): void {
+		if (confirm('¿Está seguro de marcar esta orden como recibida?')) {
+			const updatedOrder: Partial<Order> = {
+				id: order.id,
+				status: 'COMPLETED'
+			};
+
+			this.rest_order.update(updatedOrder)
+				.then(() => {
+					this.rest.showSuccess('Orden marcada como recibida');
+					// Update the local order in the list
+					order.status = 'COMPLETED';
+				})
+				.catch((error: any) => {
+					this.rest.showError(error);
+				});
+		}
+	}
 }
