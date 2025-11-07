@@ -26,13 +26,21 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  flex: 1;
 }
 
 .header-center {
   display: flex;
   align-items: center;
-  flex-grow: 1;
   justify-content: center;
+  flex: 1;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  justify-content: flex-end;
 }
 
 .header-logo {
@@ -48,7 +56,7 @@ h1 {
 
 /* Hamburger menu styling - Override Bootstrap */
 .hamburger {
-  padding: 15px !important;
+  padding: 0.5rem !important;
   display: inline-block !important;
   cursor: pointer;
   transition-property: opacity, filter;
@@ -63,6 +71,30 @@ h1 {
   box-shadow: none !important;
   width: auto !important;
   height: auto !important;
+}
+
+.hamburger-box {
+  width: 24px;
+  height: 24px;
+  display: inline-block;
+  position: relative;
+}
+
+.hamburger-inner {
+  display: block;
+  top: 50%;
+  margin-top: -1px;
+}
+
+.hamburger-inner, .hamburger-inner::before, .hamburger-inner::after {
+  width: 24px;
+  height: 2px;
+  background-color: currentColor;
+  border-radius: 4px;
+  position: absolute;
+  transition-property: transform;
+  transition-duration: 0.15s;
+  transition-timing-function: ease;
 }
 
 .hamburger:hover {

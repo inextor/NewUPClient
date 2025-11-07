@@ -1,5 +1,23 @@
 <div class="item-catalog">
-  <h2 class="app-page-title">{{ title }}</h2>
+  <h2 class="app-page-title text-center">{{ title }}</h2>
+
+  @if (items.length > 0) {
+    <div class="filter-container">
+      <label for="categoryFilter">Ordenar por:</label>
+      <select id="categoryFilter" class="form-select" [(ngModel)]="selectedCategory" (change)="filterItems()">
+        <option value="">Todos</option>
+        @for (category of categories; track category) {
+          <option [value]="category">{{ category }}</option>
+        }
+      </select>
+    </div>
+  }
+
+  @if (filteredItems.length === 0 && items.length > 0) {
+    <div class="alert alert-info">
+      No hay artículos disponibles en esta categoría.
+    </div>
+  }
 
   @if (items.length === 0) {
     <div class="alert alert-info">
@@ -7,16 +25,16 @@
     </div>
   }
 
-  @if (items.length > 0) {
+  @if (filteredItems.length > 0) {
     <div class="items-grid">
-      @for (ceii of items; track ceii.ecommerce_item.id) {
+      @for (ceii of filteredItems; track ceii.ecommerce_item.id) {
         <div class="item-card" (click)="navigateToProduct(ceii.ecommerce_item.id)">
           <div class="item-image">
             <img [src]="ceii.item_info.item.image_id | image" alt="{{ ceii.item_info.item.name }}">
           </div>
           <div class="item-info">
-            <div class="item-name">{{ ceii.item_info.item.name }}</div>
-            <div class="item-price">{{ ceii.ecommerce_item.price | currency }}</div>
+            <div class="item-name text-center">{{ ceii.item_info.item.name }}</div>
+            <div class="item-price text-center">{{ ceii.ecommerce_item.price | currency }}</div>
           </div>
         </div>
       }

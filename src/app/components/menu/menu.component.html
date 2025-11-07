@@ -1,67 +1,19 @@
 <nav class="sidebar-menu" [class.open]="rest.is_menu_open">
     <div class="menu-content">
-        <!-- Home & Shopping -->
-        <div class="menu-section">
-            <div class="menu-section-title" (click)="toggleSection('home')">
-                <span class="section-icon">{{ isSectionOpen('home') ? '▼' : '▶' }}</span>
-                Inicio
-            </div>
-            <div *ngIf="isSectionOpen('home')" class="menu-section-items">
-                <div class="menu-item"><a [routerLink]="['/']">Inicio</a></div>
-                <div class="menu-item"><a [routerLink]="['/cart']" [queryParams]="{t: getTimestamp()}">Carrito</a></div>
-            </div>
+        <!-- Logo UPE -->
+        <div class="menu-logo">
+            <img [src]="'assets/logoheader.png'" alt="UPE Uniformes Profesionales" class="logo-img">
         </div>
 
-        <!-- Catalog Management -->
-        <div class="menu-section">
-            <div class="menu-section-title" (click)="toggleSection('catalog')">
-                <span class="section-icon">{{ isSectionOpen('catalog') ? '▼' : '▶' }}</span>
-                Catálogo
-            </div>
-            <div *ngIf="isSectionOpen('catalog')" class="menu-section-items">
-                <div class="menu-item"><a [routerLink]="['/list-ecommerce-item']">Administrar Artículos</a></div>
-                <div class="menu-item"><a [routerLink]="['/list-category']">Administrar Categorías</a></div>
-            </div>
-        </div>
-
-        <!-- User & Role Management -->
-        <div class="menu-section">
-            <div class="menu-section-title" (click)="toggleSection('admin')">
-                <span class="section-icon">{{ isSectionOpen('admin') ? '▼' : '▶' }}</span>
-                Administración
-            </div>
-            <div *ngIf="isSectionOpen('admin')" class="menu-section-items">
-                <div class="menu-item"><a [routerLink]="['/list-user']">Administrar Usuarios</a></div>
-                <div class="menu-item"><a [routerLink]="['/list-role']">Administrar Roles</a></div>
-            </div>
-        </div>
-
-        <!-- Order Management -->
-        <div class="menu-section">
-            <div class="menu-section-title" (click)="toggleSection('orders')">
-                <span class="section-icon">{{ isSectionOpen('orders') ? '▼' : '▶' }}</span>
-                Órdenes
-            </div>
-            <div *ngIf="isSectionOpen('orders')" class="menu-section-items">
-                <div class="menu-item"><a [routerLink]="['/list-order']">Listar Órdenes</a></div>
-                <div class="menu-item"><a [routerLink]="['/import-order']">Importar Pedidos</a></div>
-                <div class="menu-item"><a [routerLink]="['/import-order-simple']">Importar Orden Simple</a></div>
-                <div class="menu-item"><a [routerLink]="['/deliver-items-by-user']">Entregar por Usuario</a></div>
-                <div class="menu-item"><a [routerLink]="['/deliver-items-by-order']">Entregar por Orden</a></div>
-            </div>
-        </div>
-
-        <!-- Other -->
-        <div class="menu-section">
-            <div class="menu-section-title" (click)="toggleSection('other')">
-                <span class="section-icon">{{ isSectionOpen('other') ? '▼' : '▶' }}</span>
-                Otros
-            </div>
-            <div *ngIf="isSectionOpen('other')" class="menu-section-items">
-                <div class="menu-item"><a href="#">Ayuda</a></div>
-                <div class="menu-item"><a [routerLink]="['/panel-informativo']">Panel Informativo</a></div>
-                <div class="menu-item"><a [routerLink]="['/logout']">Cerrar Sesión</a></div>
-            </div>
-        </div>
+        <!-- Simplified Menu Items -->
+        <div class="menu-item"><a [routerLink]="['/']">Inicio</a></div>
+        <div class="menu-item"><a [routerLink]="['/cart']" [queryParams]="{t: getTimestamp()}">Carrito</a></div>
+        <div class="menu-item"><a [routerLink]="['/list-user']">Administrar Usuarios</a></div>
+        <div class="menu-item"><a [routerLink]="['/list-role']">Administrar Roles</a></div>
+        <div class="menu-item"><a [routerLink]="['/list-order']">Historial de Pedidos</a></div>
+        <div class="menu-item"><a [routerLink]="['/import-order']">Importar Pedido</a></div>
+        <div class="menu-item"><a [routerLink]="['/add-quote']">Solicitar Cotización</a></div>
+        <div class="menu-item"><a [routerLink]="['/panel-informativo']">Panel Informativo</a></div>
+        <div class="menu-item"><a [routerLink]="['/logout']">Cerrar Sesión</a></div>
     </div>
 </nav>

@@ -39,17 +39,49 @@
 								>
 								<span *ngIf="!item.item_info?.item?.image_id" class="text-muted">Sin imagen</span>
 							</td>
-							<td>{{ item.variation === 'unico' ? 'Único' : item.variation }}</td>
-							<td>{{ item.qty }}</td>
-							<td>{{ item.ecommerce_item?.price || 0 | currency }}</td>
-							<td>{{ (item.ecommerce_item?.price || 0) * item.qty | currency }}</td>
 							<td>
-								<button
-									class="btn btn-sm btn-danger"
-									(click)="removeFromCart(item.id)"
-								>
-									Eliminar
-								</button>
+								<span *ngIf="!item.isEditing">{{ item.variation === 'unico' ? 'Único' : item.variation }}</span>
+								<select *ngIf="item.isEditing" class="form-select form-select-sm" [(ngModel)]="item.editVariation">
+									<option *ngFor="let size of item.availableSizes" [value]="size">
+										{{ size === 'unico' ? 'Único' : size }}
+									</option>
+								</select>
+							</td>
+							<td>
+								<span *ngIf="!item.isEditing">{{ item.qty }}</span>
+								<input *ngIf="item.isEditing" type="number" class="form-control form-control-sm" [(ngModel)]="item.editQty" min="1" style="width: 80px;">
+							</td>
+							<td>{{ item.ecommerce_item?.price || 0 | currency }}</td>
+							<td>{{ (item.ecommerce_item?.price || 0) * (item.isEditing ? item.editQty || 0 : item.qty) | currency }}</td>
+							<td>
+								<div *ngIf="!item.isEditing" class="btn-group">
+									<button
+										class="btn btn-sm btn-outline-primary"
+										(click)="startEdit(item)"
+									>
+										Editar
+									</button>
+									<button
+										class="btn btn-sm btn-danger"
+										(click)="removeFromCart(item.id)"
+									>
+										Eliminar
+									</button>
+								</div>
+								<div *ngIf="item.isEditing" class="btn-group">
+									<button
+										class="btn btn-sm btn-success"
+										(click)="saveEdit(item)"
+									>
+										Guardar
+									</button>
+									<button
+										class="btn btn-sm btn-secondary"
+										(click)="cancelEdit(item)"
+									>
+										Cancelar
+									</button>
+								</div>
 							</td>
 						</tr>
 					</tbody>

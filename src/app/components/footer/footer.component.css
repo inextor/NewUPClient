@@ -1,0 +1,101 @@
+.footer {
+  border-top: 1px solid #dee2e6;
+  background-color: #f8f9fa !important;
+}
+
+.footer-logo {
+  max-width: 150px;
+  height: auto;
+}
+
+.footer-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.footer-link {
+  color: #6c757d;
+  text-decoration: none;
+  transition: color 0.2s;
+  display: block;
+  padding: 3px 0;
+}
+
+.footer-link:hover {
+  color: #007bff;
+  text-decoration: underline;
+}
+
+.social-icons {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+}
+
+.social-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #007bff;
+  color: white;
+  transition: all 0.3s;
+  text-decoration: none;
+}
+
+.social-icon:hover {
+  background-color: #0056b3;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Help Modal Styles */
+.contact-help-modal {
+  border: none;
+  border-radius: 8px;
+  padding: 0;
+  max-width: 500px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.contact-help-modal::backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.contact-help-modal .modal-content {
+  padding: 30px;
+}
+
+.contact-help-modal h3 {
+  margin-top: 0;
+  color: #333;
+}
+
+.contact-help-modal p {
+  margin: 10px 0;
+}
+
+.contact-help-modal a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.contact-help-modal a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .footer-logo {
+    max-width: 120px;
+  }
+
+  .social-icon {
+    width: 35px;
+    height: 35px;
+  }
+}

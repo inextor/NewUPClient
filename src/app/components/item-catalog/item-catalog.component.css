@@ -2,6 +2,23 @@
   margin-top: 20px;
 }
 
+.filter-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 20px 0;
+  justify-content: center;
+}
+
+.filter-container label {
+  font-weight: 600;
+  margin-bottom: 0;
+}
+
+.filter-container select {
+  max-width: 300px;
+}
+
 .items-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
