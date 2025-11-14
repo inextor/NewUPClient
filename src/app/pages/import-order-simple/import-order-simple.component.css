@@ -1,3 +1,9 @@
+.import-order-simple-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
 /* Modal backdrop */
 .modal-backdrop {
 	position: fixed;

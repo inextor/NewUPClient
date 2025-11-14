@@ -1,3 +1,9 @@
+.create-multi-user-order-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
 /* Select boxes with size attribute */
 select[size] {
 	min-height: 150px;

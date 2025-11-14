@@ -1,3 +1,9 @@
+.list-role-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
 /* Compact table styling */
 .table {
   margin-bottom: 0;
