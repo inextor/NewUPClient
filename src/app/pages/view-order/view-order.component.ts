@@ -172,6 +172,39 @@ export class ViewOrderComponent extends BaseComponent implements OnInit {
     return this.order_info.order_items_info.reduce((sum, itemInfo) => sum + (itemInfo.order_item.qty || 0), 0);
   }
 
+  getGroupedItems(): any[] {
+    if (!this.order_info) return [];
+
+    const grouped = new Map<number, any>();
+
+    for (const itemInfo of this.order_info.order_items_info) {
+      const ecommerce_item_id = itemInfo.order_item.ecommerce_item_id;
+
+      if (!grouped.has(ecommerce_item_id)) {
+        grouped.set(ecommerce_item_id, {
+          ecommerce_item_id: ecommerce_item_id,
+          variations: [],
+          total_qty: 0,
+          total_amount: 0
+        });
+      }
+
+      const group = grouped.get(ecommerce_item_id)!;
+      group.variations.push({
+        variation: itemInfo.order_item.variation,
+        qty: itemInfo.order_item.qty,
+        unit_price: itemInfo.order_item.unit_price,
+        line_total: itemInfo.order_item.qty * (itemInfo.order_item.unit_price || 0),
+        notes: itemInfo.order_item.notes,
+        user_order_items: itemInfo.user_order_items
+      });
+      group.total_qty += itemInfo.order_item.qty;
+      group.total_amount += itemInfo.order_item.qty * (itemInfo.order_item.unit_price || 0);
+    }
+
+    return Array.from(grouped.values());
+  }
+
   getTotalUniqueUsers(): number {
     if (!this.order_info) return 0;
 
