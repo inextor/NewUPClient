@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { BaseComponent } from '../base/base.component';
 import { Cart } from '../../models/RestModels/Cart';
@@ -11,12 +12,16 @@ import { ImagePipe } from '../../pipes/image.pipe';
 interface CartItemWithDetails extends Cart {
 	ecommerce_item?: Ecommerce_Item;
 	item_info?: any;
+	isEditing?: boolean;
+	editQty?: number;
+	editVariation?: string;
+	availableSizes?: string[];
 }
 
 @Component({
 	selector: 'app-cart',
 	standalone: true,
-	imports: [CommonModule, RouterLink, ImagePipe],
+	imports: [CommonModule, RouterLink, ImagePipe, FormsModule],
 	templateUrl: './cart.component.html',
 	styleUrl: './cart.component.css'
 })
@@ -88,5 +93,45 @@ export class CartComponent extends BaseComponent implements OnInit {
 			const price = item.ecommerce_item?.price || 0;
 			return total + (price * item.qty);
 		}, 0);
+	}
+
+	startEdit(item: CartItemWithDetails): void {
+		// Extract available sizes from item_info
+		const sizeRange = item.item_info?.item?.size_range || [];
+		item.availableSizes = sizeRange.length > 0 ? sizeRange : ['unico'];
+
+		item.isEditing = true;
+		item.editQty = item.qty;
+		item.editVariation = item.variation;
+	}
+
+	cancelEdit(item: CartItemWithDetails): void {
+		item.isEditing = false;
+		item.editQty = undefined;
+		item.editVariation = undefined;
+	}
+
+	saveEdit(item: CartItemWithDetails): void {
+		if (!item.editQty || item.editQty < 1) {
+			this.rest.showError('La cantidad debe ser al menos 1');
+			return;
+		}
+
+		const updatedCart: Partial<Cart> = {
+			id: item.id,
+			qty: item.editQty,
+			variation: item.editVariation || item.variation
+		};
+
+		this.rest_cart.update(updatedCart)
+			.then(() => {
+				this.rest.showSuccess('Carrito actualizado');
+				item.isEditing = false;
+				this.rest.loadCartCount();
+				this.loadCart();
+			})
+			.catch((error: any) => {
+				this.rest.showError(error);
+			});
 	}
 }

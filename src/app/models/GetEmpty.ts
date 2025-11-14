@@ -6,6 +6,8 @@ import { ecommerce_item } from './Empties/Ecommerce_Item';
 import { order } from './Empties/Order';
 import { order_item } from './Empties/Order_Item';
 import { pos_order } from './Empties/Pos_Order';
+import { GetEmpty_Quotation } from './Empties/Quotation';
+import { GetEmpty_Quotation_Attachment } from './Empties/Quotation_Attachment';
 import { role } from './Empties/Role';
 import { role_item } from './Empties/Role_Item';
 import { role_ecommerce_item } from './Empties/Role_Ecommerce_Item';
@@ -25,6 +27,8 @@ import { Ecommerce_Item } from './RestModels/Ecommerce_Item';
 import { Order } from './RestModels/Order';
 import { Order_Item } from './RestModels/Order_Item';
 import { Pos_Order } from './RestModels/Pos_Order';
+import { Quotation } from './RestModels/Quotation';
+import { Quotation_Attachment } from './RestModels/Quotation_Attachment';
 import { Role } from './RestModels/Role';
 import { Role_Item } from './RestModels/Role_Item';
 import { Role_Ecommerce_Item } from './RestModels/Role_Ecommerce_Item';
@@ -107,5 +111,13 @@ export class GetEmpty {
 
     static user_order_item(): User_Order_Item {
         return user_order_item();
+    }
+
+    static quotation(): Quotation {
+        return GetEmpty_Quotation();
+    }
+
+    static quotation_attachment(): Quotation_Attachment {
+        return GetEmpty_Quotation_Attachment();
     }
 }
