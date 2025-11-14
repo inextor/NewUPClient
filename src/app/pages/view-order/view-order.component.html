@@ -182,6 +182,10 @@
                     <span *ngIf="getEcommerceItemCode(itemInfo.order_item.ecommerce_item_id)" class="text-muted">
                       Código: {{ getEcommerceItemCode(itemInfo.order_item.ecommerce_item_id) }}
                     </span>
+                    <br>
+                    <span *ngIf="itemInfo.order_item.variation" class="badge bg-info">
+                      Talla: {{ itemInfo.order_item.variation === 'unico' ? 'Único' : itemInfo.order_item.variation }}
+                    </span>
                   </div>
                   <div class="col-md-2 text-center">
                     <span class="badge bg-primary fs-6">{{ itemInfo.order_item.qty }} unidades</span>
