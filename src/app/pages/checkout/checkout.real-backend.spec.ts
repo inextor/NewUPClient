@@ -7,6 +7,7 @@ import { Rest } from '../../classes/Rest';
 import { Cart } from '../../models/RestModels/Cart';
 import { Order } from '../../models/RestModels/Order';
 import { Order_Item } from '../../models/RestModels/Order_Item';
+import { environment } from '../../../environments/environment';
 
 describe('CheckoutComponent Real Backend Tests', () => {
   let component: CheckoutComponent;
@@ -16,11 +17,8 @@ describe('CheckoutComponent Real Backend Tests', () => {
   let createdOrderId: number | null = null;
   let createdCartItemIds: number[] = [];
 
-  // Test credentials
-  const TEST_USER = {
-    username: 'REDACTED@example.com',
-    password: 'REDACTED_PASSWORD'
-  };
+  // Test credentials from environment
+  const TEST_USER = environment.test;
 
   beforeAll(async () => {
     // Login first
