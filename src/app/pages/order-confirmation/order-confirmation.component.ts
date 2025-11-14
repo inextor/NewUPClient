@@ -44,6 +44,7 @@ export class OrderConfirmationComponent extends BaseComponent implements OnInit 
 
 		this.rest_order.get(order_id)
 			.then((order: Order) => {
+				console.log('Order data received from backend:', order);
 				this.order = order;
 
 				// Load order items
