@@ -2,6 +2,10 @@
   margin-top: 20px;
 }
 
+.title-capitalize {
+  text-transform: capitalize;
+}
+
 .filter-container {
   display: flex;
   align-items: center;
