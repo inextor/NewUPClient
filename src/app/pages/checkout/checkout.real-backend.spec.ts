@@ -18,8 +18,8 @@ describe('CheckoutComponent Real Backend Tests', () => {
 
   // Test credentials
   const TEST_USER = {
-    username: 'rh_compras@semprainfraestructura.com',
-    password: '@Uniformes1'
+    username: 'REDACTED@example.com',
+    password: 'REDACTED_PASSWORD'
   };
 
   beforeAll(async () => {
