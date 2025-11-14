@@ -28,8 +28,4 @@ export class MenuComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.routerSubscription?.unsubscribe();
   }
-
-  getTimestamp(): number {
-    return Date.now();
-  }
 }
