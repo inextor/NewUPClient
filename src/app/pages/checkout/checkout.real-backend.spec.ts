@@ -157,7 +157,7 @@ describe('CheckoutComponent Real Backend Tests', () => {
 
     // Step 4: Fill in order information
     component.order.customer_name = 'Test User Real Backend';
-    component.order.customer_email = 'realtest@test.com';
+    component.order.customer_email = 'spam@nextor.mx';
     component.order.customer_phone = '5551234567';
     component.order.shipping_address = '456 Real Street';
     component.order.shipping_city = 'Real City';
@@ -203,7 +203,7 @@ describe('CheckoutComponent Real Backend Tests', () => {
 
     expect(createdOrder).toBeTruthy('Order should exist in database');
     expect(createdOrder.customer_name).toBe('Test User Real Backend');
-    expect(createdOrder.customer_email).toBe('realtest@test.com');
+    expect(createdOrder.customer_email).toBe('spam@nextor.mx');
     expect(createdOrder.customer_phone).toBe('5551234567');
     expect(createdOrder.shipping_address).toBe('456 Real Street');
     expect(createdOrder.shipping_city).toBe('Real City');
