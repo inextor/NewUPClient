@@ -71,6 +71,88 @@
             </div>
           </div>
 
+          <!-- Customer Information -->
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <h6 class="text-muted">Información del Cliente</h6>
+              <table class="table table-sm">
+                <tbody>
+                  <tr>
+                    <th scope="row" style="width: 200px;">Nombre:</th>
+                    <td>{{ order_info.order.customer_name || '-' }}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Email:</th>
+                    <td>{{ order_info.order.customer_email || '-' }}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Teléfono:</th>
+                    <td>{{ order_info.order.customer_phone || '-' }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="col-md-6">
+              <h6 class="text-muted">Dirección de Envío</h6>
+              <table class="table table-sm">
+                <tbody>
+                  <tr>
+                    <th scope="row" style="width: 200px;">Dirección:</th>
+                    <td>{{ order_info.order.shipping_address || '-' }}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Ciudad:</th>
+                    <td>{{ order_info.order.shipping_city || '-' }}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Estado:</th>
+                    <td>{{ order_info.order.shipping_state || '-' }}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Código Postal:</th>
+                    <td>{{ order_info.order.shipping_postal_code || '-' }}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">País:</th>
+                    <td>{{ order_info.order.shipping_country || '-' }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Order Totals -->
+          <div class="row mb-4">
+            <div class="col-md-6 offset-md-6">
+              <h6 class="text-muted">Totales de la Orden</h6>
+              <table class="table table-sm">
+                <tbody>
+                  <tr>
+                    <th scope="row" style="width: 200px;">Subtotal:</th>
+                    <td class="text-end">${{ order_info.order.subtotal | number:'1.2-2' }}</td>
+                  </tr>
+                  <tr *ngIf="order_info.order.tax_amount && order_info.order.tax_amount > 0">
+                    <th scope="row">Impuestos:</th>
+                    <td class="text-end">${{ order_info.order.tax_amount | number:'1.2-2' }}</td>
+                  </tr>
+                  <tr *ngIf="order_info.order.shipping_cost && order_info.order.shipping_cost > 0">
+                    <th scope="row">Costo de Envío:</th>
+                    <td class="text-end">${{ order_info.order.shipping_cost | number:'1.2-2' }}</td>
+                  </tr>
+                  <tr class="table-success">
+                    <th scope="row"><strong>Total:</strong></th>
+                    <td class="text-end"><strong class="fs-5">${{ order_info.order.total_amount | number:'1.2-2' }}</strong></td>
+                  </tr>
+                  <tr *ngIf="order_info.order.items_count">
+                    <th scope="row">Cantidad de Artículos:</th>
+                    <td class="text-end">{{ order_info.order.items_count }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
           <!-- Notes -->
           <div *ngIf="order_info.order.notes" class="alert alert-info mb-4">
             <h6 class="alert-heading">Notas de la Orden:</h6>

@@ -81,6 +81,10 @@ describe('CheckoutComponent Real Backend Tests', () => {
   });
 
   afterEach(async () => {
+    // NOTE: Cleanup is disabled so you can see the order in the database
+    // To enable cleanup, uncomment the code below
+
+    /*
     // Cleanup: Delete created order
     if (createdOrderId) {
       try {
@@ -105,6 +109,12 @@ describe('CheckoutComponent Real Backend Tests', () => {
         console.error('Failed to cleanup cart items:', error);
       }
       createdCartItemIds = [];
+    }
+    */
+
+    if (createdOrderId) {
+      console.log('✓ Order created and left in database for inspection. Order ID:', createdOrderId);
+      console.log('  To view: Navigate to http://localhost:4200/view-order/' + createdOrderId);
     }
   });
 
@@ -154,6 +164,7 @@ describe('CheckoutComponent Real Backend Tests', () => {
     component.order.shipping_state = 'Real State';
     component.order.shipping_postal_code = '54321';
     component.order.shipping_country = 'Mexico';
+    component.order.notes = 'This is a test order with delivery notes from automated test';
 
     console.log('✓ Order form filled');
     console.log('  Subtotal:', component.order.subtotal);
@@ -198,6 +209,8 @@ describe('CheckoutComponent Real Backend Tests', () => {
     expect(createdOrder.shipping_city).toBe('Real City');
     expect(createdOrder.shipping_state).toBe('Real State');
     expect(createdOrder.shipping_postal_code).toBe('54321');
+    expect(createdOrder.shipping_country).toBe('Mexico');
+    expect(createdOrder.notes).toBe('This is a test order with delivery notes from automated test');
     expect(createdOrder.total_amount).toBeGreaterThan(0);
 
     // Step 8: Verify order items
