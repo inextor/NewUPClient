@@ -81,22 +81,50 @@ export class Rest<T,U>
 		{
 			if( !response.ok )
 			{
-				return response.json().then((data:any) =>
+				return response.text().then((text: string) =>
 				{
-					if(typeof data == 'object' && 'error' in data )
-					{
-						throw data.error;
-					}
-					else if( typeof data == 'string' )
-					{
-						throw new Error(data);
+					// Try to parse as JSON first
+					try {
+						const data = JSON.parse(text);
+						if(typeof data == 'object' && 'error' in data )
+						{
+							throw data.error;
+						}
+						else if( typeof data == 'string' )
+						{
+							throw new Error(data);
+						}
+					} catch (e) {
+						// If JSON parsing fails, check if it's HTML (server error page)
+						if (text.trim().startsWith('<') || text.trim().startsWith('<!DOCTYPE')) {
+							throw new Error(`Error del servidor (${response.status}). Por favor intente de nuevo.`);
+						}
+						// If not empty, throw the text as error
+						if (text.trim()) {
+							throw new Error(text);
+						}
 					}
 
 					throw new Error(`HTTP error! status: ${response.status}, message: ${response.statusText}`);
 				})
 			}
 
-			return response.json();
+			// Handle successful but possibly empty responses
+			return response.text().then((text: string) => {
+				if (!text || !text.trim()) {
+					// Empty response - return empty object or the response status
+					return {};
+				}
+				try {
+					return JSON.parse(text);
+				} catch (e) {
+					// If response looks like HTML, it's likely an error page
+					if (text.trim().startsWith('<') || text.trim().startsWith('<!DOCTYPE')) {
+						throw new Error('El servidor devolvió una respuesta inesperada. Por favor intente de nuevo.');
+					}
+					throw new Error('Error al procesar la respuesta del servidor');
+				}
+			});
 		};
 	}
 

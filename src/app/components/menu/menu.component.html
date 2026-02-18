@@ -1,5 +1,15 @@
+<!-- Mobile backdrop overlay -->
+<div class="menu-backdrop" [class.open]="rest.is_menu_open" (click)="rest.is_menu_open = false"></div>
+
 <nav class="sidebar-menu" [class.open]="rest.is_menu_open">
     <div class="menu-content">
+        <!-- Close button for mobile -->
+        <button class="menu-close-btn" (click)="rest.is_menu_open = false" aria-label="Cerrar menú">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
+            </svg>
+        </button>
+
         <!-- Logo UPE -->
         <div class="menu-logo">
             <img [src]="'assets/logoheader.png'" alt="UPE Uniformes Profesionales" class="logo-img">
