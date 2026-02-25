@@ -75,4 +75,8 @@ export class OrderConfirmationComponent extends BaseComponent implements OnInit 
 				this.is_loading = false;
 			});
 	}
+
+	printOrder(): void {
+		window.print();
+	}
 }

@@ -95,6 +95,16 @@ export class CartComponent extends BaseComponent implements OnInit {
 		}, 0);
 	}
 
+	isAnyItemEditing(): boolean {
+		return this.cart_items.some(item => item.isEditing);
+	}
+
+	goToCheckout(): void {
+		if (!this.isAnyItemEditing()) {
+			this.router.navigate(['/checkout']);
+		}
+	}
+
 	startEdit(item: CartItemWithDetails): void {
 		// Extract available sizes from item_info
 		const sizeRange = item.item_info?.item?.size_range || [];
@@ -117,8 +127,10 @@ export class CartComponent extends BaseComponent implements OnInit {
 			return;
 		}
 
-		const updatedCart: Partial<Cart> = {
+		const updatedCart: Cart = {
 			id: item.id,
+			user_id: item.user_id,
+			ecommerce_item_id: item.ecommerce_item_id,
 			qty: item.editQty,
 			variation: item.editVariation || item.variation
 		};

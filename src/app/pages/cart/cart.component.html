@@ -98,9 +98,13 @@
 				<a routerLink="/" class="btn btn-outline-secondary">
 					Continuar Comprando
 				</a>
-				<a routerLink="/checkout" class="btn btn-primary">
+				<button
+					class="btn btn-primary"
+					[disabled]="isAnyItemEditing()"
+					(click)="goToCheckout()"
+				>
 					Proceder al Checkout
-				</a>
+				</button>
 			</div>
 		</div>
 	</div>
