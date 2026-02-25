@@ -49,7 +49,7 @@
                 }
               ],
               "outputHashing": "all",
-              "baseHref": "/semprainfraestructura/"
+              "baseHref": "/store/"
             },
             "development": {
               "optimization": false,

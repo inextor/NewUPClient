@@ -46,6 +46,8 @@ export class ProductDetailComponent extends BaseComponent implements OnInit {
 	mainImageId: number | null = null;
 	additionalImageIds: number[] = [];
 
+	defualt_description: string = 'Lorem ipsum \nasdf asdf\n asdlfkjasl;dkfjasd\nasdfjasldfkj\nasdfkajsldfkjasd\n';
+
 	// Size selection
 	availableSizes: string[] = [];
 	sizeQuantities: { [size: string]: number } = {};
