@@ -34,7 +34,7 @@ fi
 
 echo ""
 echo "Deploying to production server..."
-rsync -avz --progress dist/new-upclient/browser/ enlinea.cloud:/var/www/html/uniformesprofesionales.mx/semprainfraestructura/
+rsync -avz --progress dist/new-upclient/browser/ enlinea.cloud:/var/www/html/uniformesprofesionales.mx/store/
 
 if [ $? -eq 0 ]; then
     echo ""
