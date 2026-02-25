@@ -119,11 +119,27 @@ export class RestService implements RestEndPoint{
 			}
 			else
 			{
-				return 'https://uniformesprofesionales.mx/semprainfraestructura/api';
+				// Detect base path from URL (e.g., /store/, /semprainfraestructura/)
+				const basePath = this.getBasePath();
+				return `https://${hostname}${basePath}api`;
 			}
 		}
 		// Fallback for SSR or build time
 		return 'http://localhost/NewUpServer';
+	}
+
+	/**
+	 * Extracts the base path from the current URL (e.g., /store/, /semprainfraestructura/)
+	 */
+	private getBasePath(): string
+	{
+		if (typeof window !== 'undefined')
+		{
+			const path = window.location.pathname;
+			const match = path.match(/^\/[^\/]+\//);
+			return match ? match[0] : '/';
+		}
+		return '/';
 	}
 
 	/**
@@ -141,7 +157,8 @@ export class RestService implements RestEndPoint{
 			}
 			else
 			{
-				return 'https://uniformesprofesionales.mx/semprainfraestructura';
+				const basePath = this.getBasePath();
+				return `https://${hostname}${basePath.slice(0, -1)}`; // Remove trailing slash
 			}
 		}
 		// Fallback for SSR or build time
