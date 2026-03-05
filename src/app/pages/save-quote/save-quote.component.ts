@@ -3,9 +3,11 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { BaseComponent } from '../base/base.component';
 import { Quotation } from '../../models/RestModels/Quotation';
-import { Quotation_Attachment } from '../../models/RestModels/Quotation_Attachment';
+import { QuotationInfoAttachment, QuotationInfo } from '../../models/RestModels/QuotationInfo';
 import { GetEmpty } from '../../models/GetEmpty';
 import { Rest } from '../../classes/Rest';
+import { Quotation_Attachment } from '../../models/RestModels/Quotation_Attachment';
+
 
 @Component({
   selector: 'app-save-quote',
@@ -21,15 +23,11 @@ export class SaveQuoteComponent extends BaseComponent {
 
   @ViewChild('quoteForm') quoteForm!: NgForm;
 
-  rest_quotation: Rest<Quotation, Quotation>;
-  rest_quotation_attachment: Rest<Quotation_Attachment, Quotation_Attachment>;
-  rest_image: Rest<any, any>;
+  rest_quotation_info: Rest<Quotation, QuotationInfo>;
 
   constructor(injector: Injector) {
     super(injector);
-    this.rest_quotation = new Rest<Quotation, Quotation>(this.rest, 'quotation.php');
-    this.rest_quotation_attachment = new Rest<Quotation_Attachment, Quotation_Attachment>(this.rest, 'quotation_attachment.php');
-    this.rest_image = new Rest<any, any>(this.rest, 'image.php');
+    this.rest_quotation_info = new Rest<Quotation, QuotationInfo>(this.rest, 'quotation_info.php');
   }
 
   onFilesSelected(event: Event): void {
@@ -61,13 +59,16 @@ export class SaveQuoteComponent extends BaseComponent {
     this.isSubmitting = true;
 
     try {
-      // Step 1: Create the quotation
-      const createdQuotation = await this.rest_quotation.create(this.quotation);
+      // Step 1: Upload files and collect attachment IDs
+      const attachments: Quotation_Attachment[] = await this.uploadFiles();
 
-      // Step 2: Upload files and link them to the quotation
-      if (this.selectedFiles.length > 0) {
-        await this.uploadFiles(createdQuotation.id!);
-      }
+      // Step 2: Create quotation with attachments in a single transaction
+      const request: QuotationInfo= {
+        quotation: this.quotation,
+        quotation_attachments: attachments
+      };
+
+      await this.rest_quotation_info.create(request);
 
       // Show success message
       this.showSuccessMessage = true;
@@ -80,42 +81,32 @@ export class SaveQuoteComponent extends BaseComponent {
     }
   }
 
-  async uploadFiles(quotationId: number): Promise<void> {
+  async uploadFiles(): Promise<Quotation_Attachment[]> {
     const uploadPromises = this.selectedFiles.map(async (file) => {
-      // Create FormData for file upload
       const formData = new FormData();
-      formData.append('image', file);
+      formData.append('file', file);
 
-      try {
-        // Upload file to image.php
-        const response = await fetch(this.rest.base_url + '/image.php', {
-          method: 'POST',
-          headers: {
-            'Authorization': 'Bearer ' + this.rest.bearer
-          },
-          body: formData
-        });
+      const response = await fetch(this.rest.base_url + '/attachment.php', {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer ' + this.rest.bearer
+        },
+        body: formData
+      });
 
-        if (!response.ok) {
-          throw new Error('Failed to upload file: ' + file.name);
-        }
-
-        const imageData = await response.json();
-
-        // Link the uploaded image to the quotation
-        const attachment: Quotation_Attachment = {
-          quotation_id: quotationId,
-          image_id: imageData.id
-        };
-
-        await this.rest_quotation_attachment.create(attachment);
-      } catch (error) {
-        console.error('Error uploading file:', file.name, error);
-        throw error;
+      if (!response.ok) {
+        throw new Error('Failed to upload file: ' + file.name);
       }
+
+      const imageData = await response.json();
+
+      return {
+        attachment_id: imageData.id,
+        description: file.name
+      } as Quotation_Attachment;
     });
 
-    await Promise.all(uploadPromises);
+    return Promise.all(uploadPromises);
   }
 
   resetForm(): void {
