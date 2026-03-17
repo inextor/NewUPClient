@@ -46,6 +46,7 @@ export class LoginComponent {
 			localStorage.setItem('session', JSON.stringify(data.session));
 			localStorage.setItem('user', JSON.stringify(data.user));
 			localStorage.setItem('ecommerce', JSON.stringify(data.ecommerce));
+			this.rest_service.ecommerce.logo_image_id = data.ecommerce.logo_image_id;
 
 			// Store roles_info if provided by backend
 			if (data.roles_info) {
