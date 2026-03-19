@@ -52,7 +52,7 @@ export class LoginComponent {
 			if (data.roles_info) {
 				localStorage.setItem('roles_info', JSON.stringify(data.roles_info));
 			}
-
+			this.rest_service.ecommerce = data.ecommerce;
 			this.rest_service.loadAuthDataFromLocalStorage();
 			this.router.navigate(['/']);
 
