@@ -39,8 +39,11 @@ export class MainHomeComponent extends BaseComponent implements OnInit {
 		this.path = '/';
 
 		this.getParamsAndQueriesObservable().subscribe((params: any) => {
+
 			const page = params.query.has('page') ? parseInt(params.query.get('page')!) : 0;
 			const limit = params.query.has('limit') ? parseInt(params.query.get('limit')!) : 100;
+
+			console.log('Loadin new data');
 
 			this.current_page = page;
 			this.page_size = limit;
@@ -91,12 +94,18 @@ export class MainHomeComponent extends BaseComponent implements OnInit {
 						return Promise.all([ecommerce_item_response, this.rest_item.search({ 'id,': item_ids, limit: 999999 })]);
 					})
 					.then((result: any) => {
-						if (!result) return;
+
+						if (!result)
+						{
+							console.log('No llego resultado');
+							return;
+						}
 
 						const [ecommerce_item_response, item_response] = result;
 						this.cecommerce_item_list = ecommerce_item_response.data
 							.map((ecommerce_item: Ecommerce_Item) => {
 								// Find the matching item_info by item_id
+								console.log('Debio llegar algo');
 								const matching_item_info = item_response.data.find((item_info: any) => item_info.item.id === ecommerce_item.item_id);
 								return {
 									ecommerce_item: ecommerce_item,
@@ -106,14 +115,17 @@ export class MainHomeComponent extends BaseComponent implements OnInit {
 							.filter((ceii: CEcommerceItemInfo) => ceii.item_info !== undefined);
 					})
 					.catch((error: any) => {
+						console.log('LLego pero en error');
 						this.rest.showError(error);
 					});
 			}
 			else {
+				console.log('Loading new rest roles');
 				// Fetch all roles (no items)
 				this.rest_role.search({ limit: 999999 })
 					.then((response: RestResponse<Role>) => {
 						this.role_list = response.data;
+						this.ecommerce_item_list = [];
 					})
 					.catch((error: any) => {
 						this.rest.showError(error);
