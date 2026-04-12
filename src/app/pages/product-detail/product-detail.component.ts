@@ -9,6 +9,18 @@ import { RestResponse } from '../../classes/RestResponse';
 import { ImagePipe } from '../../pipes/image.pipe';
 import { ProductSizeRanges } from '../../classes/ProductSizeRanges';
 
+interface ItemAttachment {
+	id: number;
+	attachment_id: number;
+	created_by_user_id: number;
+	created: string;
+	description: string | null;
+	item_id: number;
+	title: string;
+	updated_by_user_id: number;
+	updated: string;
+}
+
 interface ItemInfo {
 	item: {
 		id: number;
@@ -43,6 +55,7 @@ export class ProductDetailComponent extends BaseComponent implements OnInit {
 	ecommerce_item_id: number | null = null;
 	ecommerce_item: Ecommerce_Item | null = null;
 	item_info: ItemInfo | null = null;
+	item_attachments: ItemAttachment[] = [];
 	mainImageId: number | null = null;
 	additionalImageIds: number[] = [];
 
@@ -57,6 +70,7 @@ export class ProductDetailComponent extends BaseComponent implements OnInit {
 	rest_item: Rest<any,any> = new Rest<any,any>(this.rest.pos_rest, 'item_info.php');
 	rest_ecommerce_item: Rest<Ecommerce_Item,Ecommerce_Item> = new Rest<Ecommerce_Item,Ecommerce_Item>(this.rest, 'ecommerce_item.php');
 	rest_item_image: Rest<any,any> = new Rest<any,any>(this.rest.pos_rest, 'item_image.php');
+	rest_item_attachment: Rest<any,any> = new Rest<any,any>(this.rest.pos_rest, 'item_attachment.php');
 	rest_cart: Rest<Cart,Cart> = new Rest<Cart,Cart>(this.rest, 'cart.php');
 
 	ngOnInit(): void {
@@ -81,7 +95,8 @@ export class ProductDetailComponent extends BaseComponent implements OnInit {
 			// Fetch item_info from POS API using item_id
 			return this.rest_item.get(this.ecommerce_item.item_id);
 		})
-		.then((item_info: ItemInfo) => {
+		.then((item_info: ItemInfo) =>
+		{
 			this.item_info = item_info;
 
 			// Set main image from item.image_id
@@ -107,6 +122,15 @@ export class ProductDetailComponent extends BaseComponent implements OnInit {
 			}
 
 			this.additionalImageIds = imageIds;
+
+			// Fetch item attachments for this item
+			return this.rest_item_attachment.search({ 'item_id': this.item_info.item.id });
+		})
+		.then((item_attachment_response: RestResponse<any>) => {
+			// Store attachments for display
+			if (item_attachment_response.data && item_attachment_response.data.length > 0) {
+				this.item_attachments = item_attachment_response.data;
+			}
 
 			// Parse available sizes from ecommerce_item.sizes
 			if (this.ecommerce_item?.sizes) {

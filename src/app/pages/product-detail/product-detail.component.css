@@ -113,33 +113,38 @@
 }
 
 .attachments-section {
-	margin-top: 20px;
+	margin-top: 40px;
 	padding-top: 20px;
 	border-top: 1px solid #eee;
 }
 
-.attachments-section h2 {
+.attachments-section h3 {
 	font-size: 1.5em;
-	margin-bottom: 10px;
+	margin-bottom: 20px;
+	color: #333;
 }
 
-.attachments-section ul {
-	list-style: none;
-	padding: 0;
+.attachments-list {
+	display: flex;
+	flex-direction: column;
 }
 
-.attachments-section li {
-	margin-bottom: 10px;
+.attachment-item {
+	border: 1px solid #ddd;
+	transition: box-shadow 0.3s ease;
 }
 
-.attachments-section a {
-	font-weight: bold;
+.attachment-item:hover {
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.attachment-item .card-title {
 	color: #007bff;
-	text-decoration: none;
+	margin-top: 0;
 }
 
-.attachments-section a:hover {
-	text-decoration: underline;
+.attachment-item .card-text {
+	margin-bottom: 8px;
 }
 
 /* Size Selection */

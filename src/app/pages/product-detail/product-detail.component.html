@@ -25,6 +25,33 @@
 				}
 			</div>
 		}
+
+		@if (item_attachments && item_attachments.length > 0) {
+			<div class="attachments-section mt-4">
+				<h3>Archivos Adjuntos</h3>
+				<div class="attachments-list">
+					@for (attachment of item_attachments; track attachment.id) {
+						<div class="attachment-item card mb-3">
+							<div class="card-body">
+								<h5 class="card-title">{{ attachment.title }}</h5>
+								@if (attachment.description) {
+									<p class="card-text">{{ attachment.description }}</p>
+								}
+								<p class="card-text">
+									<small class="text-muted">
+										ID: {{ attachment.attachment_id }} | 
+										Actualizado: {{ attachment.updated | date:'dd/MM/yyyy HH:mm' }}
+									</small>
+								</p>
+								<a [href]="'api/v1/item_attachment.php?id=' + attachment.attachment_id" target="_blank" class="btn btn-sm btn-primary">
+									<i class="bi bi-download"></i> Descargar/Ver
+								</a>
+							</div>
+						</div>
+					}
+				</div>
+			</div>
+		}
 	} @else {
 		<div class="text-center">
 			<p>Cargando detalles del producto...</p>

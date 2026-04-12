@@ -1,33 +1,11 @@
-# CLAUDE.md
-
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
-
 ## Project Overview
 
 NewUPClient is an Angular 19.2 single-page application using standalone components architecture. The app provides user, role, and item management functionality with authentication.
 
 ## Development Commands
 
-### Start Development Server
-```bash
-npm start
-# or
-ng serve
-```
-Server runs on http://localhost:4200/
-
-### Build
-```bash
-npm run build          # Production build
-npm run watch          # Development build with watch mode
-```
-Build output: `dist/new-upclient/`
-
-### Testing
-```bash
-npm test              # Run unit tests with Karma
-ng test               # Same as above
-```
+Never try to compile or just inform the user that check for errors on compilation, or test errors
+the user must be check for them.
 
 ### Code Generation
 ```bash
