@@ -310,7 +310,7 @@ export class ImportOrderSimpleComponent extends BaseComponent {
 
 		try {
 			// Load roles
-			const rolesResponse = await this.rest_role.search({ limit: 99999 });
+			const rolesResponse = await this.rest_role.search({ ecommerce_id: this.rest.ecommerce.id, limit: 99999 });
 			this.roleList = rolesResponse.data;
 		} catch (error) {
 			this.rest.showError(error);

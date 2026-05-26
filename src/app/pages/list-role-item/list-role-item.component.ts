@@ -64,7 +64,7 @@ export class ListRoleItemComponent extends BaseComponent implements OnInit {
 			Promise.all([
 				this.rest_item.get(this.item_id as number),
 				this.rest_role_item.search(url_params),
-				this.rest_role.search({limit: 999999})
+				this.rest_role.search({ ecommerce_id: this.rest.ecommerce.id, limit: 999999 })
 			])
 			.then(([item_info, role_item_response, role_response]) =>
 			{

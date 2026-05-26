@@ -123,6 +123,10 @@ export class ProductDetailComponent extends BaseComponent implements OnInit {
 
 			this.additionalImageIds = imageIds;
 
+			if (!this.item_info) {
+				return Promise.resolve({ total: 0, data: [] });
+			}
+
 			// Fetch item attachments for this item
 			return this.rest_item_attachment.search({ 'item_id': this.item_info.item.id });
 		})

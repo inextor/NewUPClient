@@ -28,6 +28,7 @@ export class ListUserComponent extends BaseComponent implements OnInit {
 		this.route.queryParamMap.subscribe((params:ParamMap) =>
 		{
 			this.search_object.assignNavigationParams( params );
+			this.search_object.eq.ecommerce_id = this.rest.ecommerce.id;
 
 			this.rest_user.search( this.search_object )
 			.then((response:RestResponse<User>) =>

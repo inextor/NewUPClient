@@ -56,7 +56,7 @@ export class ListRoleUserComponent extends BaseComponent implements OnInit {
       Promise.all([
         this.user_id ? this.rest_user.get(this.user_id) : Promise.resolve(null),
         this.rest_role_user.search(url_params),
-        this.rest_role.search({limit: 999999})
+        this.rest_role.search({ ecommerce_id: this.rest.ecommerce.id, limit: 999999 })
       ])
       .then(([user_info, role_user_response, role_response]) =>
       {

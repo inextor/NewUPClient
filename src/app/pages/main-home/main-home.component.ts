@@ -122,7 +122,7 @@ export class MainHomeComponent extends BaseComponent implements OnInit {
 			else {
 				console.log('Loading new rest roles');
 				// Fetch all roles (no items)
-				this.rest_role.search({ limit: 999999 })
+				this.rest_role.search({ ecommerce_id: this.rest.ecommerce.id, limit: 999999 })
 					.then((response: RestResponse<Role>) => {
 						this.role_list = response.data;
 						this.ecommerce_item_list = [];

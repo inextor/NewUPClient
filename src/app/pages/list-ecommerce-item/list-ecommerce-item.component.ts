@@ -48,7 +48,7 @@ export class ListEcommerceItemComponent extends BaseComponent implements OnInit 
 
 			let url_params = this.rest_ecommerce_item.getUrlParams( params );
 
-			//url_params.set('ecommerce_id', ''+this.rest.ecommerce.id);
+			url_params.set('ecommerce_id', ''+this.rest.ecommerce.id);
 
 			this.rest_ecommerce_item.search(url_params)
 			.then((response:RestResponse<Ecommerce_Item>) =>

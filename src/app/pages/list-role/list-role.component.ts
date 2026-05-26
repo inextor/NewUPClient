@@ -25,7 +25,15 @@ export class ListRoleComponent extends BaseComponent implements OnInit {
 		this.getParamsAndQueriesObservable()
 		.subscribe((response) =>
 		{
-			this.rest_role.search(response.query).then((response:RestResponse<Role>) =>
+			const queryObj: any = {};
+			response.query.keys.forEach(key => {
+				queryObj[key] = response.query.get(key);
+			});
+
+			// Scope query to current ecommerce
+			queryObj['ecommerce_id'] = this.rest.ecommerce.id;
+
+			this.rest_role.search(queryObj).then((response:RestResponse<Role>) =>
 			{
 				this.role_list = response.data;
 			})

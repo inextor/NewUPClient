@@ -206,6 +206,7 @@ export class RestService implements RestEndPoint{
 			}
 
 			this.is_logged_in = this.session !== null;
+			this.loadEcommerceData();
 		}
 	}
 

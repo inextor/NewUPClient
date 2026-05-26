@@ -27,6 +27,7 @@ export class ListOrderComponent extends BaseComponent implements OnInit {
 	ngOnInit(): void {
 		this.route.queryParamMap.subscribe((params: ParamMap) => {
 			this.search_object.assignNavigationParams(params);
+			this.search_object.eq.ecommerce_id = this.rest.ecommerce.id;
 
 			this.rest_order.search(this.search_object)
 				.then((response: RestResponse<Order>) => {

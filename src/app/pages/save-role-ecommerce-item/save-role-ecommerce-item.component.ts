@@ -24,7 +24,7 @@ export class SaveRoleEcommerceItemComponent extends BaseComponent implements OnI
 
 	ngOnInit(): void {
 		// Load all roles for the dropdown
-		this.rest_role.search({ limit: 999999 })
+		this.rest_role.search({ ecommerce_id: this.rest.ecommerce.id, limit: 999999 })
 			.then(response => {
 				this.role_list = response.data;
 			})
